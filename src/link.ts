@@ -6,12 +6,7 @@
 import * as coerce from './coerce';
 import deepFreeze from './deep-freeze';
 import Extendable from './extendable';
-import {
-    isRecord,
-    isString,
-    isStringArray,
-    isUndefined
-} from './type-guards';
+import { isRecord, isString, isStringArray, isUndefined } from './type-guards';
 
 /**
  * Describes a Siren [link](https://github.com/kevinswiber/siren#links-1), which
