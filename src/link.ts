@@ -54,10 +54,14 @@ type OptionalMembers = Extendable & {
 };
 
 /**
- * Creates an immutable `Link` object.
+ * Creates an immutable `Link` object. Note that values are loosely coerced. For
+ * example, a single string passed for `rel`, will be converted to a singleton
+ * string array. Regardless of what is passed, a valid Siren link will always be
+ * produced.
  * @param rel List of link relation types
  * @param href URI of the linked resource
  * @param optional Object containing optional link members (e.g., `title`, `type`) and extensions
+ * @throws {TypeError} if `href` is an invalid URI
  */
 export function link(rel: readonly string[] | string, href: string | URL, optional: OptionalMembers = {}): Link {
     const { 'class': linkClass, title, type, ...extensions } = optional;
