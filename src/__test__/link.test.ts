@@ -176,14 +176,11 @@ describe('Link.type', () => {
         const cases: any[] = [
             undefined, null, true, 69, '', 'foo', [true, 69, 'foo'], {}, () => { }
         ];
-        const spy = jest.spyOn(console, 'warn').mockImplementation();
 
         cases.forEach(value => {
             const link = Siren.link(['self'], href, { type: value });
             expect(link.type).toBeUndefined;
         });
-        expect(spy).toHaveBeenCalledTimes(cases.length - 2);
-        spy.mockRestore();
     });
 });
 
