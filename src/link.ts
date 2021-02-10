@@ -7,7 +7,6 @@ import * as coerce from './coerce';
 import deepFreeze from './deep-freeze';
 import Extendable from './extendable';
 import {
-    isNullOrUndefined,
     isRecord,
     isString,
     isStringArray,
@@ -110,9 +109,6 @@ function isMediaTypeString(value: unknown): value is string {
 
 function toMediaTypeString(value: unknown): string | undefined {
     if (!isMediaTypeString(value)) {
-        if (!isNullOrUndefined(value)) {
-            console.warn("Invalid to parse media type string. Defaulting to '*/*'");
-        }
         return undefined;
     } else {
         return value;
