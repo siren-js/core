@@ -4,9 +4,11 @@ const href = 'http://example.com';
 
 describe('link function', () => {
     it('should create Link from rel and href', () => {
-        const link = Siren.link(['self'], href);
+        const rel = ['self'];
 
-        expect(link.rel).toEqual(['self']);
+        const link = Siren.link(rel, href);
+
+        expect(link.rel).toEqual(rel);
         expect(link.href).toEqual(href);
         expect(link.class).toBeUndefined();
         expect(link.title).toBeUndefined();
@@ -14,23 +16,26 @@ describe('link function', () => {
     });
 
     it('should accept optional members as object', () => {
-        const link = Siren.link(['self'], href, {
-            class: ['order'],
-            title: 'Order',
-            type: 'application/vnd.siren+json'
-        });
+        const rel = ['self'];
+        const cls = ['order'];
+        const title = 'Order';
+        const type = 'application/vnd.siren+json';
 
-        expect(link.rel).toEqual(['self']);
+        const link = Siren.link(['self'], href, { class: cls, title, type });
+
+        expect(link.rel).toEqual(rel);
         expect(link.href).toEqual(href);
-        expect(link.class).toEqual(['order']);
-        expect(link.title).toEqual('Order');
-        expect(link.type).toEqual('application/vnd.siren+json');
+        expect(link.class).toEqual(cls);
+        expect(link.title).toEqual(title);
+        expect(link.type).toEqual(type);
     });
 
     it('should accept extensions', () => {
-        const link = Siren.link(['self'], href, { hreflang: 'en-US' });
+        const hreflang = 'en-US';
 
-        expect(link.hreflang).toEqual('en-US');
+        const link = Siren.link(['self'], href, { hreflang });
+
+        expect(link.hreflang).toEqual(hreflang);
     });
 
     it('should create immutable object', () => {
