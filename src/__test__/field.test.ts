@@ -193,3 +193,47 @@ describe('ParsedField.update', () => {
         expect(result.value).toEqual(newValue);
     });
 });
+
+describe('field type guard', () => {
+    it('should return true for valid fields', () => {
+        const values: Siren.Field[] = [
+            // minimal
+            { name: 'orderNumber' },
+            // kitchen sink
+            {
+                name: 'orderNumber',
+                class: ['integer'],
+                title: 'Order Number',
+                type: Siren.FieldType.Number,
+                value: 69
+            },
+            // with extension
+            { name: 'orderNumber', min: 0 }
+        ];
+
+        values.forEach(value => {
+            expect(Siren.isField(value)).toEqual(true);
+        });
+    });
+
+    it('should return false for invalid links', () => {
+        const values = [
+            // non-records
+            undefined, null, true, 69, 'foo', [], () => { },
+            // empty record
+            {},
+            // invalid name
+            { name: true },
+            // invalid class
+            { name: 'orderNumber', class: 'order' },
+            // invalid title
+            { name: 'orderNumber', title: 420 },
+            // invalid type
+            { name: 'orderNumber', type: 69 }
+        ];
+
+        values.forEach(value => {
+            expect(Siren.isField(value)).toEqual(false);
+        });
+    });
+});
