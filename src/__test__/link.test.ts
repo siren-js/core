@@ -105,7 +105,19 @@ describe('link function', () => {
             expect(link.href).toEqual(url.toString());
         });
 
-        it('should coerce primitive to string', () => { });
+        it('should coerce href value to string', () => {
+            const cases = [
+                [true, '/true'],
+                [69, '/69'],
+                [[true, 69, 'foo'], '/true,69,foo'],
+                [{}, '/[object%20Object]']
+            ];
+
+            cases.forEach(([value, expected]) => {
+                const link = Siren.link(['self'], value as any);
+                expect(link.href).toEqual(expected);
+            });
+        });
 
         it('should reject invalid URI', () => {
             [null, undefined, 'http://\uFFFF.com'].forEach(value => {
