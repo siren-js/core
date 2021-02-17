@@ -219,7 +219,7 @@ describe('field type guard', () => {
     it('should return false for invalid links', () => {
         const values = [
             // non-records
-            undefined, null, true, 69, 'foo', [], () => { },
+            undefined, null, true, 69, 'foo', [],
             // empty record
             {},
             // invalid name

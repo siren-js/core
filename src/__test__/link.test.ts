@@ -71,19 +71,18 @@ describe('link function', () => {
         });
 
         it('should coerce to string array', () => {
-            const cases: [any, string[]][] = [
+            const cases = [
                 [undefined, []],
                 [null, []],
                 [true, ['true']],
                 [69, ['69']],
                 ['foo', ['foo']],
                 [[true, 69, 'foo'], ['true', '69', 'foo']],
-                [{}, ['[object Object]']],
-                [function () { }, ['function () { }']]
+                [{}, ['[object Object]']]
             ];
 
             cases.forEach(([value, expected]) => {
-                const link = Siren.link(value, href);
+                const link = Siren.link(value as string, href);
                 expect(link.rel).toEqual(expected);
             });
         });
@@ -106,7 +105,7 @@ describe('link function', () => {
         });
 
         it('should coerce URL object to string', () => {
-            const url: any = new URL(href);
+            const url = new URL(href);
 
             const link = Siren.link(['self'], url);
 
@@ -122,14 +121,14 @@ describe('link function', () => {
             ];
 
             cases.forEach(([value, expected]) => {
-                const link = Siren.link(['self'], value as any);
+                const link = Siren.link(['self'], value as string);
                 expect(link.href).toEqual(expected);
             });
         });
 
         it('should reject invalid URI', () => {
             [null, undefined, 'http://\uFFFF.com'].forEach(value => {
-                expect(() => Siren.link(['self'], value as any)).toThrow(TypeError);
+                expect(() => Siren.link(['self'], value as string)).toThrow(TypeError);
             });
         });
     });
@@ -143,19 +142,18 @@ describe('link function', () => {
         });
 
         it('should coerce to string array or undefined', () => {
-            const cases: [any, string[] | undefined][] = [
+            const cases = [
                 [undefined, undefined],
                 [null, undefined],
                 [true, ['true']],
                 [69, ['69']],
                 ['foo', ['foo']],
                 [[true, 69, 'foo'], ['true', '69', 'foo']],
-                [{}, ['[object Object]']],
-                [function () { }, ['function () { }']]
+                [{}, ['[object Object]']]
             ];
 
             cases.forEach(([value, expected]) => {
-                const link = Siren.link(['self'], href, { class: value });
+                const link = Siren.link(['self'], href, { class: value as string });
                 expect(link.class).toEqual(expected);
             });
         });
@@ -170,19 +168,18 @@ describe('link function', () => {
         });
 
         it('should coerce to string or undefined', () => {
-            const cases: [any, string | undefined][] = [
+            const cases = [
                 [undefined, undefined],
                 [null, undefined],
                 [true, 'true'],
                 [69, '69'],
                 ['foo', 'foo'],
                 [[true, 69, 'foo'], 'true,69,foo'],
-                [{}, '[object Object]'],
-                [function () { }, 'function () { }']
+                [{}, '[object Object]']
             ];
 
             cases.forEach(([value, expected]) => {
-                const link = Siren.link(['self'], href, { title: value });
+                const link = Siren.link(['self'], href, { title: value as string });
                 expect(link.title).toEqual(expected);
             });
         });
@@ -197,12 +194,8 @@ describe('link function', () => {
         });
 
         it('should coerce to invalid media type string to undefined', () => {
-            const cases: any[] = [
-                undefined, null, true, 69, '', 'foo', [true, 69, 'foo'], {}, () => { }
-            ];
-
-            cases.forEach(value => {
-                const link = Siren.link(['self'], href, { type: value });
+            [undefined, null, true, 69, '', 'foo', [true, 69, 'foo'], {}].forEach(value => {
+                const link = Siren.link(['self'], href, { type: value as string });
                 expect(link.type).toBeUndefined;
             });
         });
@@ -236,7 +229,7 @@ describe('link type guard', () => {
     it('should return false for invalid links', () => {
         const values = [
             // non-records
-            undefined, null, true, 69, 'foo', [], () => { },
+            undefined, null, true, 69, 'foo', [],
             // empty record
             {},
             // invalid rel
