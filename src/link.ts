@@ -9,6 +9,34 @@ import Extendable from './extendable';
 import { isRecord, isString, isStringArray, isUndefined } from './type-guards';
 
 /**
+ * Creates an immutable `Link` object. Note that values are loosely coerced. For
+ * example, a single string passed for `rel`, will be converted to a singleton
+ * string array. Regardless of what is passed, a valid Siren link will always be
+ * produced.
+ * @param rel List of link relation types
+ * @param href URI of the linked resource
+ * @param optional Object containing optional link members (e.g., `title`, `type`) and extensions
+ * @throws {TypeError} if `href` is an invalid URI
+ */
+export function link(rel: readonly string[] | string, href: string | URL, optional: OptionalMembers = {}): Link {
+    const { 'class': linkClass, title, type, ...extensions } = optional;
+    return deepFreeze({
+        rel: coerce.toStringArray(rel),
+        href: coerce.toUriString(href),
+        class: coerce.toOptionalStringArray(linkClass),
+        title: coerce.toOptionalString(title),
+        type: toMediaTypeString(type),
+        ...extensions
+    });
+}
+
+type OptionalMembers = Extendable & {
+    class?: string[] | string;
+    title?: string;
+    type?: string;
+};
+
+/**
  * Describes a Siren [link](https://github.com/kevinswiber/siren#links-1), which
  * represents a navigational transition.
  */
@@ -41,33 +69,22 @@ export interface Link extends Extendable {
     readonly type?: string;
 }
 
-type OptionalMembers = Extendable & {
-    class?: string[] | string;
-    title?: string;
-    type?: string;
-};
-
-/**
- * Creates an immutable `Link` object. Note that values are loosely coerced. For
- * example, a single string passed for `rel`, will be converted to a singleton
- * string array. Regardless of what is passed, a valid Siren link will always be
- * produced.
- * @param rel List of link relation types
- * @param href URI of the linked resource
- * @param optional Object containing optional link members (e.g., `title`, `type`) and extensions
- * @throws {TypeError} if `href` is an invalid URI
- */
-export function link(rel: readonly string[] | string, href: string | URL, optional: OptionalMembers = {}): Link {
-    const { 'class': linkClass, title, type, ...extensions } = optional;
-    return deepFreeze({
-        rel: coerce.toStringArray(rel),
-        href: coerce.toUriString(href),
-        class: coerce.toOptionalStringArray(linkClass),
-        title: coerce.toOptionalString(title),
-        type: toMediaTypeString(type),
-        ...extensions
-    });
+function toMediaTypeString(value: unknown): string | undefined {
+    if (!isMediaTypeString(value)) {
+        return undefined;
+    } else {
+        return value;
+    }
 }
+
+function isMediaTypeString(value: unknown): value is string {
+    return isString(value) && mediaTypeRegExp.test(value);
+}
+
+const mediaTypeRegExp = /[A-Za-z0-9][\w!#$&\-^.+]{0,126}\/[A-Za-z0-9][\w!#$&\-^.+]{0,126}/;
+//                       \___rnf___/\_______rnc________/  \___rnf___/\_______rnc________/
+//                        \______restricted-name______/    \______restricted-name______/
+//                         \________type-name________/      \______subtype-name_______/
 
 /**
  * Determines whether `value` is a valid Siren link.
@@ -90,22 +107,5 @@ function isUri(value: unknown): value is string {
         return true;
     } catch {
         return false;
-    }
-}
-
-const mediaTypeRegExp = /[A-Za-z0-9][\w!#$&\-^.+]{0,126}\/[A-Za-z0-9][\w!#$&\-^.+]{0,126}/;
-//                       \___rnf___/\_______rnc________/  \___rnf___/\_______rnc________/
-//                        \______restricted-name______/    \______restricted-name______/
-//                         \________type-name________/      \______subtype-name_______/
-
-function isMediaTypeString(value: unknown): value is string {
-    return isString(value) && mediaTypeRegExp.test(value);
-}
-
-function toMediaTypeString(value: unknown): string | undefined {
-    if (!isMediaTypeString(value)) {
-        return undefined;
-    } else {
-        return value;
     }
 }
