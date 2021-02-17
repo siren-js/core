@@ -29,8 +29,15 @@ export function toOptionalStringArray(value: unknown): string[] | undefined {
 }
 
 /**
- * If `value` is `null` or `undefined`, the result is `undefined`. All other
- * values are converted to strings.
+ * Coerces `null` and `undefined` to an empty string. All other values are
+ * converted to strings.
+ */
+export function toString(value: unknown): string {
+    return isNullOrUndefined(value) ? '' : String(value);
+}
+
+/**
+ * Similar to `toString` except `null` and `undefined` coerce to `undefined`.
  */
 export function toOptionalString(value: unknown): string | undefined {
     return isNullOrUndefined(value) ? undefined : String(value);
