@@ -10,7 +10,7 @@ import { isRecord, isString, isStringArray, isUndefined } from './type-guards';
 
 /**
  * Creates an immutable `Link` object. Note that values are loosely coerced. For
- * example, a single string passed for `rel`, will be converted to a singleton
+ * example, a string passed in for `rel`, will be converted to a singleton
  * string array. Regardless of what is passed, a valid Siren link will always be
  * produced.
  * @param rel List of link relation types
@@ -18,7 +18,7 @@ import { isRecord, isString, isStringArray, isUndefined } from './type-guards';
  * @param optional Object containing optional link members (e.g., `title`, `type`) and extensions
  * @throws {TypeError} if `href` is an invalid URI
  */
-export function link(rel: readonly string[] | string, href: string | URL, optional: OptionalMembers = {}): Link {
+export function link(rel: readonly string[] | string, href: string | URL, optional: OptionalLinkMembers = {}): Link {
     const { 'class': linkClass, title, type, ...extensions } = optional;
     return deepFreeze({
         rel: coerce.toStringArray(rel),
@@ -30,7 +30,7 @@ export function link(rel: readonly string[] | string, href: string | URL, option
     });
 }
 
-type OptionalMembers = Extendable & {
+export type OptionalLinkMembers = Extendable & {
     class?: string[] | string;
     title?: string;
     type?: string;
