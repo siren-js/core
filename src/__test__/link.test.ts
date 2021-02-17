@@ -62,7 +62,7 @@ describe('link function', () => {
         });
     });
 
-    describe('Link.rel', () => {
+    describe('rel parameter', () => {
         it('should accept any string array', () => {
             [[], ['self'], ['collection', 'up']].forEach(value => {
                 const link = Siren.link(value, href);
@@ -89,7 +89,7 @@ describe('link function', () => {
         });
     });
 
-    describe('Link.href', () => {
+    describe('href parameter', () => {
         it('should accept absolute and relative URIs', () => {
             [href, '/orders'].forEach(uri => {
                 const link = Siren.link(['self'], uri);
@@ -134,7 +134,7 @@ describe('link function', () => {
         });
     });
 
-    describe('Link.class', () => {
+    describe('class option', () => {
         it('should accept any string array', () => {
             [[], ['order'], ['customer', 'info']].forEach(value => {
                 const link = Siren.link(['self'], href, { class: value });
@@ -161,7 +161,7 @@ describe('link function', () => {
         });
     });
 
-    describe('Link.title', () => {
+    describe('title option', () => {
         it('should accept any string value', () => {
             ['', 'foo', 'foo bar'].forEach(value => {
                 const link = Siren.link(['self'], href, { title: value });
@@ -188,7 +188,7 @@ describe('link function', () => {
         });
     });
 
-    describe('Link.type', () => {
+    describe('type option', () => {
         it('should accept any valid media type string', () => {
             ['application/json', 'text/html', 'image/png'].forEach(type => {
                 const link = Siren.link(['self'], href, { type });
