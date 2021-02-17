@@ -97,6 +97,14 @@ describe('link function', () => {
             });
         });
 
+        it('should add leading slash to relative URIs', () => {
+            const uri = 'orders/69';
+
+            const link = Siren.link(['self'], uri);
+
+            expect(link.href).toEqual(`/${uri}`);
+        });
+
         it('should coerce URL object to string', () => {
             const url: any = new URL(href);
 
