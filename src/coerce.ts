@@ -3,7 +3,7 @@
  *
  * See the full notice in the LICENSE file at the top level of the repository.
  */
-import { isArray, isNullOrUndefined } from './type-guards';
+import { isArray, isMediaTypeString, isNullOrUndefined } from './type-guards';
 
 /**
  * If `value` is already an array, the values are mapped to strings. `null` and
@@ -70,4 +70,12 @@ export function toUriString(value: unknown): string {
             }
         }
     }
+}
+
+/**
+ * Coerces invalid media type strings to `undefined`. Valid media type strings
+ * are returned as-is.
+ */
+export function toMediaTypeString(value: unknown): string | undefined {
+    return isMediaTypeString(value) ? value : undefined;
 }

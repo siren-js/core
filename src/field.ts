@@ -31,14 +31,17 @@ export function field<T>(name: string, optional: OptionalFieldMembers<T> = {}): 
     });
 }
 
-export type OptionalFieldMembers<T> = Extendable & {
+export type OptionalFieldMembers<T> = Extendable & Pick<ParsableField<T>, 'class' | 'title' | 'type' | 'value'>;
+
+export interface ParsableField<T = unknown> extends Extendable {
     class?: string[] | string;
+    name: string;
     title?: string;
     type?: string;
     value?: T;
-};
+}
 
-export interface ParsedField<T> extends Field<T> {
+export interface ParsedField<T = unknown> extends Field<T> {
     /**
      * Update the field's value.
      * @returns A new `Field` object with the updated value
@@ -81,14 +84,23 @@ export interface Field<T = unknown> extends Extendable {
 }
 
 /**
- * Determines whether `value` is a valid Siren field.
+ * Determines whether `value` is a valid Siren field. Note that this is a strict
+ * check. To see if `value` is parsable by `field()`, use `isParsableField()`.
  */
 export function isField(value: unknown): value is Field {
-    return isRecord(value) &&
-        isString(value.name) &&
+    return isParsableField(value) &&
         (isUndefined(value.class) || isStringArray(value.class)) &&
         (isUndefined(value.title) || isString(value.title)) &&
         (isUndefined(value.type) || isString(value.type));
+}
+
+/**
+ * Determines whether `value` is a parsable Siren field. This function differs
+ * from `isField()` in that the loose parsing rules of `field()` are taken into
+ * consideration.
+ */
+export function isParsableField(value: unknown): value is ParsableField {
+    return isRecord(value) && isString(value.name);
 }
 
 /**

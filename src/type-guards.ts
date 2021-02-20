@@ -68,3 +68,31 @@ export const isNonNullObject = typeGuard<RecordOrArray>(value => isObject(value)
  * Determines whether a value is an object and *not* an array or `null`.
  */
 export const isRecord = typeGuard<Record<RecordKey, unknown>>(value => isNonNullObject(value) && !isArray(value));
+
+/**
+ * Determines whether `value` is a valid media type string, as defined in
+ * [Section 3.4.1 of RFC 8288](https://tools.ietf.org/html/rfc8288#section-3.4.1).
+ */
+export function isMediaTypeString(value: unknown): value is string {
+    return isString(value) && mediaTypeRegExp.test(value);
+}
+
+const mediaTypeRegExp = /[A-Za-z0-9][\w!#$&\-^.+]{0,126}\/[A-Za-z0-9][\w!#$&\-^.+]{0,126}/;
+//                       \___rnf___/\_______rnc________/  \___rnf___/\_______rnc________/
+//                        \______restricted-name______/    \______restricted-name______/
+//                         \________type-name________/      \______subtype-name_______/
+
+/**
+ * Determines whether `value` is a valid URI.
+ */
+export function isUri(value: unknown): value is string {
+    if (!isString(value)) {
+        return false;
+    }
+    try {
+        new URL(value, 'http://example.com');
+        return true;
+    } catch {
+        return false;
+    }
+}

@@ -6,7 +6,7 @@
 import * as coerce from './coerce';
 import deepFreeze from './deep-freeze';
 import Extendable from './extendable';
-import { isRecord, isString, isStringArray, isUndefined } from './type-guards';
+import { isMediaTypeString, isRecord, isString, isStringArray, isUndefined, isUri } from './type-guards';
 
 /**
  * Creates an immutable `Link` object. Note that values are loosely coerced. For
@@ -25,7 +25,7 @@ export function link(rel: readonly string[] | string, href: string | URL, option
         href: coerce.toUriString(href),
         class: coerce.toOptionalStringArray(linkClass),
         title: coerce.toOptionalString(title),
-        type: toMediaTypeString(type),
+        type: coerce.toMediaTypeString(type),
         ...extensions
     });
 }
@@ -69,23 +69,6 @@ export interface Link extends Extendable {
     readonly type?: string;
 }
 
-function toMediaTypeString(value: unknown): string | undefined {
-    if (!isMediaTypeString(value)) {
-        return undefined;
-    } else {
-        return value;
-    }
-}
-
-function isMediaTypeString(value: unknown): value is string {
-    return isString(value) && mediaTypeRegExp.test(value);
-}
-
-const mediaTypeRegExp = /[A-Za-z0-9][\w!#$&\-^.+]{0,126}\/[A-Za-z0-9][\w!#$&\-^.+]{0,126}/;
-//                       \___rnf___/\_______rnc________/  \___rnf___/\_______rnc________/
-//                        \______restricted-name______/    \______restricted-name______/
-//                         \________type-name________/      \______subtype-name_______/
-
 /**
  * Determines whether `value` is a valid Siren link.
  */
@@ -96,16 +79,4 @@ export function isLink(value: unknown): value is Link {
         (isUndefined(value.class) || isStringArray(value.class)) &&
         (isUndefined(value.title) || isString(value.title)) &&
         (isUndefined(value.type) || isMediaTypeString(value.type));
-}
-
-function isUri(value: unknown): value is string {
-    if (!isString(value)) {
-        return false;
-    }
-    try {
-        new URL(value, 'http://example.com');
-        return true;
-    } catch {
-        return false;
-    }
 }
