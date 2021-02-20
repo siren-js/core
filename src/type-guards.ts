@@ -86,6 +86,9 @@ const mediaTypeRegExp = /[A-Za-z0-9][\w!#$&\-^.+]{0,126}\/[A-Za-z0-9][\w!#$&\-^.
  * Determines whether `value` is a valid URI.
  */
 export function isUri(value: unknown): value is string {
+    if (value instanceof URL) {
+        return true;
+    }
     if (!isString(value)) {
         return false;
     }
