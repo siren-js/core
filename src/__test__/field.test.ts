@@ -31,7 +31,6 @@ describe('field function', () => {
             expect(field.title).toBeUndefined();
             expect(field.type).toBeUndefined();
             expect(field.value).toBeUndefined();
-            expect(field.update).toBeInstanceOf(Function);
         });
 
         it('should coerce class option to string array or undefined', () => {
