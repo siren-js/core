@@ -9,8 +9,8 @@ describe('field function', () => {
             [undefined, ''],
             [null, ''],
             [true, 'true'],
-            [69, '69'],
-            [[true, 69, 'foo'], 'true,69,foo'],
+            [42, '42'],
+            [[true, 42, 'foo'], 'true,42,foo'],
             [{}, '[object Object]']
         ];
 
@@ -41,9 +41,9 @@ describe('field function', () => {
                 [undefined, undefined],
                 [null, undefined],
                 [true, ['true']],
-                [69, ['69']],
+                [42, ['42']],
                 ['foo', ['foo']],
-                [[true, 69, 'foo'], ['true', '69', 'foo']],
+                [[true, 42, 'foo'], ['true', '42', 'foo']],
                 [{}, ['[object Object]']]
             ];
 
@@ -61,8 +61,8 @@ describe('field function', () => {
                 [undefined, undefined],
                 [null, undefined],
                 [true, 'true'],
-                [69, '69'],
-                [[true, 69, 'foo'], 'true,69,foo'],
+                [42, '42'],
+                [[true, 42, 'foo'], 'true,42,foo'],
                 [{}, '[object Object]']
             ];
 
@@ -80,8 +80,8 @@ describe('field function', () => {
                 [undefined, undefined],
                 [null, undefined],
                 [true, 'true'],
-                [69, '69'],
-                [[true, 69, 'foo'], 'true,69,foo'],
+                [42, '42'],
+                [[true, 42, 'foo'], 'true,42,foo'],
                 [{}, '[object Object]']
             ];
 
@@ -92,7 +92,7 @@ describe('field function', () => {
         });
 
         it('should not modify value option', () => {
-            [undefined, null, true, 69, 'foo', [true, 69, 'foo'], { a: 1, b: 2 }].forEach(value => {
+            [undefined, null, true, 42, 'foo', [true, 42, 'foo'], { a: 1, b: 2 }].forEach(value => {
                 const field = Siren.field('name', { value });
                 expect(field.value).toEqual(value);
             });
@@ -113,7 +113,7 @@ describe('field function', () => {
             class: ['integer'],
             title: 'Order Number',
             type: 'number',
-            value: 69,
+            value: 42,
             min: 0
         });
 
@@ -135,8 +135,8 @@ describe('field function', () => {
 
 describe('ParsedField.update', () => {
     it('should create new ParsedField with given value', () => {
-        const originalValue = 69;
-        const newValue = 420;
+        const originalValue = 42;
+        const newValue = 43;
         const field = Siren.field('orderNumber', {
             title: 'Order Number',
             type: 'number',
@@ -162,7 +162,7 @@ describe('field type guard', () => {
                 class: ['integer'],
                 title: 'Order Number',
                 type: Siren.FieldType.Number,
-                value: 69
+                value: 42
             },
             // with extension
             { name: 'orderNumber', min: 0 }
@@ -176,7 +176,7 @@ describe('field type guard', () => {
     it('should return false for invalid links', () => {
         const values = [
             // non-records
-            undefined, null, true, 69, 'foo', [],
+            undefined, null, true, 42, 'foo', [],
             // empty record
             {},
             // invalid name
@@ -184,9 +184,9 @@ describe('field type guard', () => {
             // invalid class
             { name: 'orderNumber', class: 'order' },
             // invalid title
-            { name: 'orderNumber', title: 420 },
+            { name: 'orderNumber', title: 42 },
             // invalid type
-            { name: 'orderNumber', type: 69 }
+            { name: 'orderNumber', type: 42 }
         ];
 
         values.forEach(value => {

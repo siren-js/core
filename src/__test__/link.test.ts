@@ -11,9 +11,9 @@ describe('link function', () => {
             [undefined, []],
             [null, []],
             [true, ['true']],
-            [69, ['69']],
+            [42, ['42']],
             ['foo', ['foo']],
-            [[true, 69, 'foo'], ['true', '69', 'foo']],
+            [[true, 42, 'foo'], ['true', '42', 'foo']],
             [{}, ['[object Object]']]
         ];
 
@@ -30,9 +30,9 @@ describe('link function', () => {
                 ['/orders', '/orders'],
                 [new URL(href), `${href}/`],
                 [true, '/true'],
-                [69, '/69'],
+                [42, '/42'],
                 ['foo', '/foo'],
-                [[true, 69, 'foo'], '/true,69,foo'],
+                [[true, 42, 'foo'], '/true,42,foo'],
                 [{}, '/[object%20Object]']
             ];
 
@@ -70,9 +70,9 @@ describe('link function', () => {
                 [undefined, undefined],
                 [null, undefined],
                 [true, ['true']],
-                [69, ['69']],
+                [42, ['42']],
                 ['foo', ['foo']],
-                [[true, 69, 'foo'], ['true', '69', 'foo']],
+                [[true, 42, 'foo'], ['true', '42', 'foo']],
                 [{}, ['[object Object]']]
             ];
 
@@ -90,8 +90,8 @@ describe('link function', () => {
                 [undefined, undefined],
                 [null, undefined],
                 [true, 'true'],
-                [69, '69'],
-                [[true, 69, 'foo'], 'true,69,foo'],
+                [42, '42'],
+                [[true, 42, 'foo'], 'true,42,foo'],
                 [{}, '[object Object]']
             ];
 
@@ -110,7 +110,7 @@ describe('link function', () => {
             });
 
             it('should coerce invalid media type string to undefined', () => {
-                [undefined, null, true, 69, '', 'foo', [true, 69, 'foo'], {}].forEach(value => {
+                [undefined, null, true, 42, '', 'foo', [true, 42, 'foo'], {}].forEach(value => {
                     const link = Siren.link(['self'], href, { type: value as string });
                     expect(link.type).toBeUndefined();
                 });
@@ -178,7 +178,7 @@ describe('link type guard', () => {
     it('should return false for invalid links', () => {
         const values = [
             // non-records
-            undefined, null, true, 69, 'foo', [],
+            undefined, null, true, 42, 'foo', [],
             // empty record
             {},
             // invalid rel
@@ -189,7 +189,7 @@ describe('link type guard', () => {
             // invalid class
             { rel: ['self'], href, class: 'order' },
             // invalid title
-            { rel: ['self'], href, title: 420 },
+            { rel: ['self'], href, title: 42 },
             // invalid type
             { rel: ['self'], href, type: 'order' }
         ];
