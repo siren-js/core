@@ -3,6 +3,7 @@
  *
  * See the full notice in the LICENSE file at the top level of the repository.
  */
+import deepFreeze from './deep-freeze';
 
 /**
  * Common HTTP methods for APIs
@@ -22,17 +23,17 @@ export enum HttpMethod {
  * Common media types used for Siren APIs
  *
  * For more comprehensive media type usage, check out the
- * [`mime-types`](https://www.npmjs.com/package/mime-types) package on NPM.
+ * [`mime-types`](https://www.npmjs.com/package/mime-types) library.
  */
-export const MediaType = Object.freeze({
-    Application: Object.freeze({
+export const MediaType = deepFreeze({
+    Application: {
         Siren: 'application/vnd.siren+json',
         UrlEncodedForm: 'application/x-www-form-urlencoded'
-    }),
-    Multipart: Object.freeze({
+    },
+    Multipart: {
         FormData: 'multipart/form-data'
-    }),
-    Text: Object.freeze({
+    },
+    Text: {
         Plain: 'text/plain'
-    })
+    }
 });

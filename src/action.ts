@@ -3,11 +3,11 @@
  *
  * See the full notice in the LICENSE file at the top level of the repository.
  */
-import * as coerce from './coerce';
-import deepFreeze from './deep-freeze';
-import Extendable from './extendable';
 import { field, Field, isField, isParsableField, ParsedField } from './field';
-import { isArray, isMediaTypeString, isRecord, isString, isStringArray, isTypedArray, isUndefined, isUri } from './type-guards';
+import * as coerce from './util/coerce';
+import deepFreeze from './util/deep-freeze';
+import Extendable from './util/extendable';
+import { isArray, isMediaTypeString, isRecord, isString, isStringArray, isTypedArray, isUndefined, isUri } from './util/type-guards';
 
 export * from './field';
 
