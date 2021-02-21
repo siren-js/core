@@ -9,10 +9,7 @@ import Extendable from './extendable';
 import { isMediaTypeString, isRecord, isString, isStringArray, isUndefined, isUri } from './type-guards';
 
 /**
- * Creates an immutable `Link` object. Note that values are loosely coerced. For
- * example, a string passed in for `rel`, will be converted to a singleton
- * string array. Regardless of what is passed, a valid Siren link will always be
- * produced.
+ * Creates a `Link` object
  * @param rel List of link relation types
  * @param href URI of the linked resource
  * @param options Object containing optional link members (e.g., `title`, `type`) and extensions

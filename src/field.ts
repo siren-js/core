@@ -9,11 +9,8 @@ import Extendable from './extendable';
 import { isRecord, isString, isStringArray, isUndefined } from './type-guards';
 
 /**
- * Creates an immutable `Field` object with an `update` method for changing the
- * `Field`'s value. Note that values are loosely coerced. For example, a string
- * in passed for `class`, will be converted to a singleton string array.
- * Regardless of what is passed, a valid Siren field will always be produced.
- * @param name Name of the field.
+ * Creates a `ParsedField` object
+ * @param name Name of the field
  * @param options Object containing optional field members (e.g., `title`, `type`) and extensions
  */
 export function field<T>(name: string, options: OptionalFieldMembers<T> = {}): ParsedField<T> {
@@ -25,6 +22,7 @@ export function field<T>(name: string, options: OptionalFieldMembers<T> = {}): P
         type: coerce.toOptionalString(type),
         value,
         ...extensions,
+
         update<U>(value: U): ParsedField<U> {
             return field(name, { ...options, value });
         }
