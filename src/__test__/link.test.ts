@@ -77,7 +77,7 @@ describe('link function', () => {
             ];
 
             cases.forEach(([value, expected]) => {
-                const link = Siren.link(['self'], href, { class: value as string });
+                const link = Siren.link(['self'], href, { class: value as string[] });
                 expect(link.class).toEqual(expected);
             });
         });

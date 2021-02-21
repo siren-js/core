@@ -77,7 +77,7 @@ describe('embeddedLink function', () => {
             ];
 
             cases.forEach(([value, expected]) => {
-                const link = Siren.embeddedLink(['self'], href, { class: value as string });
+                const link = Siren.embeddedLink(['self'], href, { class: value as string[] });
                 expect(link.class).toEqual(expected);
             });
         });
