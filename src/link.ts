@@ -15,11 +15,11 @@ import { isMediaTypeString, isRecord, isString, isStringArray, isUndefined, isUr
  * produced.
  * @param rel List of link relation types
  * @param href URI of the linked resource
- * @param optional Object containing optional link members (e.g., `title`, `type`) and extensions
+ * @param options Object containing optional link members (e.g., `title`, `type`) and extensions
  * @throws {TypeError} if `href` is an invalid URI
  */
-export function link(rel: readonly string[] | string, href: string | URL, optional: OptionalLinkMembers = {}): Link {
-    const { 'class': linkClass, title, type, ...extensions } = optional;
+export function link(rel: readonly string[] | string, href: string | URL, options: OptionalLinkMembers = {}): Link {
+    const { 'class': linkClass, title, type, ...extensions } = options;
     return deepFreeze({
         rel: coerce.toStringArray(rel),
         href: coerce.toUriString(href),

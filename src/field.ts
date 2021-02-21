@@ -14,10 +14,10 @@ import { isRecord, isString, isStringArray, isUndefined } from './type-guards';
  * in passed for `class`, will be converted to a singleton string array.
  * Regardless of what is passed, a valid Siren field will always be produced.
  * @param name Name of the field.
- * @param optional Object containing optional field members (e.g., `title`, `type`) and extensions
+ * @param options Object containing optional field members (e.g., `title`, `type`) and extensions
  */
-export function field<T>(name: string, optional: OptionalFieldMembers<T> = {}): ParsedField<T> {
-    const { 'class': fieldClass, title, type, value, ...extensions } = optional;
+export function field<T>(name: string, options: OptionalFieldMembers<T> = {}): ParsedField<T> {
+    const { 'class': fieldClass, title, type, value, ...extensions } = options;
     return deepFreeze({
         name: coerce.toString(name),
         class: coerce.toOptionalStringArray(fieldClass),
@@ -26,7 +26,7 @@ export function field<T>(name: string, optional: OptionalFieldMembers<T> = {}): 
         value,
         ...extensions,
         update<U>(value: U): ParsedField<U> {
-            return field(name, { ...optional, value });
+            return field(name, { ...options, value });
         }
     });
 }

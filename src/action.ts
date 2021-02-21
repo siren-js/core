@@ -11,8 +11,8 @@ import { isArray, isMediaTypeString, isRecord, isString, isStringArray, isTypedA
 
 export * from './field';
 
-export function action(name: string, href: string | URL, optional: OptionalActionMembers = {}): ParsedAction {
-    const { 'class': actionClass, fields, method, title, type, ...extensions } = optional;
+export function action(name: string, href: string | URL, options: OptionalActionMembers = {}): ParsedAction {
+    const { 'class': actionClass, fields, method, title, type, ...extensions } = options;
     const [indexedFields, parsedFields] = coerceFields(fields);
     return deepFreeze({
         name: coerce.toString(name),
@@ -33,7 +33,7 @@ export function action(name: string, href: string | URL, optional: OptionalActio
                 return this;
             } else {
                 return action(this.name, href, {
-                    ...optional,
+                    ...options,
                     fields: parsedFields?.map(field => (field.name === name) ? field.update(value) : field)
                 });
             }
