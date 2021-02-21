@@ -11,6 +11,12 @@ import { isArray, isMediaTypeString, isRecord, isString, isStringArray, isTypedA
 
 export * from './field';
 
+/**
+ * Creates a `ParsedAction` object
+ * @param name Name of the action; should be unique within an entity
+ * @param href Action's request target
+ * @param options Object containing optional action members (e.g., `title`, `type`) and extensions
+ */
 export function action(name: string, href: string | URL, options: OptionalActionMembers = {}): ParsedAction {
     const { 'class': actionClass, fields, method, title, type, ...extensions } = options;
     const [indexedFields, parsedFields] = coerceFields(fields);
