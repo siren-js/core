@@ -13,6 +13,7 @@ generating or parsing Siren representations.
   * [Parsing Siren](#parsing-siren)
   * [Helper Methods](#helper-methods)
   * [Extensions](#extensions)
+  * [TypeScript](#typescript)
 
 ## Installation
 
@@ -247,5 +248,42 @@ Siren.link(['profile'], 'http://api.example.com/profile', {
 });
 
 Siren.field('quantity', { min: 1, max: 10 });
+```
+
+### TypeScript
+
+There are interfaces for each component (`Entity`, `Action`, etc.), as well as
+sub-interfaces that define the [helper methods](#helper-methods).
+
+```ts
+function validateNumeric(field: Siren.Field<number | string>) {
+  // ...
+}
+
+function submit(action: Siren.Action) {
+  // ...
+}
+
+interface OrderProperties {
+  orderNumber: number;
+  itemCount: number;
+  status: string;
+}
+
+function createOrderEntity(): Siren.ParsedEntity<OrderProperties> {
+  // ...
+}
+```
+
+Additionally, there are [type guards][ts-tg] for each component type.
+
+[ts-tg]: https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards
+
+```ts
+if (Siren.isEmbeddedLink(subEntity)) {
+  // treat as EmbeddedLink...
+} else if (Siren.isEmbeddedRepresentation(subEntity)) {
+  // treat as EmbeddedRepresentation...
+}
 ```
 
