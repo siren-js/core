@@ -5,14 +5,14 @@
  */
 import { isArray, isNonNullObject, isRecord, RecordOrArray } from './type-guards';
 
-export default function deepFreeze<T extends RecordOrArray>(obj: T): Readonly<T> {
-    if (isArray(obj)) {
-        obj.filter(shouldFreeze).forEach(deepFreeze);
-    } else if (isRecord(obj)) {
-        Object.keys(obj).map(key => obj[key]).filter(shouldFreeze).forEach(deepFreeze);
+export default function deepFreeze<T extends RecordOrArray>(value: T): Readonly<T> {
+    if (isArray(value)) {
+        value.filter(shouldFreeze).forEach(deepFreeze);
+    } else if (isRecord(value)) {
+        Object.keys(value).map(key => value[key]).filter(shouldFreeze).forEach(deepFreeze);
     }
-    Object.freeze(obj);
-    return obj;
+    Object.freeze(value);
+    return value;
 }
 
 function shouldFreeze(value: unknown): value is RecordOrArray {
