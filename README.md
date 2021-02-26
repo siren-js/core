@@ -24,10 +24,10 @@ npm install @siren-js/core
 ## Usage
 
 The primary function for creating [Siren entities][siren-entity] is `entity()`.
-This function accepts an object ([loosely](#robustness)) representing a Siren
-entity and returns an immutable object satisfying the `ParsedEntity` interface,
-a sub-interface of `Entity`, which describes a Siren entity. `ParsedEntity`
-extends `Entity` with several [helper methods](#helper-methods).
+This function accepts an object representing a Siren entity and returns an
+immutable object satisfying the `ParsedEntity` interface, a sub-interface of
+`Entity`, which describes a Siren entity. `ParsedEntity` extends `Entity` with
+several [helper methods](#helper-methods).
 
 [siren-entity]: https://github.com/kevinswiber/siren#entity
 
