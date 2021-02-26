@@ -9,6 +9,8 @@ generating or parsing Siren representations.
 
 * [Installation](#installation)
 * [Usage](#usage)
+  * [Generating Siren](#generating-siren)
+  * [Parsing Siren](#parsing-siren)
 
 ## Installation
 
@@ -171,6 +173,38 @@ Siren.entity({
     }
   ]
 });
+//=> same as entity
+```
+
+### Generating Siren
+
+Use the `toString()` method to generate a Siren representation from an `Entity`
+object.
+
+```js
+const siren = entity.toString();
+```
+
+You can also use `JSON.stringify()` if you prefer.
+
+```js
+JSON.stringify(entity);
+//=> same as siren
+```
+
+### Parsing Siren
+
+To parse a string as a Siren representation, use the `parse()` function.
+
+```js
+Siren.parse(siren);
+//=> same as entity
+```
+
+Alternatively, use `JSON.parse()` and pass the result to `entity()`.
+
+```js
+Siren.entity(JSON.parse(siren));
 //=> same as entity
 ```
 
