@@ -12,6 +12,7 @@ generating or parsing Siren representations.
   * [Generating Siren](#generating-siren)
   * [Parsing Siren](#parsing-siren)
   * [Helper Methods](#helper-methods)
+  * [Extensions](#extensions)
 
 ## Installation
 
@@ -229,5 +230,22 @@ addItemAction.findFieldByName('quantity');
 
 quantityField.update(3);
 //=> returns a new ParsedField<number>
+```
+
+### Extensions
+
+The options objects of each component factory function allow you to extend the
+core Siren spec. Need an [`hreflang`][rfc8288-3.4.1] property on your link? Need
+[validation constraints][hc] on your fields? No problem!
+
+[hc]: https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#constraints
+[rfc8288-3.4.1]: https://tools.ietf.org/html/rfc8288#section-3.4.1
+
+```js
+Siren.link(['profile'], 'http://api.example.com/profile', {
+  hreflang: 'en-US'
+});
+
+Siren.field('quantity', { min: 1, max: 10 });
 ```
 
