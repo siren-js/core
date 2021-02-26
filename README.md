@@ -11,6 +11,7 @@ generating or parsing Siren representations.
 * [Usage](#usage)
   * [Generating Siren](#generating-siren)
   * [Parsing Siren](#parsing-siren)
+  * [Helper Methods](#helper-methods)
 
 ## Installation
 
@@ -206,5 +207,27 @@ Alternatively, use `JSON.parse()` and pass the result to `entity()`.
 ```js
 Siren.entity(JSON.parse(siren));
 //=> same as entity
+```
+
+### Helper Methods
+
+Most of the component functions return objects satisfying the `Parsed*`
+interfaces, which include helper methods for querying and updating a component.
+
+```js
+entity.findActionByName('add-item');
+//=> same as addItemAction
+
+entity.findLinkByRel('self');
+//=> same as selfLink
+
+entity.findSubEntityByRel(customerRel);
+//=> same as customerEntity
+
+addItemAction.findFieldByName('quantity');
+//=> same as quantityField
+
+quantityField.update(3);
+//=> returns a new ParsedField<number>
 ```
 
