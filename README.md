@@ -264,13 +264,7 @@ function submit(action: Siren.Action) {
   // ...
 }
 
-interface OrderProperties {
-  orderNumber: number;
-  itemCount: number;
-  status: string;
-}
-
-function createOrderEntity(): Siren.ParsedEntity<OrderProperties> {
+function createOrderEntity(): Siren.ParsedEntity {
   // ...
 }
 ```
