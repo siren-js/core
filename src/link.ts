@@ -5,7 +5,7 @@
  */
 import * as coerce from './util/coerce';
 import Extendable from './util/extendable';
-import { isArray, isMediaTypeString, isRecord, isString, isStringArray, isUndefined, isUri } from './util/type-guards';
+import { isMediaTypeString, isRecord, isString, isStringArray, isUndefined, isUri } from './util/type-guards';
 
 /**
  * Creates a `Link` object
