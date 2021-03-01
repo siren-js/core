@@ -10,21 +10,21 @@ import { isArray, isMediaTypeString, isNullOrUndefined } from './type-guards';
  * `undefined` result in an empty array. All other values are converted to a
  * string and wrapped in a singleton array.
  */
-export function toStringArray(value: unknown): string[] {
+export function toStringArray(value: unknown): readonly string[] {
+    let result: string[] = [];
     if (isArray(value)) {
-        return value.filter(x => !isNullOrUndefined(x)).map(String);
-    } else if (isNullOrUndefined(value)) {
-        return [];
-    } else {
-        return [String(value)];
+        result = value.filter(x => !isNullOrUndefined(x)).map(String);
+    } else if (!isNullOrUndefined(value)) {
+        result = [String(value)];
     }
+    return Object.freeze(result);
 }
 
 /**
  * Similar to `toStringArray` except `null` and `undefined` coerce to
  * `undefined`.
  */
-export function toOptionalStringArray(value: unknown): string[] | undefined {
+export function toOptionalStringArray(value: unknown): readonly string[] | undefined {
     return isNullOrUndefined(value) ? undefined : toStringArray(value);
 }
 
