@@ -11,5 +11,5 @@ export default interface Extendable {
     /**
      * Extension properties not defined in the core Siren specification
      */
-    readonly [extension: string]: unknown;
+    [extension: string]: unknown;
 }
