@@ -8,7 +8,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint src --ext .ts",
     "test": "jest --env=jsdom && jest --env=node",
     "test:jsdom": "jest --env=jsdom",
     "test:node": "jest --env=node",
