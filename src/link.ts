@@ -90,6 +90,7 @@ export interface Link extends Extendable {
 export function isLink(value: unknown): value is Link {
     return isParsableLink(value) &&
         isStringArray(value.rel) &&
+        isString(value.href) &&
         (isUndefined(value.class) || isStringArray(value.class)) &&
         (isUndefined(value.title) || isString(value.title)) &&
         (isUndefined(value.type) || isMediaTypeString(value.type));
@@ -100,12 +101,10 @@ export function isLink(value: unknown): value is Link {
  * destructured and passed to `link()`.
  */
 export function isParsableLink(value: unknown): value is ParsableLink {
-    return isRecord(value) &&
-        (isString(value.rel) || isArray(value.rel)) &&
-        isUri(value.href);
+    return isRecord(value) && !isUndefined(value.rel) && isUri(value.href);
 }
 
 export interface ParsableLink extends Extendable {
-    rel: string | unknown[];
+    rel: unknown;
     href: string | URL;
 }
