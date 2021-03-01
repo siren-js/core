@@ -4,47 +4,45 @@
  * See the full notice in the LICENSE file at the top level of the repository.
  */
 import * as coerce from './util/coerce';
-import deepFreeze from './util/deep-freeze';
 import Extendable from './util/extendable';
 import { isRecord, isString, isStringArray, isUndefined } from './util/type-guards';
 
 /**
- * Creates a `ParsedField` object
+ * Creates a `Field` object
  * @param name Name of the field
  * @param options Object containing optional field members (e.g., `title`, `type`) and extensions
  */
-export function field<T>(name: string, options: OptionalFieldMembers<T> = {}): ParsedField<T> {
+export function field<T>(name: string, options: Partial<Field<T>> = {}): Field<T> {
     const { 'class': fieldClass, title, type, value, ...extensions } = options;
-    return deepFreeze({
-        name: coerce.toString(name),
-        class: coerce.toOptionalStringArray(fieldClass),
-        title: coerce.toOptionalString(title),
-        type: coerce.toOptionalString(type),
+    let _name = coerce.toString(name);
+    let _class = coerce.toOptionalStringArray(fieldClass);
+    let _title = coerce.toOptionalString(title);
+    let _type = coerce.toOptionalString(type);
+    return {
+        get name() { return _name; },
+        set name(value) {
+            _name = coerce.toString(value);
+        },
+
+        get class() { return _class; },
+        set class(value) {
+            _class = coerce.toOptionalStringArray(value);
+        },
+
+        get title() { return _title; },
+        set title(value) {
+            _title = coerce.toOptionalString(value);
+        },
+
+        get type() { return _type; },
+        set type(value) {
+            _type = coerce.toOptionalString(value);
+        },
+
         value,
-        ...extensions,
 
-        update<U>(value: U): ParsedField<U> {
-            return field(name, { ...options, value });
-        }
-    });
-}
-
-export type OptionalFieldMembers<T> = Extendable & Pick<ParsableField<T>, 'class' | 'title' | 'type' | 'value'>;
-
-export interface ParsableField<T = unknown> extends Extendable {
-    class?: string[] | string;
-    name: string;
-    title?: string;
-    type?: string;
-    value?: T;
-}
-
-export interface ParsedField<T = unknown> extends Field<T> {
-    /**
-     * Update the field's value.
-     * @returns A new `Field` object with the updated value
-     */
-    update<U>(value: U): ParsedField<U>;
+        ...extensions
+    };
 }
 
 /**
@@ -55,17 +53,17 @@ export interface Field<T = unknown> extends Extendable {
     /**
      * Describes aspects of the field based on the current representation.
      */
-    readonly class?: readonly string[];
+    class?: readonly string[];
 
     /**
      * A name describing the control.
      */
-    readonly name: string;
+    name: string;
 
     /**
      * Textual annotation of a field. Clients may use this as a label.
      */
-    readonly title?: string;
+    title?: string;
 
     /**
      * The input type of the field. This may include
@@ -73,12 +71,12 @@ export interface Field<T = unknown> extends Extendable {
      * in HTML5 (see the `FieldType` enumeration). The default value is
      * `'text'`.
      */
-    readonly type?: string;
+    type?: string;
 
     /**
      * A value assigned to the field.
      */
-    readonly value?: Readonly<T>;
+    value?: T;
 }
 
 /**
@@ -87,18 +85,24 @@ export interface Field<T = unknown> extends Extendable {
  */
 export function isField(value: unknown): value is Field {
     return isParsableField(value) &&
+        isString(value.name) &&
         (isUndefined(value.class) || isStringArray(value.class)) &&
         (isUndefined(value.title) || isString(value.title)) &&
         (isUndefined(value.type) || isString(value.type));
 }
 
 /**
- * Determines whether `value` is a parsable Siren field. This function differs
+ * Determines whether `value` is a `ParsableField`, meaning it can be
+ * destructured and passed to `field()` This function differs
  * from `isField()` in that the loose parsing rules of `field()` are taken into
  * consideration.
  */
 export function isParsableField(value: unknown): value is ParsableField {
-    return isRecord(value) && isString(value.name);
+    return isRecord(value) && !isUndefined(value.name);
+}
+
+export interface ParsableField extends Extendable {
+    name: unknown;
 }
 
 /**

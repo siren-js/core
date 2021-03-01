@@ -213,9 +213,19 @@ describe('action function', () => {
         it('should accept extensions', () => {
             const encoding = 'utf-16';
 
-            const link = Siren.action('create', href, { encoding });
+            const action = Siren.action('create', href, { encoding });
 
-            expect(link.encoding).toEqual(encoding);
+            expect(action.encoding).toEqual(encoding);
+        });
+
+        it('should override required parameters', () => {
+            const action = Siren.action('create', href, {
+                name: 'update',
+                href: `${href}/orders`
+            });
+
+            expect(action.name).toEqual('update');
+            expect(action.href).toEqual(`${href}/orders`);
         });
     });
 });
@@ -237,44 +247,6 @@ describe('ParsedAction.findFieldByName', () => {
         const result = action.findFieldByName('foo');
 
         expect(result).toBeUndefined();
-    });
-});
-
-describe('ParsedAction.updateField', () => {
-    it('should return new action with updated field', () => {
-        const name = 'foo';
-        const action = Siren.action('create', href, {
-            fields: [{ name, value: 'bar' }]
-        });
-        const updatedValue = 'baz';
-
-        const result = action.updateField(name, updatedValue);
-
-        expect(result.name).toEqual(action.name);
-        expect(result.href).toEqual(action.href);
-        expect(result.fields?.length).toEqual(action.fields?.length);
-        expect(result.fields?.[0].name).toEqual(action.fields?.[0].name);
-        expect(result.fields?.[0].value).toEqual(updatedValue);
-    });
-
-    it('should return same action when field is absent', () => {
-        const action = Siren.action('create', href, {
-            fields: [
-                { name: 'foo' }
-            ]
-        });
-
-        const result = action.updateField('bar', 'baz');
-
-        expect(result).toBe(action);
-    });
-
-    it('should return same action when fields are absent', () => {
-        const action = Siren.action('create', href);
-
-        const result = action.updateField('bar', 'baz');
-
-        expect(result).toBe(action);
     });
 });
 

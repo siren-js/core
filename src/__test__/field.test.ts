@@ -105,49 +105,14 @@ describe('field function', () => {
 
             expect(field.min).toEqual(min);
         });
-    });
 
+        it('should override required parameters', () => {
+            const field = Siren.field('orderNumber', {
+                name: 'quantity'
+            });
 
-    it('should create immutable object', () => {
-        const field = Siren.field('orderNumber', {
-            class: ['integer'],
-            title: 'Order Number',
-            type: 'number',
-            value: 42,
-            min: 0
+            expect(field.name).toEqual('quantity');
         });
-
-        const mutations: ((field: Siren.Field) => void)[] = [
-            field => (field.name as string) = 'foo',
-            field => (field.class as string[]) = ['foo'],
-            field => (field.class as string[])[0] = 'foo',
-            field => (field.title as string) = 'foo',
-            field => (field.type as string) = 'foo',
-            field => (field.value as number) = 42,
-            field => (field.min as number) = 1
-        ];
-
-        mutations.forEach(mutate => {
-            expect(() => mutate(field)).toThrow(TypeError);
-        });
-    });
-});
-
-describe('ParsedField.update', () => {
-    it('should create new ParsedField with given value', () => {
-        const originalValue = 42;
-        const newValue = 43;
-        const field = Siren.field('orderNumber', {
-            title: 'Order Number',
-            type: 'number',
-            value: originalValue
-        });
-
-        const result = field.update(newValue);
-
-        expect(result).not.toBe(field);
-        expect(field.value).toEqual(originalValue);
-        expect(result.value).toEqual(newValue);
     });
 });
 
