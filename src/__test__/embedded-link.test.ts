@@ -124,29 +124,15 @@ describe('embeddedLink function', () => {
 
             expect(link.hreflang).toEqual(hreflang);
         });
-    });
 
-    it('should create immutable object', () => {
-        const link = Siren.embeddedLink(['self'], href, {
-            class: ['order'],
-            title: 'Order',
-            type: 'application/vnd.siren+json',
-            hreflang: 'en-US'
-        });
+        it('should override required parameters', () => {
+            const link = Siren.embeddedLink(['self'], href, {
+                rel: ['up'],
+                href: `${href}/orders`
+            });
 
-        const mutations: ((link: Siren.EmbeddedLink) => void)[] = [
-            link => (link.rel as string[]) = ['foo'],
-            link => (link.rel as string[])[0] = 'foo',
-            link => (link.href as string) = 'foo',
-            link => (link.class as string[]) = ['foo'],
-            link => (link.class as string[])[0] = 'foo',
-            link => (link.title as string) = 'foo',
-            link => (link.type as string) = 'foo',
-            link => (link.hreflang as string) = 'foo'
-        ];
-
-        mutations.forEach(mutate => {
-            expect(() => mutate(link)).toThrow(TypeError);
+            expect(link.rel).toEqual(['up']);
+            expect(link.href).toEqual(`${href}/orders`);
         });
     });
 });

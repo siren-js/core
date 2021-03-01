@@ -4,9 +4,8 @@
  * See the full notice in the LICENSE file at the top level of the repository.
  */
 import * as coerce from './util/coerce';
-import deepFreeze from './util/deep-freeze';
 import Extendable from './util/extendable';
-import { isMediaTypeString, isRecord, isString, isStringArray, isUndefined, isUri } from './util/type-guards';
+import { isArray, isMediaTypeString, isRecord, isString, isStringArray, isUndefined, isUri } from './util/type-guards';
 
 /**
  * Creates a `Link` object
@@ -15,23 +14,42 @@ import { isMediaTypeString, isRecord, isString, isStringArray, isUndefined, isUr
  * @param options Object containing optional link members (e.g., `title`, `type`) and extensions
  * @throws {TypeError} if `href` is an invalid URI
  */
-export function link(rel: readonly string[] | string, href: string | URL, options: OptionalLinkMembers = {}): Link {
+export function link(rel: readonly string[] | string, href: string | URL, options: Partial<Link> = {}): Link {
     const { 'class': linkClass, title, type, ...extensions } = options;
-    return deepFreeze({
-        rel: coerce.toStringArray(rel),
-        href: coerce.toUriString(href),
-        class: coerce.toOptionalStringArray(linkClass),
-        title: coerce.toOptionalString(title),
-        type: coerce.toMediaTypeString(type),
-        ...extensions
-    });
-}
+    let _rel = coerce.toStringArray(rel);
+    let _href = coerce.toUriString(href);
+    let _class = coerce.toOptionalStringArray(linkClass);
+    let _title = coerce.toOptionalString(title);
+    let _type = coerce.toMediaTypeString(type);
+    return {
+        get rel() { return _rel; },
+        set rel(value) {
+            _rel = coerce.toStringArray(value);
+        },
 
-export type OptionalLinkMembers = Extendable & {
-    class?: string[] | string;
-    title?: string;
-    type?: string;
-};
+        get href() { return _href; },
+        set href(value) {
+            _href = coerce.toUriString(value);
+        },
+
+        get class() { return _class; },
+        set class(value) {
+            _class = coerce.toOptionalStringArray(value);
+        },
+
+        get title() { return _title; },
+        set title(value) {
+            _title = coerce.toOptionalString(value);
+        },
+
+        get type() { return _type; },
+        set type(value) {
+            _type = coerce.toMediaTypeString(value);
+        },
+
+        ...extensions
+    };
+}
 
 /**
  * Describes a Siren [link](https://github.com/kevinswiber/siren#links-1), which
@@ -41,39 +59,53 @@ export interface Link extends Extendable {
     /**
      * Describes aspects of the link based on the current representation.
      */
-    readonly class?: readonly string[];
+    class?: readonly string[];
 
     /**
      * The URI of the linked resource.
      */
-    readonly href: string;
+    href: string;
 
     /**
      * Defines the relationship of the link to its entity, per
      * [RFC 8288](http://tools.ietf.org/html/rfc8288).
      */
-    readonly rel: readonly string[];
+    rel: readonly string[];
 
     /**
      * Text describing the nature of a link.
      */
-    readonly title?: string;
+    title?: string;
 
     /**
      * Defines the media type of the linked resource, per
      * [RFC 8288](http://tools.ietf.org/html/rfc8288).
      */
-    readonly type?: string;
+    type?: string;
 }
 
 /**
- * Determines whether `value` is a valid Siren link.
+ * Determines whether `value` is a valid `Link`.
  */
 export function isLink(value: unknown): value is Link {
-    return isRecord(value) &&
+    return isParsableLink(value) &&
         isStringArray(value.rel) &&
-        isUri(value.href) &&
         (isUndefined(value.class) || isStringArray(value.class)) &&
         (isUndefined(value.title) || isString(value.title)) &&
         (isUndefined(value.type) || isMediaTypeString(value.type));
+}
+
+/**
+ * Determines whether `value` is a `ParsableLink`, meaning it can be
+ * destructured and passed to `link()`.
+ */
+export function isParsableLink(value: unknown): value is ParsableLink {
+    return isRecord(value) &&
+        (isString(value.rel) || isArray(value.rel)) &&
+        isUri(value.href);
+}
+
+export interface ParsableLink extends Extendable {
+    rel: string | unknown[];
+    href: string | URL;
 }
