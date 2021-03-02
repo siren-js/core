@@ -14,6 +14,7 @@ parsing Siren representations.
   * [Helper Methods](#helper-methods)
   * [Extensions](#extensions)
   * [TypeScript](#typescript)
+* [Robustness](#robustness)
 
 ## Installation
 
@@ -281,3 +282,41 @@ if (Siren.isEmbeddedLink(subEntity)) {
 }
 ```
 
+## Robustness
+
+Objects created via the component factory functions maintain data integrity by
+adhering to the [robustness principle][rp]. That is, said objects will always
+conform to the core Siren spec.
+
+[rp]: https://en.wikipedia.org/wiki/Robustness_principle
+
+For example, the `link()` function accepts a `string[]` for `rel`. If any other
+type is passed however, `@siren-js/core` will coerce the value. `null` or
+`undefined` become an empty array. A non-`string` array's items are converted to
+to `string`s. All other values are converted to `string` and wrapped in an
+array.
+
+```js
+Siren.link(null, 'http://example.com');
+//=> { rel: [], href: 'http://example.com' }
+
+Siren.link('self', 'http://example.com');
+//=> { rel: ['self'], href: 'http://example.com' }
+
+Siren.link(42, 'http://example.com');
+//=> { rel: ['42'], href: 'http://example.com' }
+```
+
+This is primarily to avoid unnecessary error handling for clients when parsing
+invalid Siren.
+
+Furthermore, arrays like `Link.rel` and `Entity.class` are `readonly` to prevent
+violating data integrity.
+
+```js
+const link = Siren.link(['self'], 'http://example.com');
+link.rel[0] = 'up'; // Link.rel is readonly!
+link.rel;
+//=> ['self']
+link.rel.push('canonical'); // throws a TypeError!
+```
