@@ -1,9 +1,9 @@
 # Siren.js Core
 
-This is the core library for Siren.js, providing functions for creating
-immutable objects representing components (entities, actions, links, etc.) of
-the [Siren][siren] hypermedia format. The primary intent of this library is for
-generating or parsing Siren representations.
+This is the core library for Siren.js, providing functions for creating objects
+representing components (entities, actions, links, etc.) of the [Siren][siren]
+hypermedia format. The primary intent of this library is for generating or
+parsing Siren representations.
 
 [siren]: https://github.com/kevinswiber/siren
 
@@ -25,9 +25,9 @@ npm install @siren-js/core
 
 The primary function for creating [Siren entities][siren-entity] is `entity()`.
 This function accepts an object representing a Siren entity and returns an
-immutable object satisfying the `ParsedEntity` interface, a sub-interface of
-`Entity`, which describes a Siren entity. `ParsedEntity` extends `Entity` with
-several [helper methods](#helper-methods).
+object satisfying the `ParsedEntity` interface, a sub-interface of `Entity`,
+which describes a Siren entity. `ParsedEntity` extends `Entity` with several
+[helper methods](#helper-methods).
 
 [siren-entity]: https://github.com/kevinswiber/siren#entity
 
@@ -106,8 +106,8 @@ If you don't want to build your entity in one fell swoop (I wouldn't blame you),
 you can use the other component factory functions: `action()`, `field()`,
 `link()`, `embeddedRepresentation()`, and `embeddedLink()`. Each of these accept
 required members as positional arguments and optional members in a final options
-object. They return an immutable object representing the corresponding
-component, some with [helper methods](#helper-methods).
+object. They return an object representing the corresponding component, some
+with [helper methods](#helper-methods).
 
 Here's how you might break up the call to `entity()` above:
 
