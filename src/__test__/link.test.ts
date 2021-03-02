@@ -39,14 +39,18 @@ describe('link function', () => {
             ];
 
             cases.forEach(([value, expected]) => {
-                const action = Siren.link('create', value as string);
-                expect(action.href).toEqual(expected);
+                const link = Siren.link('create', value as string);
+                expect(link.href).toEqual(expected);
+                link.href = value as string;
+                expect(link.href).toEqual(expected);
             });
         });
 
         it('should reject invalid URI', () => {
             [null, undefined, 'http://\uFFFF.com'].forEach(value => {
                 expect(() => Siren.link('create', value as string)).toThrow(TypeError);
+                const link = Siren.link('create', href);
+                expect(() => link.href = value as string).toThrow(TypeError);
             });
         });
     });
@@ -81,6 +85,8 @@ describe('link function', () => {
             cases.forEach(([value, expected]) => {
                 const link = Siren.link(['self'], href, { class: value as string[] });
                 expect(link.class).toEqual(expected);
+                link.class = value as string[];
+                expect(link.class).toEqual(expected);
             });
         });
 
@@ -100,6 +106,8 @@ describe('link function', () => {
             cases.forEach(([value, expected]) => {
                 const link = Siren.link(['self'], href, { title: value as string });
                 expect(link.title).toEqual(expected);
+                link.title = value as string;
+                expect(link.title).toEqual(expected);
             });
         });
 
@@ -108,6 +116,8 @@ describe('link function', () => {
                 ['application/json', 'text/html', 'image/png'].forEach(type => {
                     const link = Siren.link(['self'], href, { type });
                     expect(link.type).toEqual(type);
+                    link.type = type;
+                    expect(link.type).toEqual(type);
                 });
             });
 
@@ -115,16 +125,21 @@ describe('link function', () => {
                 [undefined, null, true, 42, '', 'foo', [true, 42, 'foo'], {}].forEach(value => {
                     const link = Siren.link(['self'], href, { type: value as string });
                     expect(link.type).toBeUndefined();
+                    link.type = value as string;
+                    expect(link.type).toBeUndefined();
                 });
             });
         });
 
         it('should accept extensions', () => {
             const hreflang = 'en-US';
+            const media = 'screen and (color)';
 
             const link = Siren.link(['self'], href, { hreflang });
+            link.media = media;
 
             expect(link.hreflang).toEqual(hreflang);
+            expect(link.media).toEqual(media);
         });
 
         it('should override required parameters', () => {
@@ -186,4 +201,17 @@ describe('link type guard', () => {
             expect(Siren.isLink(value)).toEqual(false);
         });
     });
+});
+
+test('Link serialization', () => {
+    const link = Siren.link(['self'], href, {
+        type: 'text/html',
+        title: 'Home Page',
+        class: ['home'],
+        hreflang: 'en-US'
+    });
+
+    const json = JSON.stringify(link, null, 2);
+
+    expect(json).toMatchSnapshot();
 });

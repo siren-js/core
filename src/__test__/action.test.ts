@@ -19,6 +19,8 @@ describe('action function', () => {
         cases.forEach(([value, expected]) => {
             const action = Siren.action(value as string, href);
             expect(action.name).toEqual(expected);
+            action.name = value as string;
+            expect(action.name).toEqual(expected);
         });
     });
 
@@ -38,12 +40,16 @@ describe('action function', () => {
             cases.forEach(([value, expected]) => {
                 const action = Siren.action('create', value as string);
                 expect(action.href).toEqual(expected);
+                action.href = value as string;
+                expect(action.href).toEqual(expected);
             });
         });
 
         it('should reject invalid URI', () => {
             [null, undefined, 'http://\uFFFF.com'].forEach(value => {
                 expect(() => Siren.action('create', value as string)).toThrow(TypeError);
+                const action = Siren.action('create', href);
+                expect(() => action.href = value as string).toThrow(TypeError);
             });
         });
     });
@@ -80,6 +86,8 @@ describe('action function', () => {
             cases.forEach(([value, expected]) => {
                 const action = Siren.action('create', href, { class: value as string[] });
                 expect(action.class).toEqual(expected);
+                action.class = value as string[];
+                expect(action.class).toEqual(expected);
             });
         });
 
@@ -99,6 +107,8 @@ describe('action function', () => {
             cases.forEach(([value, expected]) => {
                 const action = Siren.action('create', href, { method: value as string });
                 expect(action.method).toEqual(expected);
+                action.method = value as string;
+                expect(action.method).toEqual(expected);
             });
         });
 
@@ -117,6 +127,8 @@ describe('action function', () => {
 
             cases.forEach(([value, expected]) => {
                 const action = Siren.action('create', href, { title: value as string });
+                expect(action.title).toEqual(expected);
+                action.title = value as string;
                 expect(action.title).toEqual(expected);
             });
         });
@@ -148,20 +160,28 @@ describe('action function', () => {
                 [null, undefined, true, 42, 'foo', {}].forEach(value => {
                     const action = Siren.action('create', href, { fields: value as Siren.Field[] });
                     expect(action.fields).toBeUndefined();
+                    action.fields = value as Siren.Field[];
+                    expect(action.fields).toBeUndefined();
                 });
             });
 
             it('should ignore invalid items', () => {
+                const invalidFields = [
+                    null,
+                    undefined,
+                    true,
+                    42,
+                    'foo',
+                    { name: 'foo' }
+                ];
+
                 const action = Siren.action('create', href, {
-                    fields: [
-                        null,
-                        undefined,
-                        true,
-                        42,
-                        'foo',
-                        { name: 'foo' }
-                    ] as Siren.Field[]
+                    fields: invalidFields as Siren.Field[]
                 });
+
+                expect(action.fields).toHaveLength(1);
+
+                action.fields = invalidFields as Siren.Field[];
 
                 expect(action.fields).toHaveLength(1);
             });
@@ -199,6 +219,8 @@ describe('action function', () => {
                 ['application/json', 'text/html', 'image/png'].forEach(type => {
                     const action = Siren.action('create', href, { type });
                     expect(action.type).toEqual(type);
+                    action.type = type;
+                    expect(action.type).toEqual(type);
                 });
             });
 
@@ -206,16 +228,21 @@ describe('action function', () => {
                 [undefined, null, true, 42, '', 'foo', [true, 42, 'foo'], {}].forEach(value => {
                     const action = Siren.action('create', href, { type: value as string });
                     expect(action.type).toBeUndefined();
+                    action.type = value as string;
+                    expect(action.type).toBeUndefined();
                 });
             });
         });
 
         it('should accept extensions', () => {
             const encoding = 'utf-16';
+            const disabled = true;
 
             const action = Siren.action('create', href, { encoding });
+            action.disabled = true;
 
             expect(action.encoding).toEqual(encoding);
+            expect(action.disabled).toEqual(disabled);
         });
 
         it('should override required parameters', () => {
@@ -316,4 +343,35 @@ describe('action type guard', () => {
             expect(Siren.isAction(value)).toEqual(false);
         });
     });
+});
+
+test('Action serialization', () => {
+    const action = Siren.action('add-item', href, {
+        class: ['item'],
+        method: 'POST',
+        title: 'Add Item',
+        type: 'text/plain',
+        encoding: 'utf-8',
+        fields: [
+            {
+                name: 'orderNumber',
+                type: 'hidden',
+                value: '42'
+            },
+            {
+                name: 'productCode',
+                required: true
+            },
+            {
+                name: 'quantity',
+                type: 'number',
+                class: ['integer'],
+                min: 1
+            }
+        ]
+    });
+
+    const json = JSON.stringify(action, null, 2);
+
+    expect(json).toMatchSnapshot();
 });

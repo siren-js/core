@@ -17,6 +17,8 @@ describe('field function', () => {
         cases.forEach(([value, expected]) => {
             const field = Siren.field(value as string);
             expect(field.name).toEqual(expected);
+            field.name = value as string;
+            expect(field.name).toEqual(expected);
         });
     });
 
@@ -50,6 +52,8 @@ describe('field function', () => {
             cases.forEach(([value, expected]) => {
                 const field = Siren.field('name', { class: value as string[] });
                 expect(field.class).toEqual(expected);
+                field.class = value as string[];
+                expect(field.class).toEqual(expected);
             });
         });
 
@@ -68,6 +72,8 @@ describe('field function', () => {
 
             cases.forEach(([value, expected]) => {
                 const field = Siren.field('name', { title: value as string });
+                expect(field.title).toEqual(expected);
+                field.title = value as string;
                 expect(field.title).toEqual(expected);
             });
         });
@@ -88,6 +94,8 @@ describe('field function', () => {
             cases.forEach(([value, expected]) => {
                 const field = Siren.field('name', { type: value as string });
                 expect(field.type).toEqual(expected);
+                field.type = value as string;
+                expect(field.type).toEqual(expected);
             });
         });
 
@@ -95,15 +103,20 @@ describe('field function', () => {
             [undefined, null, true, 42, 'foo', [true, 42, 'foo'], { a: 1, b: 2 }].forEach(value => {
                 const field = Siren.field('name', { value });
                 expect(field.value).toEqual(value);
+                field.value = value;
+                expect(field.value).toEqual(value);
             });
         });
 
         it('should accept extensions', () => {
             const min = 0;
+            const max = 5;
 
             const field = Siren.field('orderNumber', { min });
+            field.max = max;
 
             expect(field.min).toEqual(min);
+            expect(field.max).toEqual(max);
         });
 
         it('should override required parameters', () => {
@@ -158,4 +171,18 @@ describe('field type guard', () => {
             expect(Siren.isField(value)).toEqual(false);
         });
     });
+});
+
+test('Field serialization', () => {
+    const field = Siren.field('quantity', {
+        type: 'number',
+        title: 'Quantity',
+        class: ['integer'],
+        min: 1,
+        max: 10
+    });
+
+    const json = JSON.stringify(field, null, 2);
+
+    expect(json).toMatchSnapshot();
 });
