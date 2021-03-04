@@ -119,7 +119,7 @@ export interface Action extends Extendable {
     type?: string;
 }
 
-function coerceFields(value: unknown): Field[] | undefined {
+function coerceFields(value: unknown): readonly Field[] | undefined {
     if (!isArray(value)) {
         return undefined;
     }
@@ -135,7 +135,7 @@ function coerceFields(value: unknown): Field[] | undefined {
         return map;
     }, new Map<string, Field>());
 
-    return Array.from(indexedFields.values());
+    return Object.freeze(Array.from(indexedFields.values()));
 }
 
 export function isAction(value: unknown): value is Action {
