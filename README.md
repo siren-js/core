@@ -289,7 +289,8 @@ if (Siren.isEmbeddedLink(subEntity)) {
 ## Robustness
 
 Objects created via the component factory functions maintain data integrity by
-adhering to the [robustness principle][rp]. That is, said objects will always
+adhering to the [robustness principle][rp]. That is, data of any type will be
+accepted and coerced to the appropriate type, meaning objects will always
 conform to the core Siren spec.
 
 [rp]: https://en.wikipedia.org/wiki/Robustness_principle
