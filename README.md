@@ -218,20 +218,11 @@ Most of the component functions return objects satisfying the `Parsed*`
 interfaces, which include helper methods for querying and updating a component.
 
 ```js
-entity.findActionByName('add-item');
+entity.action('add-item');
 //=> same as addItemAction
 
-entity.findLinkByRel('self');
-//=> same as selfLink
-
-entity.findSubEntityByRel(customerRel);
-//=> same as customerEntity
-
-addItemAction.findFieldByName('quantity');
+addItemAction.field('quantity');
 //=> same as quantityField
-
-quantityField.update(3);
-//=> returns a new ParsedField<number>
 ```
 
 ### Extensions
