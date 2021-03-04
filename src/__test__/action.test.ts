@@ -257,13 +257,13 @@ describe('action function', () => {
     });
 });
 
-describe('ParsedAction.findFieldByName', () => {
+describe('ParsedAction.field()', () => {
     it('should return field when present', () => {
         const name = 'foo';
         const field = Siren.field(name);
         const action = Siren.action('create', href, { fields: [field] });
 
-        const result = action.findFieldByName(name);
+        const result = action.field(name);
 
         expect(result?.name).toEqual(name);
     });
@@ -271,7 +271,7 @@ describe('ParsedAction.findFieldByName', () => {
     it('should return undefined when absent', () => {
         const action = Siren.action('create', href);
 
-        const result = action.findFieldByName('foo');
+        const result = action.field('foo');
 
         expect(result).toBeUndefined();
     });

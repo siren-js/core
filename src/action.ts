@@ -63,7 +63,7 @@ export function action(name: string, href: string | URL, options: Partial<Action
 
         ...extensions,
 
-        findFieldByName(name: string): Field | undefined {
+        field(name: string): Field | undefined {
             return this.fields?.find(field => field.name === name);
         }
     };
@@ -71,12 +71,10 @@ export function action(name: string, href: string | URL, options: Partial<Action
 
 export interface ParsedAction extends Action {
     /**
-     * Searches within the action for a field with the given `name`
-     * (case-sensitive).
-     * @param name Name of the field to search for
+     * @param name Name of the field to look up (case-sensitive)
      * @returns The field with the given `name`, or `undefined` if it does not exist.
      */
-    findFieldByName(name: string): Field | undefined;
+    field(name: string): Field | undefined;
 }
 
 export interface Action extends Extendable {
