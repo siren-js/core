@@ -3,12 +3,21 @@
  *
  * See the full notice in the LICENSE file at the top level of the repository.
  */
-import { field, Field, isField, isParsableField } from './field';
-import * as coerce from './util/coerce';
-import Extendable from './util/extendable';
-import { isArray, isMediaTypeString, isRecord, isString, isStringArray, isTypedArray, isUndefined, isUri } from './util/type-guards';
+import { field, Field, isField, isParsableField } from "./field";
+import * as coerce from "./util/coerce";
+import Extendable from "./util/extendable";
+import {
+    isArray,
+    isMediaTypeString,
+    isRecord,
+    isString,
+    isStringArray,
+    isTypedArray,
+    isUndefined,
+    isUri,
+} from "./util/type-guards";
 
-export * from './field';
+export * from "./field";
 
 /**
  * Creates a `ParsedAction` object
@@ -16,8 +25,19 @@ export * from './field';
  * @param href Action's request target
  * @param options Object containing optional action members (e.g., `title`, `type`) and extensions
  */
-export function action(name: string, href: string | URL, options: Partial<Action> = {}): ParsedAction {
-    const { 'class': actionClass, fields, method, title, type, ...extensions } = options;
+export function action(
+    name: string,
+    href: string | URL,
+    options: Partial<Action> = {}
+): ParsedAction {
+    const {
+        class: actionClass,
+        fields,
+        method,
+        title,
+        type,
+        ...extensions
+    } = options;
     let _name = coerce.toString(name);
     let _href = coerce.toUriString(href);
     let _class = coerce.toOptionalStringArray(actionClass);
@@ -26,37 +46,51 @@ export function action(name: string, href: string | URL, options: Partial<Action
     let _type = coerce.toMediaTypeString(type);
     let _fields = coerceFields(fields);
     return {
-        get name() { return _name; },
+        get name() {
+            return _name;
+        },
         set name(value) {
             _name = coerce.toString(value);
         },
 
-        get href() { return _href; },
+        get href() {
+            return _href;
+        },
         set href(value) {
             _href = coerce.toUriString(value);
         },
 
-        get class() { return _class; },
+        get class() {
+            return _class;
+        },
         set class(value) {
             _class = coerce.toOptionalStringArray(value);
         },
 
-        get method() { return _method; },
+        get method() {
+            return _method;
+        },
         set method(value) {
             _method = coerce.toOptionalString(value);
         },
 
-        get title() { return _title; },
+        get title() {
+            return _title;
+        },
         set title(value) {
             _title = coerce.toOptionalString(value);
         },
 
-        get type() { return _type; },
+        get type() {
+            return _type;
+        },
         set type(value) {
             _type = coerce.toMediaTypeString(value);
         },
 
-        get fields() { return _fields; },
+        get fields() {
+            return _fields;
+        },
         set fields(value) {
             _fields = coerceFields(value);
         },
@@ -64,8 +98,8 @@ export function action(name: string, href: string | URL, options: Partial<Action
         ...extensions,
 
         field(name: string): Field | undefined {
-            return this.fields?.find(field => field.name === name);
-        }
+            return this.fields?.find((field) => field.name === name);
+        },
     };
 }
 
@@ -137,14 +171,18 @@ function coerceFields(value: unknown): readonly Field[] | undefined {
 }
 
 export function isAction(value: unknown): value is Action {
-    return isParsableAction(value) &&
+    return (
+        isParsableAction(value) &&
         isString(value.name) &&
         isString(value.href) &&
         (isUndefined(value.class) || isStringArray(value.class)) &&
-        (isUndefined(value.fields) || (isTypedArray(value.fields, isField) && hasUniqueNames(value.fields))) &&
+        (isUndefined(value.fields) ||
+            (isTypedArray(value.fields, isField) &&
+                hasUniqueNames(value.fields))) &&
         (isUndefined(value.method) || isString(value.method)) &&
         (isUndefined(value.title) || isString(value.title)) &&
-        (isUndefined(value.type) || isMediaTypeString(value.type));
+        (isUndefined(value.type) || isMediaTypeString(value.type))
+    );
 }
 
 export function isParsableAction(value: unknown): value is ParsableAction {
@@ -157,6 +195,9 @@ export interface ParsableAction extends Extendable {
 }
 
 function hasUniqueNames(fields: Field[]): boolean {
-    const names = fields.reduce((names, { name }) => names.add(name), new Set<string>());
+    const names = fields.reduce(
+        (names, { name }) => names.add(name),
+        new Set<string>()
+    );
     return names.size === fields.length;
 }
