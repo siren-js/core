@@ -13,9 +13,7 @@
     "test:jsdom": "jest --env=jsdom",
     "test:node": "jest --env=node",
     "test:coverage": "npm test -- --coverage",
-    "compile": "tsc --project tsconfig.build.json",
-    "compile:watch": "npm run compile -- --watch",
-    "build": "npm run lint && npm test && npm run compile",
+    "build": "npm run lint && npm test",
     "prepublishOnly": "npm run build"
   },
   "repository": {
