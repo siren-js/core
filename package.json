@@ -29,7 +29,7 @@
     "Siren"
   ],
   "author": "Dillon Redding",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/siren-js/core/issues"
   },
