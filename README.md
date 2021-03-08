@@ -7,15 +7,15 @@ parsing Siren representations.
 
 [siren]: https://github.com/kevinswiber/siren
 
-* [Installation](#installation)
-* [Development Release](#development-release)
-* [Usage](#usage)
-  * [Generating Siren](#generating-siren)
-  * [Parsing Siren](#parsing-siren)
-  * [Helper Methods](#helper-methods)
-  * [Extensions](#extensions)
-  * [TypeScript](#typescript)
-* [Robustness](#robustness)
+- [Installation](#installation)
+- [Development Release](#development-release)
+- [Usage](#usage)
+  - [Generating Siren](#generating-siren)
+  - [Parsing Siren](#parsing-siren)
+  - [Helper Methods](#helper-methods)
+  - [Extensions](#extensions)
+  - [TypeScript](#typescript)
+- [Robustness](#robustness)
 
 ## Installation
 
@@ -60,9 +60,9 @@ const order = getOrderFromDB(orderNumber);
 const entity = Siren.entity({
   class: ['order'],
   properties: {
-      orderNumber: order.orderNumber,
-      itemCount: order.items.length,
-      status: order.orderStatus
+    orderNumber: order.orderNumber,
+    itemCount: order.items.length,
+    status: order.orderStatus
   },
   entities: [
     {
@@ -172,9 +172,9 @@ Now constructing the full entity is a little easier.
 Siren.entity({
   class: ['order'],
   properties: {
-      orderNumber: order.orderNumber,
-      itemCount: order.items.length,
-      status: order.orderStatus
+    orderNumber: order.orderNumber,
+    itemCount: order.items.length,
+    status: order.orderStatus
   },
   entities: [itemsLink, customerEntity],
   actions: [addItemAction],
