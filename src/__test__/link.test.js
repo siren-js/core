@@ -99,7 +99,11 @@ describe('Link.href', () => {
 describe('Link.class', () => {
     it('should accept any array of strings', () => {
         [['order'], ['customer', 'info'], []].forEach((value) => {
-            const link = new Link(rel, href, { class: value });
+            let link = new Link(rel, href, { class: value });
+            expect(link.class).toEqual(value);
+
+            link = new Link(rel, href);
+            link.class = value;
             expect(link.class).toEqual(value);
         });
     });
