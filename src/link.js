@@ -109,6 +109,23 @@ export class Link {
         } = this;
         return { rel, href, class: linkClass, title, type, ...extensions };
     }
+
+    static isValid(value) {
+        return (
+            value instanceof Link ||
+            (typeof value === 'object' &&
+                isArray(value.rel) &&
+                isUri(value.href))
+        );
+    }
+
+    static of(value) {
+        if (value instanceof Link) {
+            return value;
+        }
+        const { rel, href, ...rest } = value;
+        return new Link(rel, href, rest);
+    }
 }
 
 function parseUriReference(value) {
