@@ -1,3 +1,4 @@
+import * as coerce from './util/coerce';
 import {
     isArray,
     isMediaTypeString,
@@ -39,11 +40,7 @@ export class Link {
     }
 
     set rel(value) {
-        if (isString(value)) {
-            this.#rel = Object.freeze([value]);
-        } else if (isArray(value)) {
-            this.#rel = Object.freeze(value.filter(isString));
-        }
+        this.#rel = coerce.toStringArray(value, this.rel);
     }
 
     get href() {
@@ -65,13 +62,7 @@ export class Link {
     }
 
     set class(value) {
-        if (isString(value)) {
-            this.#class = Object.freeze([value]);
-        } else if (isArray(value)) {
-            this.#class = Object.freeze(value.filter(isString));
-        } else if (isNullOrUndefined(value)) {
-            this.#class = undefined;
-        }
+        this.#class = coerce.toOptionalStringArray(value, this.class);
     }
 
     get title() {
@@ -79,11 +70,7 @@ export class Link {
     }
 
     set title(value) {
-        if (isString(value)) {
-            this.#title = value;
-        } else if (isNullOrUndefined(value)) {
-            this.#title = undefined;
-        }
+        this.#title = coerce.toOptionalString(value, this.title);
     }
 
     get type() {
