@@ -101,10 +101,6 @@ describe('Link.class', () => {
         [['order'], ['customer', 'info'], []].forEach((value) => {
             let link = new Link(rel, href, { class: value });
             expect(link.class).toEqual(value);
-
-            link = new Link(rel, href);
-            link.class = value;
-            expect(link.class).toEqual(value);
         });
     });
 
@@ -113,47 +109,27 @@ describe('Link.class', () => {
             const link = new Link(rel, href, { class: value });
             expect(link.class).toEqual([value]);
         });
-
-        const link = new Link(rel, href, { class: ['order'] });
-
-        link.class = 'person';
-
-        expect(link.class).toEqual(['person']);
     });
 
-    it('should allow undefined and coerce null to undefined', () => {
+    it('should allow undefined and coerce null', () => {
         [undefined, null].forEach((value) => {
-            const link = new Link(rel, href, { class: ['order'] });
-
-            link.class = value;
-
+            const link = new Link(rel, href, { class: value });
             expect(link.class).toBeUndefined();
         });
     });
 
     it('should remove non-strings from array', () => {
-        const classes = [true, 42, 'person', null, undefined];
-        const link1 = new Link(['collection'], href, { class: ['order'] });
+        const link = new Link(rel, href, {
+            class: [true, 42, 'person', null, undefined]
+        });
 
-        const link2 = new Link(rel, href, { class: classes });
-        link1.class = classes;
-
-        expect(link1.class).toEqual(['person']);
-        expect(link2.class).toEqual(['person']);
+        expect(link.class).toEqual(['person']);
     });
 
     it('should ignore invalid value', () => {
-        const invalidValues = [true, 42, {}];
-
-        invalidValues.forEach((value) => {
+        [true, 42, {}].forEach((value) => {
             const link = new Link(rel, href, { class: value });
             expect(link.class).toBeUndefined();
-        });
-
-        const link = new Link(rel, href, { class: ['order'] });
-        invalidValues.forEach((value) => {
-            link.class = value;
-            expect(link.class).toEqual(['order']);
         });
     });
 });
