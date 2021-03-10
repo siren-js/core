@@ -10,6 +10,50 @@ describe('Entity constructor', () => {
     });
 });
 
+describe('Entity.class', () => {
+    it('should accept any array of strings', () => {
+        [['order'], ['customer', 'info'], []].forEach((value) => {
+            let entity = new Entity({ class: value });
+            expect(entity.class).toEqual(value);
+        });
+    });
+
+    it('should coerce string to singleton array', () => {
+        ['person', ''].forEach((value) => {
+            const entity = new Entity({ class: value });
+            expect(entity.class).toEqual([value]);
+        });
+    });
+
+    it('should allow undefined and coerce null', () => {
+        [undefined, null].forEach((value) => {
+            const entity = new Entity({ class: value });
+            expect(entity.class).toBeUndefined();
+        });
+    });
+
+    it('should remove non-strings from array', () => {
+        const entity = new Entity({
+            class: [true, 42, 'person', null, undefined]
+        });
+
+        expect(entity.class).toEqual(['person']);
+    });
+
+    it('should ignore invalid value', () => {
+        [true, 42, {}].forEach((value) => {
+            const entity = new Entity({ class: value });
+            expect(entity.class).toBeUndefined();
+        });
+    });
+
+    it('should be frozen', () => {
+        const entity = new Entity({ class: ['order'] });
+
+        expect(Object.isFrozen(entity.class)).toBe(true);
+    });
+});
+
 describe('Entity.links', () => {
     const rel = ['self'];
     const href = 'http://example.com';
