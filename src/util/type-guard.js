@@ -14,39 +14,32 @@ export const isString = typeOfTypeGuard('string');
 
 export const isArray = Array.isArray;
 
-// export function isTypedArray<T>(
-//     value: unknown,
-//     elementTypeGuard: TypeGuard<T>
-// ): value is T[] {
-//     return isArray(value) && value.every(elementTypeGuard);
-// }
+export const isTypedArray = (value, itemTypeGuard) =>
+    isArray(value) && value.every(itemTypeGuard);
 
-// export const isStringArray = typeGuard<string[]>((value) =>
-//     isTypedArray(value, isString)
-// );
+export const isStringArray = typeGuard((value) =>
+    isTypedArray(value, isString)
+);
 
-// type RecordKey = string | number | symbol;
-// export type RecordOrArray = Record<RecordKey, unknown> | unknown[];
+/**
+ * Determines if a value is an object, array, or `null` (i.e., the `typeof`
+ * operator returns `'object'`).
+ */
+export const isObject = typeOfTypeGuard('object');
 
-// /**
-//  * Determines if a value is an object, array, or `null`. That is, the `typeof`
-//  * operator returns `'object'`.
-//  */
-// export const isObject = typeOfTypeGuard<RecordOrArray | null>("object");
+/**
+ * Similar to `isObject` except it excludes `null`.
+ */
+export const isNonNullObject = typeGuard(
+    (value) => isObject(value) && !isNull(value)
+);
 
-// /**
-//  * Similar to `isObject` except is excludes `null`.
-//  */
-// export const isNonNullObject = typeGuard<RecordOrArray>(
-//     (value) => isObject(value) && !isNull(value)
-// );
-
-// /**
-//  * Determines whether a value is an object and *not* an array or `null`.
-//  */
-// export const isRecord = typeGuard<Record<RecordKey, unknown>>(
-//     (value) => isNonNullObject(value) && !isArray(value)
-// );
+/**
+ * Determines whether a value is an object and *not* an array or `null`.
+ */
+export const isRecord = typeGuard(
+    (value) => isNonNullObject(value) && !isArray(value)
+);
 
 /**
  * Determines whether `value` is a valid media type string, as defined in
