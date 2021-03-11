@@ -28,7 +28,9 @@ export class Entity {
 
     set links(value) {
         if (isArray(value)) {
-            this.#links = Object.freeze(value.filter(Link.isValid).map(Link.of));
+            this.#links = Object.freeze(
+                value.filter(Link.isValid).map(Link.of)
+            );
         }
     }
 }
