@@ -6,7 +6,7 @@ export class EmbeddedLink extends Link {
         super(rel, href, options);
 
         if (this.rel.length === 0) {
-            throw new TypeError();
+            throw new TypeError('EmbeddedLink.rel must be non-empty');
         }
     }
 
