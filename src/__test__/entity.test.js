@@ -86,7 +86,11 @@ describe('Entity.links', () => {
 
     it('should allow undefined and coerce null', () => {
         [undefined, null].forEach((value) => {
-            const entity = new Entity({ links: value });
+            let entity = new Entity({ links: value });
+            expect(entity.links).toBeUndefined();
+
+            entity = new Entity({ links: [] });
+            entity.links = value;
             expect(entity.links).toBeUndefined();
         });
     });
@@ -128,6 +132,17 @@ describe('Entity.properties', () => {
     it('should ignore non-records', () => {
         [true, 42, 'foo', [true, 42, 'foo']].forEach((value) => {
             const entity = new Entity({ properties: value });
+            expect(entity.properties).toBeUndefined();
+        });
+    });
+
+    it('should allow undefined and coerce null', () => {
+        [undefined, null].forEach((value) => {
+            let entity = new Entity({ properties: value });
+            expect(entity.properties).toBeUndefined();
+
+            entity = new Entity({ properties: [] });
+            entity.properties = value;
             expect(entity.properties).toBeUndefined();
         });
     });

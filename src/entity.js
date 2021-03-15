@@ -1,6 +1,6 @@
 import { Link } from './link';
 import * as coerce from './util/coerce';
-import { isArray, isRecord } from './util/type-guard';
+import { isArray, isNullish, isRecord } from './util/type-guard';
 
 export * from './link';
 
@@ -35,6 +35,8 @@ export class Entity {
             this.#links = Object.freeze(
                 value.filter(Link.isValid).map(Link.of)
             );
+        } else if (isNullish(value)) {
+            this.#links = undefined;
         }
     }
 
@@ -45,6 +47,8 @@ export class Entity {
     set properties(value) {
         if (isRecord(value)) {
             this.#properties = value;
+        } else if (isNullish(value)) {
+            this.#properties = undefined;
         }
     }
 
