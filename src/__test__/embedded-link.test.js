@@ -25,4 +25,17 @@ describe('EmbeddedLink', () => {
             expect(link.rel).toEqual(rel);
         });
     });
+
+    it('should serialize with rel', () => {
+        const link = new EmbeddedLink(rel, href, {
+            class: ['home'],
+            title: 'Home Page',
+            type: 'text/html',
+            hreflang: 'en-US'
+        });
+
+        const json = JSON.stringify(link, null, 2);
+
+        expect(json).toMatchSnapshot();
+    });
 });
