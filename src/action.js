@@ -1,6 +1,6 @@
+import { Field } from './field';
 import * as coerce from './util/coerce';
 import { isArray, isNullish, isString, isUri } from './util/type-guard';
-import { Field } from './field';
 
 export * from './field';
 
@@ -122,5 +122,22 @@ export class Action {
             type,
             ...extensions
         };
+    }
+
+    static isValid(value) {
+        return (
+            value instanceof Action ||
+            (typeof value === 'object' &&
+                isString(value.name) &&
+                isUri(value.href))
+        );
+    }
+
+    static of(value) {
+        if (value instanceof Action) {
+            return value;
+        }
+        const { name, href, ...rest } = value;
+        return new Action(name, href, rest);
     }
 }

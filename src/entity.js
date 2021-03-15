@@ -1,21 +1,40 @@
+import { Action } from './action';
 import { Link } from './link';
 import * as coerce from './util/coerce';
 import { isArray, isNullish, isRecord } from './util/type-guard';
 
+export * from './action';
 export * from './link';
 
 export class Entity {
+    #actions;
     #class;
     #links;
     #properties;
     #title;
 
     constructor(options = {}) {
-        const { class: entityClass, links, properties, title } = options ?? {};
+        const { actions, class: entityClass, links, properties, title } =
+            options ?? {};
+        this.actions = actions;
         this.class = entityClass;
         this.links = links;
         this.properties = properties;
         this.title = title;
+    }
+
+    get actions() {
+        return this.#actions;
+    }
+
+    set actions(value) {
+        if (isArray(value)) {
+            this.#actions = Object.freeze(
+                value.filter(Action.isValid).map(Action.of)
+            );
+        } else if (isNullish(value)) {
+            this.#actions = undefined;
+        }
     }
 
     get class() {
