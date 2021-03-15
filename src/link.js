@@ -1,5 +1,5 @@
 import * as coerce from './util/coerce';
-import { isArray, isString, isUri } from './util/type-guard';
+import { isArray, isNonNullObject, isString, isUri } from './util/type-guard';
 
 export class Link {
     #rel;
@@ -84,9 +84,7 @@ export class Link {
     static isValid(value) {
         return (
             value instanceof Link ||
-            (typeof value === 'object' &&
-                isArray(value.rel) &&
-                isUri(value.href))
+            (isNonNullObject(value) && isArray(value.rel) && isUri(value.href))
         );
     }
 

@@ -1,6 +1,12 @@
 import { Field } from './field';
 import * as coerce from './util/coerce';
-import { isArray, isNullish, isString, isUri } from './util/type-guard';
+import {
+    isArray,
+    isNonNullObject,
+    isNullish,
+    isString,
+    isUri
+} from './util/type-guard';
 
 export * from './field';
 
@@ -127,7 +133,7 @@ export class Action {
     static isValid(value) {
         return (
             value instanceof Action ||
-            (typeof value === 'object' &&
+            (isNonNullObject(value) &&
                 isString(value.name) &&
                 isUri(value.href))
         );

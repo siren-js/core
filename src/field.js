@@ -1,5 +1,5 @@
 import * as coerce from './util/coerce';
-import { isNullish, isString } from './util/type-guard';
+import { isNonNullObject, isNullish, isString } from './util/type-guard';
 
 export class Field {
     #name;
@@ -78,7 +78,7 @@ export class Field {
     static isValid(value) {
         return (
             value instanceof Field ||
-            (typeof value === 'object' && isString(value.name))
+            (isNonNullObject(value) && isString(value.name))
         );
     }
 
