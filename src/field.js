@@ -62,4 +62,16 @@ export class Field {
     set value(value) {
         this.#value = isNullish(value) ? undefined : value;
     }
+
+    toJSON() {
+        const {
+            name,
+            class: fieldClass,
+            title,
+            type,
+            value,
+            ...extensions
+        } = this;
+        return { name, class: fieldClass, title, type, value, ...extensions };
+    }
 }
