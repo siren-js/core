@@ -8,12 +8,14 @@ export class Entity {
     #class;
     #links;
     #properties;
+    #title;
 
     constructor(options = {}) {
-        const { class: entityClass, links, properties } = options ?? {};
+        const { class: entityClass, links, properties, title } = options ?? {};
         this.class = entityClass;
         this.links = links;
         this.properties = properties;
+        this.title = title;
     }
 
     get class() {
@@ -44,5 +46,13 @@ export class Entity {
         if (isRecord(value)) {
             this.#properties = value;
         }
+    }
+
+    get title() {
+        return this.#title;
+    }
+
+    set title(value) {
+        this.#title = coerce.toOptionalString(value, this.title);
     }
 }

@@ -133,3 +133,40 @@ describe('Entity.properties', () => {
     });
 });
 
+describe('Entity.title', () => {
+    const title = 'This is an Entity';
+
+    it('should accept any string', () => {
+        [title, 'Å Fâñçÿ Títlè', ''].forEach((value) => {
+            let entity = new Entity({ title: value });
+            expect(entity.title).toEqual(value);
+
+            entity = new Entity();
+            entity.title = value;
+            expect(entity.title).toEqual(value);
+        });
+    });
+
+    it('should ignore non-string value', () => {
+        [true, 42, [], {}].forEach((value) => {
+            let entity = new Entity({ title: value });
+            expect(entity.title).toBeUndefined();
+
+            entity = new Entity({ title });
+            entity.title = value;
+            expect(entity.title).toEqual(title);
+        });
+    });
+
+    it('should allow undefined and coerce null to undefined', () => {
+        [undefined, null].forEach((value) => {
+            let entity = new Entity({ title: value });
+            expect(entity.title).toBeUndefined();
+
+            entity = new Entity({ title });
+            entity.title = value;
+            expect(entity.title).toBeUndefined();
+        });
+    });
+});
+
