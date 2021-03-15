@@ -2,7 +2,7 @@ import * as coerce from './util/coerce';
 import {
     isArray,
     isMediaTypeString,
-    isNullOrUndefined,
+    isNullish,
     isString,
     isUri
 } from './util/type-guard';
@@ -80,7 +80,7 @@ export class Link {
     set type(value) {
         if (isMediaTypeString(value)) {
             this.#type = value;
-        } else if (isNullOrUndefined(value)) {
+        } else if (isNullish(value)) {
             this.#type = undefined;
         }
     }

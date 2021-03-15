@@ -6,7 +6,11 @@ const valueTypeGuard = (t) => typeGuard((value) => value === t);
 
 export const isNull = valueTypeGuard(null);
 export const isUndefined = valueTypeGuard(undefined);
-export const isNullOrUndefined = typeGuard(
+
+/**
+ * Determines whether a value is `null` or `undefined`.
+ */
+export const isNullish = typeGuard(
     (value) => isNull(value) || isUndefined(value)
 );
 
