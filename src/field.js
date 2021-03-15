@@ -74,4 +74,19 @@ export class Field {
         } = this;
         return { name, class: fieldClass, title, type, value, ...extensions };
     }
+
+    static isValid(value) {
+        return (
+            value instanceof Field ||
+            (typeof value === 'object' && isString(value.name))
+        );
+    }
+
+    static of(value) {
+        if (value instanceof Field) {
+            return value;
+        }
+        const { name, ...rest } = value;
+        return new Field(name, rest);
+    }
 }

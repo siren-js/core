@@ -1,11 +1,5 @@
 import * as coerce from './util/coerce';
-import {
-    isArray,
-    isMediaTypeString,
-    isNullish,
-    isString,
-    isUri
-} from './util/type-guard';
+import { isArray, isString, isUri } from './util/type-guard';
 
 export class Link {
     #rel;
@@ -48,13 +42,7 @@ export class Link {
     }
 
     set href(value) {
-        if (isUri(value)) {
-            if (value instanceof URL) {
-                this.#href = value.toString();
-            } else {
-                this.#href = parseUriReference(value);
-            }
-        }
+        this.#href = coerce.toUriReference(value, this.href);
     }
 
     get class() {
@@ -78,11 +66,7 @@ export class Link {
     }
 
     set type(value) {
-        if (isMediaTypeString(value)) {
-            this.#type = value;
-        } else if (isNullish(value)) {
-            this.#type = undefined;
-        }
+        this.#type = coerce.toOptionalMediaTypeString(value, this.type);
     }
 
     toJSON() {
@@ -112,17 +96,5 @@ export class Link {
         }
         const { rel, href, ...rest } = value;
         return new Link(rel, href, rest);
-    }
-}
-
-function parseUriReference(value) {
-    try {
-        // try to parse as absolute URI
-        new URL(value);
-        return value;
-    } catch {
-        // try to parse as relative URI
-        const url = new URL(value, 'http://example.com');
-        return url.pathname;
     }
 }
