@@ -111,3 +111,25 @@ describe('Entity.links', () => {
         });
     });
 });
+
+describe('Entity.properties', () => {
+    it('should accept any record', () => {
+        const properties = {
+            foo: 'bar',
+            bar: 42,
+            baz: ['foo', 'bar', 'baz']
+        };
+
+        const entity = new Entity({ properties });
+
+        expect(entity.properties).toEqual(properties);
+    });
+
+    it('should ignore non-records', () => {
+        [true, 42, 'foo', [true, 42, 'foo']].forEach((value) => {
+            const entity = new Entity({ properties: value });
+            expect(entity.properties).toBeUndefined();
+        });
+    });
+});
+
