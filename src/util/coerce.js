@@ -54,3 +54,26 @@ export function toUriReference(value, defaultValue) {
         }
     }
 }
+
+export function toUniqueSubComponents(value, defaultValue, validator, factory) {
+    if (isArray(value)) {
+        const [components] = value
+            .filter(validator)
+            .map(factory)
+            .reduce(
+                ([components, names], component) => {
+                    if (!names.has(component.name)) {
+                        components.push(component);
+                        names.add(component.name);
+                    }
+                    return [components, names];
+                },
+                [[], new Set()]
+            );
+        return Object.freeze(components);
+    } else if (isNullish(value)) {
+        return undefined;
+    } else {
+        return defaultValue;
+    }
+}

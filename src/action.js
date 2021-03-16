@@ -74,24 +74,12 @@ export class Action {
     }
 
     set fields(value) {
-        if (isArray(value)) {
-            const [fields] = value
-                .filter(Field.isValid)
-                .map(Field.of)
-                .reduce(
-                    ([fields, names], field) => {
-                        if (!names.has(field.name)) {
-                            fields.push(field);
-                            names.add(field.name);
-                        }
-                        return [fields, names];
-                    },
-                    [[], new Set()]
-                );
-            this.#fields = Object.freeze(fields);
-        } else if (isNullish(value)) {
-            this.#fields = undefined;
-        }
+        this.#fields = coerce.toUniqueSubComponents(
+            value,
+            this.fields,
+            Field.isValid,
+            Field.of
+        );
     }
 
     get method() {
