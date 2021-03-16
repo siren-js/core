@@ -13,7 +13,7 @@
     "test:jsdom": "jest --env=jsdom",
     "test:node": "jest --env=node",
     "compile": "babel src --out-dir dist --ignore src/**/__test__",
-    "build": "npm run lint && npm test",
+    "build": "npm run lint && npm test && npm run compile",
     "prepublishOnly": "npm run build"
   },
   "repository": {
