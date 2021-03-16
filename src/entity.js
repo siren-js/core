@@ -71,13 +71,12 @@ export class Entity {
     }
 
     set entities(value) {
-        if (isArray(value)) {
-            this.#entities = Object.freeze(
-                value.filter(SubEntity.isValid).map(SubEntity.of)
-            );
-        } else if (isNullish(value)) {
-            this.#entities = undefined;
-        }
+        this.#entities = coerceSubComponents(
+            value,
+            this.entities,
+            SubEntity.isValid,
+            SubEntity.of
+        );
     }
 
     get links() {
@@ -85,13 +84,12 @@ export class Entity {
     }
 
     set links(value) {
-        if (isArray(value)) {
-            this.#links = Object.freeze(
-                value.filter(Link.isValid).map(Link.of)
-            );
-        } else if (isNullish(value)) {
-            this.#links = undefined;
-        }
+        this.#links = coerceSubComponents(
+            value,
+            this.links,
+            Link.isValid,
+            Link.of
+        );
     }
 
     get properties() {
@@ -133,6 +131,16 @@ export class Entity {
             title,
             ...extensions
         };
+    }
+}
+
+function coerceSubComponents(value, defaultValue, validator, factory) {
+    if (isArray(value)) {
+        return Object.freeze(value.filter(validator).map(factory));
+    } else if (isNullish(value)) {
+        return undefined;
+    } else {
+        return defaultValue;
     }
 }
 
