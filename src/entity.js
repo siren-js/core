@@ -149,11 +149,13 @@ export class EmbeddedRepresentation extends Entity {
 
     constructor(rel, options = {}) {
         super(options);
+
         if (!isString(rel) && !isArray(rel)) {
             throw new TypeError(
                 'EmbeddedRepresentation.rel must be an array of strings'
             );
         }
+
         this.rel = rel;
     }
 
