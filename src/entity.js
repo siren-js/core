@@ -51,9 +51,20 @@ export class Entity {
 
     set actions(value) {
         if (isArray(value)) {
-            this.#actions = Object.freeze(
-                value.filter(Action.isValid).map(Action.of)
-            );
+            const [actions] = value
+                .filter(Action.isValid)
+                .map(Action.of)
+                .reduce(
+                    ([actions, names], action) => {
+                        if (!names.has(action.name)) {
+                            actions.push(action);
+                            names.add(action.name);
+                        }
+                        return [actions, names];
+                    },
+                    [[], new Set()]
+                );
+            this.#actions = Object.freeze(actions);
         } else if (isNullish(value)) {
             this.#actions = undefined;
         }

@@ -50,6 +50,18 @@ describe('Entity.actions', () => {
         expect(Object.isFrozen(entity.actions)).toBe(true);
     });
 
+    it('should remove duplicates', () => {
+        const entity = new Entity({
+            actions: [
+                { name, href },
+                { name, href, method: 'POST' }
+            ]
+        });
+
+        expect(entity.actions).toHaveLength(1);
+        expect(entity.actions[0].method).toBeUndefined();
+    });
+
     it('should allow undefined and coerce null', () => {
         [undefined, null].forEach((value) => {
             let entity = new Entity({ actions: value });

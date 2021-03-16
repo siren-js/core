@@ -75,9 +75,20 @@ export class Action {
 
     set fields(value) {
         if (isArray(value)) {
-            this.#fields = Object.freeze(
-                value.filter(Field.isValid).map(Field.of)
-            );
+            const [fields] = value
+                .filter(Field.isValid)
+                .map(Field.of)
+                .reduce(
+                    ([fields, names], field) => {
+                        if (!names.has(field.name)) {
+                            fields.push(field);
+                            names.add(field.name);
+                        }
+                        return [fields, names];
+                    },
+                    [[], new Set()]
+                );
+            this.#fields = Object.freeze(fields);
         } else if (isNullish(value)) {
             this.#fields = undefined;
         }

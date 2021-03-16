@@ -134,6 +134,18 @@ describe('Action.fields', () => {
         expect(Object.isFrozen(action.fields)).toBe(true);
     });
 
+    it('should remove duplicates', () => {
+        const action = new Action(name, href, {
+            fields: [
+                { name: 'orderNumber' },
+                { name: 'orderNumber', type: 'hidden' }
+            ]
+        });
+
+        expect(action.fields).toHaveLength(1);
+        expect(action.fields[0].type).toBeUndefined();
+    });
+
     it('should allow undefined and coerce null', () => {
         [undefined, null].forEach((value) => {
             let entity = new Action(name, href, { fields: value });
