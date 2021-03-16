@@ -1,4 +1,5 @@
 import * as coerce from './util/coerce';
+import extendWith from './util/extend-with';
 import { isNonNullObject, isNullish, isString } from './util/type-guard';
 
 export class Field {
@@ -22,9 +23,7 @@ export class Field {
         this.type = type;
         this.value = value;
 
-        Object.keys(extensions).forEach((key) => {
-            this[key] = extensions[key];
-        });
+        extendWith(this, extensions);
     }
 
     get name() {

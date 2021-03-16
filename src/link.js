@@ -1,4 +1,5 @@
 import * as coerce from './util/coerce';
+import extendWith from './util/extend-with';
 import { isArray, isNonNullObject, isString, isUri } from './util/type-guard';
 
 export class Link {
@@ -24,9 +25,7 @@ export class Link {
         this.title = title;
         this.type = type;
 
-        Object.keys(extensions).forEach((key) => {
-            this[key] = extensions[key];
-        });
+        extendWith(this, extensions);
     }
 
     get rel() {

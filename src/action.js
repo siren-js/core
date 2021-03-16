@@ -1,12 +1,7 @@
 import { Field } from './field';
 import * as coerce from './util/coerce';
-import {
-    isArray,
-    isNonNullObject,
-    isNullish,
-    isString,
-    isUri
-} from './util/type-guard';
+import extendWith from './util/extend-with';
+import { isNonNullObject, isString, isUri } from './util/type-guard';
 
 export * from './field';
 
@@ -44,9 +39,7 @@ export class Action {
         this.title = title;
         this.type = type;
 
-        Object.keys(extensions).forEach((key) => {
-            this[key] = extensions[key];
-        });
+        extendWith(this, extensions);
     }
 
     get name() {

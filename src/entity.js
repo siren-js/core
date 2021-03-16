@@ -2,6 +2,7 @@ import { Action } from './action';
 import { EmbeddedLink } from './embedded-link';
 import { Link } from './link';
 import * as coerce from './util/coerce';
+import extendWith from './util/extend-with';
 import {
     isArray,
     isNonNullObject,
@@ -40,9 +41,7 @@ export class Entity {
         this.properties = properties;
         this.title = title;
 
-        Object.keys(extensions).forEach((key) => {
-            this[key] = extensions[key];
-        });
+        extendWith(this, extensions);
     }
 
     get actions() {
