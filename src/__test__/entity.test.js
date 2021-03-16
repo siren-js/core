@@ -1,4 +1,10 @@
-import { Action, Entity, Link } from '../entity';
+import {
+    Action,
+    EmbeddedLink,
+    EmbeddedRepresentation,
+    Entity,
+    Link
+} from '../entity';
 
 describe('Entity constructor', () => {
     it('should accept no arguments', () => {
@@ -26,7 +32,11 @@ describe('Entity.actions', () => {
     it('should accept array of actions', () => {
         const actions = [
             new Action(name, href, { method: 'POST', title: 'Add Item' }),
-            { name: 'search', href: 'http://example.com/search', title: 'Search' }
+            {
+                name: 'search',
+                href: 'http://example.com/search',
+                title: 'Search'
+            }
         ];
 
         const entity = new Entity({ actions });
@@ -113,6 +123,91 @@ describe('Entity.class', () => {
         const entity = new Entity({ class: ['order'] });
 
         expect(Object.isFrozen(entity.class)).toBe(true);
+    });
+});
+
+describe('Entity.entities', () => {
+    it('should accept empty array', () => {
+        const entities = [];
+
+        const entity = new Entity({ entities });
+
+        expect(entity.entities).toEqual([]);
+        expect(Object.isFrozen(entity.entities)).toBe(true);
+    });
+
+    const rel = ['item'];
+    const href = 'http://example.com';
+
+    it('should accept array of sub-entities', () => {
+        const entities = [
+            new EmbeddedLink(rel, `${href}/1`, { title: 'Item 1' }),
+            {
+                rel,
+                href: `${href}/2`,
+                title: 'Item 2'
+            },
+            new EmbeddedRepresentation(rel, {
+                title: 'Item 3',
+                links: [{ rel: ['self'], href: `${href}/3` }]
+            }),
+            {
+                rel,
+                title: 'Item 4',
+                links: [{ rel: ['self'], href: `${href}/4` }]
+            }
+        ];
+
+        const entity = new Entity({ entities });
+
+        expect(entity.entities).toHaveLength(entities.length);
+        expect(entity.entities[0]).toBe(entities[0]);
+        expect(entity.entities[1]).toBeInstanceOf(EmbeddedLink);
+        expect(entity.entities[1].rel).toEqual(entities[1].rel);
+        expect(entity.entities[1].href).toEqual(entities[1].href);
+        expect(entity.entities[1].title).toEqual(entities[1].title);
+        expect(entity.entities[2]).toBe(entities[2]);
+        expect(entity.entities[3]).toBeInstanceOf(EmbeddedRepresentation);
+        expect(entity.entities[3].rel).toEqual(entities[3].rel);
+        expect(entity.entities[3].href).toEqual(entities[3].href);
+        expect(entity.entities[3].title).toEqual(entities[3].title);
+        expect(Object.isFrozen(entity.entities)).toBe(true);
+    });
+
+    it('should allow undefined and coerce null', () => {
+        [undefined, null].forEach((value) => {
+            let entity = new Entity({ entities: value });
+            expect(entity.entities).toBeUndefined();
+
+            entity = new Entity({ entities: [] });
+            entity.entities = value;
+            expect(entity.entities).toBeUndefined();
+        });
+    });
+
+    it('should filter invalid sub-entities', () => {
+        const entity = new Entity({
+            entities: [{}, { href }, { links: [{ rel: ['self'], href }] }]
+        });
+
+        expect(entity.entities).toEqual([]);
+    });
+
+    it('should ignore non-array value', () => {
+        const entities = [
+            new EmbeddedLink(rel, href),
+            new EmbeddedRepresentation(['item'], {
+                links: [{ rel: ['self'], href }]
+            })
+        ];
+        [true, 42, {}].forEach((value) => {
+            let entity = new Entity({ entities: value });
+            expect(entity.entities).toBeUndefined();
+
+            entity = new Entity({ entities });
+            entity.entities = value;
+            expect(entity.entities).toEqual(entities);
+        });
     });
 });
 
@@ -247,3 +342,123 @@ describe('Entity.title', () => {
     });
 });
 
+test('Entity extensions', () => {
+    const entity = new Entity({ foo: 'bar' });
+
+    expect(entity.foo).toEqual('bar');
+});
+
+test('Entity serialization', () => {
+    const entity = new Entity({
+        class: ['order'],
+        properties: {
+            orderNumber: 42,
+            itemCount: 3,
+            status: 'pending'
+        },
+        entities: [
+            {
+                class: ['items', 'collection'],
+                rel: ['http://x.io/rels/order-items'],
+                href: 'http://api.x.io/orders/42/items'
+            },
+            {
+                class: ['info', 'customer'],
+                rel: ['http://x.io/rels/customer'],
+                properties: {
+                    customerId: 'pj123',
+                    name: 'Peter Joseph'
+                },
+                links: [
+                    { rel: ['self'], href: 'http://api.x.io/customers/pj123' }
+                ]
+            }
+        ],
+        actions: [
+            {
+                name: 'add-item',
+                title: 'Add Item',
+                method: 'POST',
+                href: 'http://api.x.io/orders/42/items',
+                type: 'application/x-www-form-urlencoded',
+                fields: [
+                    { name: 'orderNumber', type: 'hidden', value: '42' },
+                    { name: 'productCode', type: 'text' },
+                    { name: 'quantity', type: 'number' }
+                ]
+            }
+        ],
+        links: [
+            { rel: ['self'], href: 'http://api.x.io/orders/42' },
+            { rel: ['previous'], href: 'http://api.x.io/orders/41' },
+            { rel: ['next'], href: 'http://api.x.io/orders/43' }
+        ],
+        foo: 'bar'
+    });
+
+    const json = JSON.stringify(entity, null, 2);
+
+    expect(json).toMatchSnapshot();
+});
+
+describe('EmbeddedRepresentation', () => {
+    const rel = ['item'];
+
+    it('should be instanceof Entity', () => {
+        const embeddedRep = new EmbeddedRepresentation(rel);
+
+        expect(embeddedRep).toBeInstanceOf(EmbeddedRepresentation);
+        expect(embeddedRep).toBeInstanceOf(Entity);
+    });
+
+    describe('rel', () => {
+        it('should accept any array of strings', () => {
+            [rel, ['collection', 'up'], []].forEach((value) => {
+                const embeddedRep = new EmbeddedRepresentation(value);
+                expect(embeddedRep.rel).toEqual(value);
+            });
+        });
+
+        it('should coerce string to singleton array', () => {
+            ['item', ''].forEach((value) => {
+                const embeddedRep = new EmbeddedRepresentation(value);
+                expect(embeddedRep.rel).toEqual([value]);
+            });
+
+            const embeddedRep = new EmbeddedRepresentation(rel);
+
+            embeddedRep.rel = 'up';
+
+            expect(embeddedRep.rel).toEqual(['up']);
+        });
+
+        it('should remove non-strings from array', () => {
+            const embeddedRep = new EmbeddedRepresentation([
+                true,
+                42,
+                'item',
+                null,
+                undefined
+            ]);
+
+            expect(embeddedRep.rel).toEqual(rel);
+        });
+
+        it('should throw TypeError when constructor arg is invalid', () => {
+            [undefined, null, true, 42, {}].forEach((value) => {
+                expect(() => new EmbeddedRepresentation(value)).toThrow(
+                    TypeError
+                );
+            });
+        });
+
+        it('should ignore invalid value in setter', () => {
+            const embeddedRep = new EmbeddedRepresentation(rel);
+
+            [undefined, null, true, 42, {}].forEach((value) => {
+                embeddedRep.rel = value;
+                expect(embeddedRep.rel).toEqual(rel);
+            });
+        });
+    });
+});

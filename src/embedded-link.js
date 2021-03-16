@@ -1,5 +1,6 @@
 import { Link } from './link';
 import * as coerce from './util/coerce';
+import { isString } from './util/type-guard';
 
 export class EmbeddedLink extends Link {
     constructor(rel, href, options = {}) {
@@ -19,5 +20,17 @@ export class EmbeddedLink extends Link {
         if (rel.length > 0) {
             super.rel = value;
         }
+    }
+
+    static isValid(value) {
+        return Link.isValid(value) && value.rel.filter(isString).length > 0;
+    }
+
+    static of(value) {
+        if (value instanceof EmbeddedLink) {
+            return value;
+        }
+        const { rel, href, ...rest } = value;
+        return new EmbeddedLink(rel, href, rest);
     }
 }
