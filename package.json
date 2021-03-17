@@ -6,7 +6,6 @@
     "/dist"
   ],
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "scripts": {
     "lint": "eslint src --ext .js",
     "test": "jest --env=jsdom && jest --env=node",
