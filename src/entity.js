@@ -169,7 +169,8 @@ export class EmbeddedRepresentation extends Entity {
     static isValid(value) {
         return (
             value instanceof EmbeddedRepresentation ||
-            (isNonNullObject(value) && isArray(value.rel))
+            (isNonNullObject(value) &&
+                (isArray(value.rel) || isString(value.rel)))
         );
     }
 
@@ -190,10 +191,8 @@ export class SubEntity {
     }
 
     static of(value) {
-        if (EmbeddedLink.isValid(value)) {
-            return EmbeddedLink.of(value);
-        } else {
-            return EmbeddedRepresentation.of(value);
-        }
+        return EmbeddedLink.isValid(value)
+            ? EmbeddedLink.of(value)
+            : EmbeddedRepresentation.of(value);
     }
 }

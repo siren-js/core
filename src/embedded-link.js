@@ -23,7 +23,10 @@ export class EmbeddedLink extends Link {
     }
 
     static isValid(value) {
-        return Link.isValid(value) && value.rel.filter(isString).length > 0;
+        return (
+            value instanceof EmbeddedLink ||
+            (Link.isValid(value) && value.rel.filter(isString).length > 0)
+        );
     }
 
     static of(value) {

@@ -13,8 +13,8 @@ export function toStringArray(value, defaultValue) {
 export const toOptionalStringArray = (value, defaultValue) =>
     isNullish(value) ? undefined : toStringArray(value, defaultValue);
 
-export function toOptionalString(value, defaultValue) {
-    if (isString(value)) {
+function toOptional(value, defaultValue, isValid) {
+    if (isValid(value)) {
         return value;
     } else if (isNullish(value)) {
         return undefined;
@@ -23,15 +23,11 @@ export function toOptionalString(value, defaultValue) {
     }
 }
 
-export function toOptionalMediaTypeString(value, defaultValue) {
-    if (isMediaTypeString(value)) {
-        return value;
-    } else if (isNullish(value)) {
-        return undefined;
-    } else {
-        return defaultValue;
-    }
-}
+export const toOptionalString = (value, defaultValue) =>
+    toOptional(value, defaultValue, isString);
+
+export const toOptionalMediaTypeString = (value, defaultValue) =>
+    toOptional(value, defaultValue, isMediaTypeString);
 
 export function toUriReference(value, defaultValue) {
     if (value instanceof URL) {

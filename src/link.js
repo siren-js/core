@@ -83,7 +83,9 @@ export class Link {
     static isValid(value) {
         return (
             value instanceof Link ||
-            (isNonNullObject(value) && isArray(value.rel) && isUri(value.href))
+            (isNonNullObject(value) &&
+                (isArray(value.rel) || isString(value.rel)) &&
+                isUri(value.href))
         );
     }
 

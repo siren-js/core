@@ -7,12 +7,12 @@ parsing Siren representations.
 
 [siren]: https://github.com/kevinswiber/siren
 
-* [Installation](#installation)
-* [Development Release](#development-release)
-* [Usage](#usage)
-  * [Generating Siren](#generating-siren)
-  * [Parsing Siren](#parsing-siren)
-  * [Extensions](#extensions)
+- [Installation](#installation)
+- [Development Release](#development-release)
+- [Usage](#usage)
+  - [Generating Siren](#generating-siren)
+  - [Parsing Siren](#parsing-siren)
+  - [Extensions](#extensions)
 
 ## Installation
 
@@ -27,8 +27,8 @@ realize the best API for working with Siren in JavaScript. This means minor
 version increments may not be backward compatible, but patch version increments
 will.
 
-In order to get to a product-ready 1.x release, we need users to try out the
-library, find bugs, and give honest, constructive feedback on how we can
+In order to get to a production-ready release (v1+), we need users to try out
+the library, find bugs, and give honest, constructive feedback on how we can
 improve! If you'd like to report a bug or provide feedback, feel free to
 [create an issue](https://github.com/siren-js/core/issues/new).
 
