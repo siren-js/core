@@ -107,7 +107,7 @@ const entity = new Siren.Entity({
 
 If you don't want to build your entity in one fell swoop (I wouldn't blame you),
 you can use the other component classes: `Action`, `Field`, `Link`,
-`EmbeddedRepresentation`, and `EmbeddedLink`. Each of these accept required
+`EmbeddedEntity`, and `EmbeddedLink`. Each of these accept required
 members as positional constructor arguments and optional members in a final
 options object.
 
@@ -124,7 +124,7 @@ const itemsLink = new Siren.EmbeddedLink([itemsRel], itemsUrl, {
 });
 
 const customerRel = 'http://x.io/rels/customer';
-const customerEntity = new Siren.EmbeddedRepresentation([customerRel], {
+const customerEntity = new Siren.EmbeddedEntity([customerRel], {
   class: ['info', 'customer'],
   properties: {
     customerId: order.customer.userId,

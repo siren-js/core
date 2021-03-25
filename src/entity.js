@@ -143,7 +143,7 @@ function coerceSubComponents(value, defaultValue, validator, factory) {
     }
 }
 
-export class EmbeddedRepresentation extends Entity {
+export class EmbeddedEntity extends Entity {
     #rel;
 
     constructor(rel, options = {}) {
@@ -151,7 +151,7 @@ export class EmbeddedRepresentation extends Entity {
 
         if (!isString(rel) && !isArray(rel)) {
             throw new TypeError(
-                'EmbeddedRepresentation.rel must be an array of strings'
+                'EmbeddedEntity.rel must be an array of strings'
             );
         }
 
@@ -168,31 +168,31 @@ export class EmbeddedRepresentation extends Entity {
 
     static isValid(value) {
         return (
-            value instanceof EmbeddedRepresentation ||
+            value instanceof EmbeddedEntity ||
             (isNonNullObject(value) &&
                 (isArray(value.rel) || isString(value.rel)))
         );
     }
 
     static of(value) {
-        if (value instanceof EmbeddedRepresentation) {
+        if (value instanceof EmbeddedEntity) {
             return value;
         }
         const { rel, ...rest } = value;
-        return new EmbeddedRepresentation(rel, rest);
+        return new EmbeddedEntity(rel, rest);
     }
 }
 
 export class SubEntity {
     static isValid(value) {
         return (
-            EmbeddedLink.isValid(value) || EmbeddedRepresentation.isValid(value)
+            EmbeddedLink.isValid(value) || EmbeddedEntity.isValid(value)
         );
     }
 
     static of(value) {
         return EmbeddedLink.isValid(value)
             ? EmbeddedLink.of(value)
-            : EmbeddedRepresentation.of(value);
+            : EmbeddedEntity.of(value);
     }
 }

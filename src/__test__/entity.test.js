@@ -1,7 +1,7 @@
 import {
     Action,
     EmbeddedLink,
-    EmbeddedRepresentation,
+    EmbeddedEntity,
     Entity,
     Link
 } from '../entity';
@@ -159,7 +159,7 @@ describe('Entity.entities', () => {
                 href: `${href}/2`,
                 title: 'Item 2'
             },
-            new EmbeddedRepresentation(rel, {
+            new EmbeddedEntity(rel, {
                 title: 'Item 3',
                 links: [{ rel: ['self'], href: `${href}/3` }]
             }),
@@ -179,7 +179,7 @@ describe('Entity.entities', () => {
         expect(entity.entities[1].href).toEqual(entities[1].href);
         expect(entity.entities[1].title).toEqual(entities[1].title);
         expect(entity.entities[2]).toBe(entities[2]);
-        expect(entity.entities[3]).toBeInstanceOf(EmbeddedRepresentation);
+        expect(entity.entities[3]).toBeInstanceOf(EmbeddedEntity);
         expect(entity.entities[3].rel).toEqual(entities[3].rel);
         expect(entity.entities[3].href).toEqual(entities[3].href);
         expect(entity.entities[3].title).toEqual(entities[3].title);
@@ -208,7 +208,7 @@ describe('Entity.entities', () => {
     it('should ignore non-array value', () => {
         const entities = [
             new EmbeddedLink(rel, href),
-            new EmbeddedRepresentation(['item'], {
+            new EmbeddedEntity(['item'], {
                 links: [{ rel: ['self'], href }]
             })
         ];
@@ -413,39 +413,39 @@ test('Entity serialization', () => {
     expect(json).toMatchSnapshot();
 });
 
-describe('EmbeddedRepresentation', () => {
+describe('EmbeddedEntity', () => {
     const rel = ['item'];
 
     it('should be instanceof Entity', () => {
-        const embeddedRep = new EmbeddedRepresentation(rel);
+        const embeddedEntity = new EmbeddedEntity(rel);
 
-        expect(embeddedRep).toBeInstanceOf(EmbeddedRepresentation);
-        expect(embeddedRep).toBeInstanceOf(Entity);
+        expect(embeddedEntity).toBeInstanceOf(EmbeddedEntity);
+        expect(embeddedEntity).toBeInstanceOf(Entity);
     });
 
     describe('rel', () => {
         it('should accept any array of strings', () => {
             [rel, ['collection', 'up'], []].forEach((value) => {
-                const embeddedRep = new EmbeddedRepresentation(value);
-                expect(embeddedRep.rel).toEqual(value);
+                const embeddedEntity = new EmbeddedEntity(value);
+                expect(embeddedEntity.rel).toEqual(value);
             });
         });
 
         it('should coerce string to singleton array', () => {
             ['item', ''].forEach((value) => {
-                const embeddedRep = new EmbeddedRepresentation(value);
-                expect(embeddedRep.rel).toEqual([value]);
+                const embeddedEntity = new EmbeddedEntity(value);
+                expect(embeddedEntity.rel).toEqual([value]);
             });
 
-            const embeddedRep = new EmbeddedRepresentation(rel);
+            const embeddedEntity = new EmbeddedEntity(rel);
 
-            embeddedRep.rel = 'up';
+            embeddedEntity.rel = 'up';
 
-            expect(embeddedRep.rel).toEqual(['up']);
+            expect(embeddedEntity.rel).toEqual(['up']);
         });
 
         it('should remove non-strings from array', () => {
-            const embeddedRep = new EmbeddedRepresentation([
+            const embeddedEntity = new EmbeddedEntity([
                 true,
                 42,
                 'item',
@@ -453,23 +453,23 @@ describe('EmbeddedRepresentation', () => {
                 undefined
             ]);
 
-            expect(embeddedRep.rel).toEqual(rel);
+            expect(embeddedEntity.rel).toEqual(rel);
         });
 
         it('should throw TypeError when constructor arg is invalid', () => {
             [undefined, null, true, 42, {}].forEach((value) => {
-                expect(() => new EmbeddedRepresentation(value)).toThrow(
+                expect(() => new EmbeddedEntity(value)).toThrow(
                     TypeError
                 );
             });
         });
 
         it('should ignore invalid value in setter', () => {
-            const embeddedRep = new EmbeddedRepresentation(rel);
+            const embeddedEntity = new EmbeddedEntity(rel);
 
             [undefined, null, true, 42, {}].forEach((value) => {
-                embeddedRep.rel = value;
-                expect(embeddedRep.rel).toEqual(rel);
+                embeddedEntity.rel = value;
+                expect(embeddedEntity.rel).toEqual(rel);
             });
         });
     });
