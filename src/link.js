@@ -3,97 +3,90 @@ import extendWith from './util/extend-with';
 import { isArray, isNonNullObject, isString, isUri } from './util/type-guard';
 
 export class Link {
-    #rel;
-    #href;
-    #class;
-    #title;
-    #type;
+  #rel;
+  #href;
+  #class;
+  #title;
+  #type;
 
-    constructor(rel, href, options = {}) {
-        if (!isString(rel) && !isArray(rel)) {
-            throw new TypeError('Link.rel must be an array of strings');
-        }
-        if (!isUri(href)) {
-            throw new TypeError('Link.href must be a URI');
-        }
-
-        const { class: linkClass, title, type, ...extensions } = options ?? {};
-
-        this.rel = rel;
-        this.href = href;
-        this.class = linkClass;
-        this.title = title;
-        this.type = type;
-
-        extendWith(this, extensions);
+  constructor(rel, href, options = {}) {
+    if (!isString(rel) && !isArray(rel)) {
+      throw new TypeError('Link.rel must be an array of strings');
+    }
+    if (!isUri(href)) {
+      throw new TypeError('Link.href must be a URI');
     }
 
-    get rel() {
-        return this.#rel;
-    }
+    const { class: linkClass, title, type, ...extensions } = options ?? {};
 
-    set rel(value) {
-        this.#rel = coerce.toStringArray(value, this.rel);
-    }
+    this.rel = rel;
+    this.href = href;
+    this.class = linkClass;
+    this.title = title;
+    this.type = type;
 
-    get href() {
-        return this.#href;
-    }
+    extendWith(this, extensions);
+  }
 
-    set href(value) {
-        this.#href = coerce.toUriReference(value, this.href);
-    }
+  get rel() {
+    return this.#rel;
+  }
 
-    get class() {
-        return this.#class;
-    }
+  set rel(value) {
+    this.#rel = coerce.toStringArray(value, this.rel);
+  }
 
-    set class(value) {
-        this.#class = coerce.toOptionalStringArray(value, this.class);
-    }
+  get href() {
+    return this.#href;
+  }
 
-    get title() {
-        return this.#title;
-    }
+  set href(value) {
+    this.#href = coerce.toUriReference(value, this.href);
+  }
 
-    set title(value) {
-        this.#title = coerce.toOptionalString(value, this.title);
-    }
+  get class() {
+    return this.#class;
+  }
 
-    get type() {
-        return this.#type;
-    }
+  set class(value) {
+    this.#class = coerce.toOptionalStringArray(value, this.class);
+  }
 
-    set type(value) {
-        this.#type = coerce.toOptionalMediaTypeString(value, this.type);
-    }
+  get title() {
+    return this.#title;
+  }
 
-    toJSON() {
-        const {
-            rel,
-            href,
-            class: linkClass,
-            title,
-            type,
-            ...extensions
-        } = this;
-        return { rel, href, class: linkClass, title, type, ...extensions };
-    }
+  set title(value) {
+    this.#title = coerce.toOptionalString(value, this.title);
+  }
 
-    static isValid(value) {
-        return (
-            value instanceof Link ||
-            (isNonNullObject(value) &&
-                (isArray(value.rel) || isString(value.rel)) &&
-                isUri(value.href))
-        );
-    }
+  get type() {
+    return this.#type;
+  }
 
-    static of(value) {
-        if (value instanceof Link) {
-            return value;
-        }
-        const { rel, href, ...rest } = value;
-        return new Link(rel, href, rest);
+  set type(value) {
+    this.#type = coerce.toOptionalMediaTypeString(value, this.type);
+  }
+
+  toJSON() {
+    const { rel, href, class: linkClass, title, type, ...extensions } = this;
+    return { rel, href, class: linkClass, title, type, ...extensions };
+  }
+
+  static isValid(value) {
+    return (
+      value instanceof Link ||
+      (isNonNullObject(value) &&
+        (isArray(value.rel) || isString(value.rel)) &&
+        isUri(value.href))
+    );
+  }
+
+  static of(value) {
+    if (value instanceof Link) {
+      return value;
     }
+    const { rel, href, ...rest } = value;
+    return new Link(rel, href, rest);
+  }
 }

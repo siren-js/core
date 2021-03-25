@@ -5,37 +5,37 @@ const rel = ['self'];
 const href = 'http://example.com';
 
 describe('EmbeddedLink', () => {
-    it('should be instanceof Link', () => {
-        const link = new EmbeddedLink(rel, href);
+  it('should be instanceof Link', () => {
+    const link = new EmbeddedLink(rel, href);
 
-        expect(link).toBeInstanceOf(EmbeddedLink);
-        expect(link).toBeInstanceOf(Link);
+    expect(link).toBeInstanceOf(EmbeddedLink);
+    expect(link).toBeInstanceOf(Link);
+  });
+
+  it('should require non-empty rel', () => {
+    expect(() => new EmbeddedLink([], href)).toThrow(TypeError);
+    expect(() => new EmbeddedLink([42], href)).toThrow(TypeError);
+  });
+
+  it('should ignore empty rel', () => {
+    const link = new EmbeddedLink(rel, href);
+
+    [[], [42]].forEach((value) => {
+      link.rel = value;
+      expect(link.rel).toEqual(rel);
+    });
+  });
+
+  it('should serialize with rel', () => {
+    const link = new EmbeddedLink(rel, href, {
+      class: ['home'],
+      title: 'Home Page',
+      type: 'text/html',
+      hreflang: 'en-US'
     });
 
-    it('should require non-empty rel', () => {
-        expect(() => new EmbeddedLink([], href)).toThrow(TypeError);
-        expect(() => new EmbeddedLink([42], href)).toThrow(TypeError);
-    });
+    const json = JSON.stringify(link, null, 2);
 
-    it('should ignore empty rel', () => {
-        const link = new EmbeddedLink(rel, href);
-
-        [[], [42]].forEach((value) => {
-            link.rel = value;
-            expect(link.rel).toEqual(rel);
-        });
-    });
-
-    it('should serialize with rel', () => {
-        const link = new EmbeddedLink(rel, href, {
-            class: ['home'],
-            title: 'Home Page',
-            type: 'text/html',
-            hreflang: 'en-US'
-        });
-
-        const json = JSON.stringify(link, null, 2);
-
-        expect(json).toMatchSnapshot();
-    });
+    expect(json).toMatchSnapshot();
+  });
 });

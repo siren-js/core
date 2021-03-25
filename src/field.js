@@ -3,89 +3,81 @@ import extendWith from './util/extend-with';
 import { isNonNullObject, isNullish, isString } from './util/type-guard';
 
 export class Field {
-    #name;
-    #class;
-    #title;
-    #type;
-    #value;
+  #name;
+  #class;
+  #title;
+  #type;
+  #value;
 
-    constructor(name, options = {}) {
-        if (!isString(name)) {
-            throw new TypeError('Field.name must be a string');
-        }
-
-        const { class: fieldClass, title, type, value, ...extensions } =
-            options ?? {};
-
-        this.#name = name;
-        this.class = fieldClass;
-        this.title = title;
-        this.type = type;
-        this.value = value;
-
-        extendWith(this, extensions);
+  constructor(name, options = {}) {
+    if (!isString(name)) {
+      throw new TypeError('Field.name must be a string');
     }
 
-    get name() {
-        return this.#name;
-    }
+    const { class: fieldClass, title, type, value, ...extensions } =
+      options ?? {};
 
-    get class() {
-        return this.#class;
-    }
+    this.#name = name;
+    this.class = fieldClass;
+    this.title = title;
+    this.type = type;
+    this.value = value;
 
-    set class(value) {
-        this.#class = coerce.toOptionalStringArray(value, this.class);
-    }
+    extendWith(this, extensions);
+  }
 
-    get title() {
-        return this.#title;
-    }
+  get name() {
+    return this.#name;
+  }
 
-    set title(value) {
-        this.#title = coerce.toOptionalString(value, this.title);
-    }
+  get class() {
+    return this.#class;
+  }
 
-    get type() {
-        return this.#type;
-    }
+  set class(value) {
+    this.#class = coerce.toOptionalStringArray(value, this.class);
+  }
 
-    set type(value) {
-        this.#type = coerce.toOptionalString(value, this.type);
-    }
+  get title() {
+    return this.#title;
+  }
 
-    get value() {
-        return this.#value;
-    }
+  set title(value) {
+    this.#title = coerce.toOptionalString(value, this.title);
+  }
 
-    set value(value) {
-        this.#value = isNullish(value) ? undefined : value;
-    }
+  get type() {
+    return this.#type;
+  }
 
-    toJSON() {
-        const {
-            name,
-            class: fieldClass,
-            title,
-            type,
-            value,
-            ...extensions
-        } = this;
-        return { name, class: fieldClass, title, type, value, ...extensions };
-    }
+  set type(value) {
+    this.#type = coerce.toOptionalString(value, this.type);
+  }
 
-    static isValid(value) {
-        return (
-            value instanceof Field ||
-            (isNonNullObject(value) && isString(value.name))
-        );
-    }
+  get value() {
+    return this.#value;
+  }
 
-    static of(value) {
-        if (value instanceof Field) {
-            return value;
-        }
-        const { name, ...rest } = value;
-        return new Field(name, rest);
+  set value(value) {
+    this.#value = isNullish(value) ? undefined : value;
+  }
+
+  toJSON() {
+    const { name, class: fieldClass, title, type, value, ...extensions } = this;
+    return { name, class: fieldClass, title, type, value, ...extensions };
+  }
+
+  static isValid(value) {
+    return (
+      value instanceof Field || (isNonNullObject(value) && isString(value.name))
+    );
+  }
+
+  static of(value) {
+    if (value instanceof Field) {
+      return value;
     }
+    const { name, ...rest } = value;
+    return new Field(name, rest);
+  }
 }

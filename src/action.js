@@ -6,136 +6,128 @@ import { isNonNullObject, isString, isUri } from './util/type-guard';
 export * from './field';
 
 export class Action {
-    #name;
-    #href;
-    #class;
-    #fields;
-    #method;
-    #title;
-    #type;
+  #name;
+  #href;
+  #class;
+  #fields;
+  #method;
+  #title;
+  #type;
 
-    constructor(name, href, options = {}) {
-        if (!isString(name)) {
-            throw new TypeError('Action.name must be a string');
-        }
-        if (!isUri(href)) {
-            throw new TypeError('Action.href must be a URI');
-        }
-
-        const {
-            class: actionClass,
-            fields,
-            method,
-            title,
-            type,
-            ...extensions
-        } = options ?? {};
-
-        this.#name = name;
-        this.href = href;
-        this.class = actionClass;
-        this.fields = fields;
-        this.method = method;
-        this.title = title;
-        this.type = type;
-
-        extendWith(this, extensions);
+  constructor(name, href, options = {}) {
+    if (!isString(name)) {
+      throw new TypeError('Action.name must be a string');
+    }
+    if (!isUri(href)) {
+      throw new TypeError('Action.href must be a URI');
     }
 
-    get name() {
-        return this.#name;
-    }
+    const { class: actionClass, fields, method, title, type, ...extensions } =
+      options ?? {};
 
-    get href() {
-        return this.#href;
-    }
+    this.#name = name;
+    this.href = href;
+    this.class = actionClass;
+    this.fields = fields;
+    this.method = method;
+    this.title = title;
+    this.type = type;
 
-    set href(value) {
-        this.#href = coerce.toUriReference(value, this.href);
-    }
+    extendWith(this, extensions);
+  }
 
-    get class() {
-        return this.#class;
-    }
+  get name() {
+    return this.#name;
+  }
 
-    set class(value) {
-        this.#class = coerce.toOptionalStringArray(value, this.class);
-    }
+  get href() {
+    return this.#href;
+  }
 
-    get fields() {
-        return this.#fields;
-    }
+  set href(value) {
+    this.#href = coerce.toUriReference(value, this.href);
+  }
 
-    set fields(value) {
-        this.#fields = coerce.toUniqueSubComponents(
-            value,
-            this.fields,
-            Field.isValid,
-            Field.of
-        );
-    }
+  get class() {
+    return this.#class;
+  }
 
-    get method() {
-        return this.#method;
-    }
+  set class(value) {
+    this.#class = coerce.toOptionalStringArray(value, this.class);
+  }
 
-    set method(value) {
-        this.#method = coerce.toOptionalString(value, this.method);
-    }
+  get fields() {
+    return this.#fields;
+  }
 
-    get title() {
-        return this.#title;
-    }
+  set fields(value) {
+    this.#fields = coerce.toUniqueSubComponents(
+      value,
+      this.fields,
+      Field.isValid,
+      Field.of
+    );
+  }
 
-    set title(value) {
-        this.#title = coerce.toOptionalString(value, this.title);
-    }
+  get method() {
+    return this.#method;
+  }
 
-    get type() {
-        return this.#type;
-    }
+  set method(value) {
+    this.#method = coerce.toOptionalString(value, this.method);
+  }
 
-    set type(value) {
-        this.#type = coerce.toOptionalMediaTypeString(value, this.type);
-    }
+  get title() {
+    return this.#title;
+  }
 
-    toJSON() {
-        const {
-            name,
-            href,
-            class: actionClass,
-            fields,
-            method,
-            title,
-            type,
-            ...extensions
-        } = this;
-        return {
-            name,
-            href,
-            class: actionClass,
-            fields,
-            method,
-            title,
-            type,
-            ...extensions
-        };
-    }
+  set title(value) {
+    this.#title = coerce.toOptionalString(value, this.title);
+  }
 
-    static isValid(value) {
-        return (
-            value instanceof Action ||
-            (isNonNullObject(value) &&
-                isString(value.name) &&
-                isUri(value.href))
-        );
-    }
+  get type() {
+    return this.#type;
+  }
 
-    static of(value) {
-        if (value instanceof Action) {
-            return value;
-        }
-        const { name, href, ...rest } = value;
-        return new Action(name, href, rest);
+  set type(value) {
+    this.#type = coerce.toOptionalMediaTypeString(value, this.type);
+  }
+
+  toJSON() {
+    const {
+      name,
+      href,
+      class: actionClass,
+      fields,
+      method,
+      title,
+      type,
+      ...extensions
+    } = this;
+    return {
+      name,
+      href,
+      class: actionClass,
+      fields,
+      method,
+      title,
+      type,
+      ...extensions
+    };
+  }
+
+  static isValid(value) {
+    return (
+      value instanceof Action ||
+      (isNonNullObject(value) && isString(value.name) && isUri(value.href))
+    );
+  }
+
+  static of(value) {
+    if (value instanceof Action) {
+      return value;
     }
+    const { name, href, ...rest } = value;
+    return new Action(name, href, rest);
+  }
 }
