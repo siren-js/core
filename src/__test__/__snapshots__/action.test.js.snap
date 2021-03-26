@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Action serialization 1`] = `
+"{
+  \\"name\\": \\"add-item\\",
+  \\"href\\": \\"http://example.com\\",
+  \\"class\\": [
+    \\"order\\"
+  ],
+  \\"fields\\": [
+    {
+      \\"name\\": \\"orderNumber\\",
+      \\"type\\": \\"hidden\\",
+      \\"value\\": \\"42\\"
+    },
+    {
+      \\"name\\": \\"quantity\\",
+      \\"type\\": \\"number\\"
+    },
+    {
+      \\"name\\": \\"productCode\\"
+    }
+  ],
+  \\"method\\": \\"POST\\",
+  \\"title\\": \\"Add Item\\",
+  \\"type\\": \\"application/x-www-form-urlencoded\\",
+  \\"encoding\\": \\"UTF-16\\"
+}"
+`;
