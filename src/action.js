@@ -8,7 +8,7 @@ export * from './field';
 /**
  * @typedef {object} ActionOptions Optional `Action` members and extensions
  * @property {string | readonly string[]} [class] A list of strings describing
- *    aspects of the `Action` based on the current representation. Possible
+ *    the nature of the `Action` based on the current representation. Possible
  *    values are implementation-dependent and should be documented. Setting the
  *    value to a `string` will result in a singleton array.
  * @property {readonly Field[]} [fields] Input controls of the `Action`
@@ -89,10 +89,10 @@ export class Action {
   }
 
   /**
-   * A list of strings describing aspects of the `Action` based on the current
-   * representation. Possible values are implementation-dependent and should be
-   * documented. Setting the value to a `string` will result in a singleton
-   * array.
+   * A list of strings describing the nature of the `Action` based on the
+   * current representation. Possible values are implementation-dependent and
+   * should be documented. Setting the value to a `string` will result in a
+   * singleton array.
    * @type {readonly string[]}
    */
   get class() {

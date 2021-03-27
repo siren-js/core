@@ -5,7 +5,7 @@ import { isNonNullObject, isNullish, isString } from './util/type-guard';
 /**
  * @typedef {object} FieldOptions Optional `Field` members and extensions
  * @property {string | readonly string[]} [class] A list of strings describing
- *    aspects of the `Field` based on the current representation. Possible
+ *    the nature of the `Field` based on the current representation. Possible
  *    values are implementation-dependent and should be documented. Setting the
  *    value to a `string` will result in a singleton array.
  * @property {string} [title] Textual annotation of the `Field`. Clients may use
@@ -59,7 +59,7 @@ export class Field {
   }
 
   /**
-   * A list of strings describing aspects of the `Field` based on the current
+   * A list of strings describing the nature of the `Field` based on the current
    * representation. Possible values are implementation-dependent and should be
    * documented. Setting the value to a `string` will result in a singleton
    * array.
