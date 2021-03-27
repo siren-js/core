@@ -87,7 +87,7 @@ export class Field {
 
   /**
    * Input type of the field. May include any of the
-   * [input types from HTML](https://html.spec.whatwg.org/multipage/input.html#the-input-element).
+   * [input types from HTML](https://html.spec.whatwg.org/multipage/input.html#attr-input-type).
    * When missing, the default is assumed to be `text`.
    * @type {string}
    */
