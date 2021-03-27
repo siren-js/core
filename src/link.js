@@ -36,6 +36,8 @@ export class Link {
    *    will result in the `URL`'s string representation.
    * @param {LinkOptions} options Optional `Link` members (`class`, `title`,
    *    `type`) and extensions
+   * @throws {TypeError} If `rel` is not a `string` or `string[]` or `href` is
+   *    not a valid URI
    */
   constructor(rel, href, options = {}) {
     if (!isString(rel) && !isArray(rel)) {

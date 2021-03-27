@@ -41,6 +41,8 @@ export class Action {
    *    result in the `URL`'s string representation.
    * @param {ActionOptions} options Optional `Action` members (`class`,
    *    `fields`, `method`, `title`, `type`) and extensions
+   * @throws {TypeError} If `name` is not a `string` or `href` is not a valid
+   *    URI
    */
   constructor(name, href, options = {}) {
     if (!isString(name)) {

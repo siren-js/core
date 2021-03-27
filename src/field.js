@@ -31,6 +31,7 @@ export class Field {
    *    an `Action`.
    * @param {FieldOptions} options Optional `Field` members (`class`, `title`,
    *    `type`, `value`) and extensions
+   * @throws {TypeError} If `name` is not a `string`
    */
   constructor(name, options = {}) {
     if (!isString(name)) {
