@@ -16,8 +16,8 @@ import { isNonNullObject, isNullish, isString } from './util/type-guard';
  */
 
 /**
- * Represents a control inside an `Action`. Serialization of a `Field` depends
- * on its `type` and its corresponding `Action`'s `type`.
+ * Represents an input control inside an `Action`. Serialization of a `Field`
+ * depends on its `type` and its corresponding `Action`'s `type`.
  */
 export class Field {
   #name;
