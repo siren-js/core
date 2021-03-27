@@ -4,10 +4,10 @@ import { isNonNullObject, isNullish, isString } from './util/type-guard';
 
 /**
  * @typedef {object} FieldOptions Optional Field members and extensions
- * @property {string | string[]} [class] A list of strings describing aspects of
- *    the `Field` based on the current representation. Possible values are
- *    implementation-dependent and should be documented. Setting the value to a
- *    `string` will result in a singleton array.
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    aspects of the `Field` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
  * @property {string} [title] Textual annotation of a field. Clients may use
  *    this as a label.
  * @property {string} [type] Input type of the field. May include any of the

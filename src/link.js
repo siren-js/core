@@ -4,10 +4,10 @@ import { isArray, isNonNullObject, isString, isUri } from './util/type-guard';
 
 /**
  * @typedef {object} LinkOptions Optional Link members and extensions
- * @property {string | string[]} [class] A list of strings describing aspects of
- *    the `Link` based on the current representation. Possible values are
- *    implementation-dependent and should be documented. Setting the value to a
- *    `string` will result in a singleton array.
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    aspects of the `Link` based on the current representation. Possible values
+ *    are implementation-dependent and should be documented. Setting the value
+ *    to a `string` will result in a singleton array.
  * @property {string} [title] Text describing the nature of a link
  * @property {string} [type] A hint indicating what the media type of the result
  *    of dereferencing the `Link` should be, per
