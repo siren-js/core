@@ -29,8 +29,8 @@ export class Field {
   /**
    * @param {string} name A name describing the control. Must be unique within
    *    an `Action`.
-   * @param {FieldOptions} options Optional `Field` members (`class`, `title`,
-   *    `type`, `value`) and extensions
+   * @param {FieldOptions} options Optional members (`class`, `title`, `type`,
+   *    `value`) and extensions
    * @throws {TypeError} If `name` is not a `string`
    */
   constructor(name, options = {}) {

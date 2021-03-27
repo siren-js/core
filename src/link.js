@@ -34,8 +34,8 @@ export class Link {
    *    result in a singleton array.
    * @param {string | URL} href The URI of the linked resource. Passing a `URL`
    *    will result in the `URL`'s string representation.
-   * @param {LinkOptions} options Optional `Link` members (`class`, `title`,
-   *    `type`) and extensions
+   * @param {LinkOptions} options Optional members (`class`, `title`, `type`)
+   *    and extensions
    * @throws {TypeError} If `rel` is not a `string` or `string[]` or `href` is
    *    not a valid URI
    */

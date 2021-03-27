@@ -39,8 +39,8 @@ export class Action {
    *    unique within an `Entity`'s `actions`.
    * @param {string | URL} href The URI of the action. Passing a `URL` will
    *    result in the `URL`'s string representation.
-   * @param {ActionOptions} options Optional `Action` members (`class`,
-   *    `fields`, `method`, `title`, `type`) and extensions
+   * @param {ActionOptions} options Optional members (`class`, `fields`,
+   *    `method`, `title`, `type`) and extensions
    * @throws {TypeError} If `name` is not a `string` or `href` is not a valid
    *    URI
    */
