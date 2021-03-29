@@ -70,7 +70,7 @@ export class Entity {
 
   /**
    * Available behavior exposed by the `Entity`
-   * @type {readonly string[]}
+   * @type {readonly string[] | undefined}
    */
   get actions() {
     return this.#actions;
@@ -90,7 +90,7 @@ export class Entity {
    * current representation. Possible values are implementation-dependent and
    * should be documented. Setting the value to a `string` will result in a
    * singleton array.
-   * @type {readonly string[]}
+   * @type {readonly string[] | undefined}
    */
   get class() {
     return this.#class;
@@ -102,7 +102,7 @@ export class Entity {
 
   /**
    * Related entities represented as embedded links or representations
-   * @type {readonly SubEntity[]}
+   * @type {readonly SubEntity[] | undefined}
    */
   get entities() {
     return this.#entities;
@@ -119,7 +119,7 @@ export class Entity {
 
   /**
    * Navigation links that communicate ways to navigate outside the entity graph
-   * @type {readonly Link[]}
+   * @type {readonly Link[] | undefined}
    */
   get links() {
     return this.#links;
@@ -131,7 +131,7 @@ export class Entity {
 
   /**
    * Key-value pairs describing the state of the `Entity`
-   * @type {Record<string, unknown>} 
+   * @type {Record<string, unknown> | undefined} 
    */
   get properties() {
     return this.#properties;
@@ -147,7 +147,7 @@ export class Entity {
 
   /**
    * Descriptive text about the `Entity`
-   * @type {string}
+   * @type {string | undefined}
    */
   get title() {
     return this.#title;

@@ -93,7 +93,7 @@ export class Action {
    * current representation. Possible values are implementation-dependent and
    * should be documented. Setting the value to a `string` will result in a
    * singleton array.
-   * @type {readonly string[]}
+   * @type {readonly string[] | undefined}
    */
   get class() {
     return this.#class;
@@ -105,7 +105,7 @@ export class Action {
 
   /**
    * Input controls of the `Action`
-   * @type {readonly Field[]}
+   * @type {readonly Field[] | undefined}
    */
   get fields() {
     return this.#fields;
@@ -123,7 +123,7 @@ export class Action {
   /**
    * The protocol method used when submitting the `Action`. When missing, the
    * default is assumed to be `'GET'`.
-   * @type {string}
+   * @type {string | undefined}
    */
   get method() {
     return this.#method;
@@ -135,7 +135,7 @@ export class Action {
 
   /**
    * Descriptive text about the `Action`
-   * @type {string}
+   * @type {string | undefined}
    */
   get title() {
     return this.#title;
@@ -152,6 +152,7 @@ export class Action {
    * [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
    * will be ignored. When missing, the default is assumed to be
    * `'application/x-www-form-urlencoded'`.
+   * @type {string | undefined}
    */
   get type() {
     return this.#type;

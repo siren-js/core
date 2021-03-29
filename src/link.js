@@ -90,7 +90,7 @@ export class Link {
    * representation. Possible values are implementation-dependent and should be
    * documented. Setting the value to a `string` will result in a singleton
    * array.
-   * @type {readonly string[]}
+   * @type {readonly string[] | undefined}
    */
   get class() {
     return this.#class;
@@ -102,7 +102,7 @@ export class Link {
 
   /**
    * Text describing the nature of a link
-   * @type {string}
+   * @type {string | undefined}
    */
   get title() {
     return this.#title;
@@ -119,7 +119,7 @@ export class Link {
    * value that does not match the ABNF `type-name "/" subtype-name` (see
    * [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
    * will be ignored.
-   * @type {string}
+   * @type {string | undefined}
    */
   get type() {
     return this.#type;
