@@ -10,6 +10,13 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## Unreleased
 
+## 0.1.1
+
+### Added
+
+- Component classes documented with [JSDoc](https://jsdoc.app)
+- Type declarations for more IDE-friendly development
+
 ## 0.1.0
 
 ### Added
