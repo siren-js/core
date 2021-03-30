@@ -1,5 +1,8 @@
 # Siren.js Core
 
+[![npm version](https://badge.fury.io/js/%40siren-js%2Fcore.svg)](https://badge.fury.io/js/%40siren-js%2Fcore)
+[![Build Package](https://github.com/siren-js/core/actions/workflows/build.yaml/badge.svg)](https://github.com/siren-js/core/actions/workflows/build.yaml)
+
 This is the core library for Siren.js that provides classes for creating objects
 representing components (entities, actions, etc.) of the [Siren][siren]
 hypermedia format. The primary intent of this library is for generating or
