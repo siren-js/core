@@ -1,0 +1,11 @@
+{
+  "include": ["src/**/*"],
+  "exclude": ["src/**/__test__"],
+  "compilerOptions": {
+    "allowJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "strictNullChecks": true,
+    "outDir": "dist"
+  }
+}

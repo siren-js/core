@@ -1,6 +1,6 @@
 {
   "name": "@siren-js/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Core Siren.js functionality",
   "files": [
     "/dist"
@@ -11,7 +11,8 @@
     "test": "jest --env=jsdom && jest --env=node",
     "test:jsdom": "jest --env=jsdom",
     "test:node": "jest --env=node",
-    "compile": "babel src --out-dir dist --ignore src/**/__test__",
+    "gen-types": "tsc",
+    "compile": "babel src --out-dir dist --ignore src/**/__test__ && npm run gen-types",
     "build": "npm run lint && npm test && npm run compile",
     "prepublishOnly": "npm run build"
   },
@@ -44,6 +45,7 @@
     "eslint": "^7.21.0",
     "eslint-config-prettier": "^8.1.0",
     "jest": "^26.6.3",
-    "prettier": "2.2.1"
+    "prettier": "2.2.1",
+    "typescript": "^4.2.3"
   }
 }
