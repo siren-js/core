@@ -18,13 +18,6 @@ export const isString = typeOfTypeGuard('string');
 
 export const isArray = Array.isArray;
 
-export const isTypedArray = (value, itemTypeGuard) =>
-  isArray(value) && value.every(itemTypeGuard);
-
-export const isStringArray = typeGuard((value) =>
-  isTypedArray(value, isString)
-);
-
 /**
  * Determines if a value is an object, array, or `null` (i.e., the `typeof`
  * operator returns `'object'`).
