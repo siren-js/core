@@ -79,6 +79,32 @@ describe('EmbeddedLink.rel', () => {
   });
 });
 
+describe('EmbeddedLink.isValid', () => {
+  it('should return true if object is parsable', () => {
+    const links = [
+      { rel, href },
+      { rel: 'self', href }
+    ];
+
+    links.forEach((value) => expect(EmbeddedLink.isValid(value)).toBe(true));
+  });
+
+  it('should return false if object is not parsable', () => {
+    const invalidHref = 'http://\uFFFF.com';
+    const links = [
+      {},
+      { rel },
+      { href },
+      { rel: 42, href },
+      { rel: [], href },
+      { rel, href: invalidHref },
+      { rel: 'self', href: invalidHref }
+    ];
+
+    links.forEach((value) => expect(EmbeddedLink.isValid(value)).toBe(false));
+  });
+});
+
 test('EmbeddedLink serialization', () => {
   const link = new EmbeddedLink(rel, href, {
     class: ['home'],

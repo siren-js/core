@@ -57,7 +57,7 @@ export class EmbeddedLink extends Link {
   static isValid(value) {
     return (
       value instanceof EmbeddedLink ||
-      (Link.isValid(value) && value.rel.filter(isString).length > 0)
+      (Link.isValid(value) && coerce.toStringArray(value.rel, []).length > 0)
     );
   }
 
