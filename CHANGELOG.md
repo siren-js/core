@@ -10,6 +10,13 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## Unreleased
 
+## 0.1.2
+
+### Fixed
+
+- Corrected validation in `EmbeddedLink`'s constructor of the `rel` parameter; a
+  `TypeError` is still thrown, but now includes a better message.
+
 ## 0.1.1
 
 ### Added
