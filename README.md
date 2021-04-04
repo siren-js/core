@@ -1,7 +1,7 @@
 # Siren.js Core
 
-[![npm version](https://badge.fury.io/js/%40siren-js%2Fcore.svg)](https://badge.fury.io/js/%40siren-js%2Fcore)
-[![Build Package](https://github.com/siren-js/core/actions/workflows/build.yaml/badge.svg)](https://github.com/siren-js/core/actions/workflows/build.yaml)
+[![Node Package](https://img.shields.io/npm/v/@siren-js/core)](https://npmjs.org/@siren-js/core)
+[![Build Status](https://img.shields.io/github/workflow/status/siren-js/core/Build%20Package)](https://github.com/siren-js/core/actions/workflows/build.yaml)
 
 This is the core library for Siren.js that provides classes for creating objects
 representing components (entities, actions, etc.) of the [Siren][siren]
