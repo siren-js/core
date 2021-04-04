@@ -3,6 +3,7 @@
 [![Node Package](https://img.shields.io/npm/v/@siren-js/core)](https://npmjs.org/@siren-js/core)
 [![Build Status](https://img.shields.io/github/workflow/status/siren-js/core/Build%20Package)](https://github.com/siren-js/core/actions/workflows/build.yaml)
 [![Code Coverage](https://img.shields.io/codecov/c/github/siren-js/core)](https://codecov.io/gh/siren-js/core)
+[![License](https://img.shields.io/github/license/siren-js/core)](LICENSE)
 
 This is the core library for Siren.js that provides classes for creating objects
 representing components (entities, actions, etc.) of the [Siren][siren]
