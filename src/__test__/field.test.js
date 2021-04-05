@@ -166,6 +166,18 @@ describe('Field.value', () => {
   });
 });
 
+describe('Field.isValid', () => {
+  it('should return true if object is parsable', () => {
+    expect(Field.isValid({ name })).toBe(true);
+  });
+
+  it('should return false if object is not parsable', () => {
+    [{}, { name: 42 }].forEach((value) =>
+      expect(Field.isValid(value)).toBe(false)
+    );
+  });
+});
+
 test('Field extensions', () => {
   const min = 1;
   const step = '2';
