@@ -131,7 +131,7 @@ export class Entity {
 
   /**
    * Key-value pairs describing the state of the `Entity`
-   * @type {Record<string, unknown> | undefined} 
+   * @type {Record<string, unknown> | undefined}
    */
   get properties() {
     return this.#properties;

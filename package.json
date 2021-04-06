@@ -7,13 +7,15 @@
   ],
   "main": "dist/index.js",
   "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "eslint src --ext .js",
     "test": "jest --env=jsdom && jest --env=node",
     "test:jsdom": "jest --env=jsdom",
     "test:node": "jest --env=node",
     "gen-types": "tsc",
     "compile": "babel src --out-dir dist --ignore src/**/__test__ && npm run gen-types",
-    "build": "npm run lint && npm test && npm run compile",
+    "build": "npm run format:check && npm run lint && npm test && npm run compile",
     "prepublishOnly": "npm run build"
   },
   "repository": {

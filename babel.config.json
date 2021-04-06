@@ -5,7 +5,5 @@
     "browsers": "defaults",
     "node": "10"
   },
-  "ignore": [
-    "src/coverage"
-  ]
+  "ignore": ["coverage"]
 }
