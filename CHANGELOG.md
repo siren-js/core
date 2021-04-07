@@ -12,6 +12,11 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## 0.1.2
 
+### Added
+
+- Contribution guidelines
+- Code of conduct
+
 ### Fixed
 
 - Corrected validation of `rel` in `EmbeddedLink`'s constructor; a `TypeError`
