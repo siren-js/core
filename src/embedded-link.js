@@ -1,6 +1,5 @@
 import { Link } from './link';
 import * as coerce from './util/coerce';
-import { isString } from './util/type-guard';
 
 /**
  * @typedef {import('./link').LinkOptions} EmbeddedLinkOptions
