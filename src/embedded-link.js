@@ -1,6 +1,5 @@
 import { Link } from './link';
 import * as coerce from './util/coerce';
-import { isString } from './util/type-guard';
 
 /**
  * @typedef {import('./link').LinkOptions} EmbeddedLinkOptions
@@ -25,7 +24,7 @@ export class EmbeddedLink extends Link {
   constructor(rel, href, options = {}) {
     super(rel, href, options);
 
-    if (this.rel.length === 0) {
+    if (this.rel === undefined) {
       throw new TypeError('EmbeddedLink.rel must be non-empty');
     }
   }
@@ -57,7 +56,7 @@ export class EmbeddedLink extends Link {
   static isValid(value) {
     return (
       value instanceof EmbeddedLink ||
-      (Link.isValid(value) && value.rel.filter(isString).length > 0)
+      (Link.isValid(value) && coerce.toStringArray(value.rel, []).length > 0)
     );
   }
 

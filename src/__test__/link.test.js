@@ -208,6 +208,32 @@ describe('Link.type', () => {
   });
 });
 
+describe('Link.isValid', () => {
+  it('should return true if object is parsable', () => {
+    const links = [
+      { rel, href },
+      { rel: [], href },
+      { rel: 'self', href }
+    ];
+
+    links.forEach((value) => expect(Link.isValid(value)).toBe(true));
+  });
+
+  it('should return false if object is not parsable', () => {
+    const invalidHref = 'http://\uFFFF.com';
+    const links = [
+      {},
+      { rel },
+      { href },
+      { rel: 42, href },
+      { rel, href: invalidHref },
+      { rel: 'self', href: invalidHref }
+    ];
+
+    links.forEach((value) => expect(Link.isValid(value)).toBe(false));
+  });
+});
+
 test('Link extensions', () => {
   const hreflang = 'en-US';
   const media = 'screen and (color)';

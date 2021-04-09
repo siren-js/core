@@ -286,6 +286,26 @@ describe('Action.type', () => {
   });
 });
 
+describe('Action.isValid', () => {
+  it('should return true if object is parsable', () => {
+    const actual = Action.isValid({ name, href });
+
+    expect(actual).toBe(true);
+  });
+
+  it('should return false if object is not parsable', () => {
+    const actions = [
+      {},
+      { name },
+      { href },
+      { name: 42, href },
+      { name, href: 'http://\uFFFF.com' }
+    ];
+
+    actions.forEach((value) => expect(Action.isValid(value)).toBe(false));
+  });
+});
+
 test('Action extensions', () => {
   const encoding = 'UTF-16';
 

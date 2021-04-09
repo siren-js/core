@@ -10,6 +10,19 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## Unreleased
 
+## 0.1.2
+
+### Added
+
+- Contribution guidelines
+- Code of conduct
+
+### Fixed
+
+- Corrected validation of `rel` in `EmbeddedLink`'s constructor; a `TypeError`
+  is still thrown, but now includes a better message.
+- `EmbeddedLink.isValid` now returns `true` if `rel` is a string.
+
 ## 0.1.1
 
 ### Added

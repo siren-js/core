@@ -1,7 +1,10 @@
 # Siren.js Core
 
-[![npm version](https://badge.fury.io/js/%40siren-js%2Fcore.svg)](https://badge.fury.io/js/%40siren-js%2Fcore)
-[![Build Package](https://github.com/siren-js/core/actions/workflows/build.yaml/badge.svg)](https://github.com/siren-js/core/actions/workflows/build.yaml)
+[![Node Package](https://img.shields.io/npm/v/@siren-js/core)](https://npmjs.org/@siren-js/core)
+[![Build Status](https://img.shields.io/github/workflow/status/siren-js/core/Build%20Package)](https://github.com/siren-js/core/actions/workflows/build.yaml)
+[![Code Coverage](https://img.shields.io/codecov/c/github/siren-js/core)](https://codecov.io/gh/siren-js/core)
+[![License](https://img.shields.io/github/license/siren-js/core)](LICENSE)
+[![Contributing](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 This is the core library for Siren.js that provides classes for creating objects
 representing components (entities, actions, etc.) of the [Siren][siren]
@@ -16,6 +19,7 @@ parsing Siren representations.
   - [Generating Siren](#generating-siren)
   - [Parsing Siren](#parsing-siren)
   - [Extensions](#extensions)
+- [Contributing](#contributing)
 
 ## Installation
 
@@ -218,3 +222,8 @@ new Siren.Link(['profile'], 'http://api.example.com/profile', {
 
 new Siren.Field('quantity', { min: 1, max: 10 });
 ```
+
+## Contributing
+
+If you would like to contribute anything from a bug report to a code change, see
+our [contribution guidelines](CONTRIBUTING.md).

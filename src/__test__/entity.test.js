@@ -463,4 +463,18 @@ describe('EmbeddedEntity', () => {
       });
     });
   });
+
+  describe('isValid', () => {
+    it('should return true if object is parsable', () => {
+      [{ rel }, { rel: 'self' }].forEach((value) =>
+        expect(EmbeddedEntity.isValid(value)).toBe(true)
+      );
+    });
+
+    it('should return false if object is not parsable', () => {
+      [{}, { rel: 42 }].forEach((value) =>
+        expect(EmbeddedEntity.isValid(value)).toBe(false)
+      );
+    });
+  });
 });

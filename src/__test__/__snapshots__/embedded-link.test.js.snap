@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`EmbeddedLink should serialize with rel 1`] = `
+exports[`EmbeddedLink serialization 1`] = `
 "{
   \\"rel\\": [
     \\"self\\"
