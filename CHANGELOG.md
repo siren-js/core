@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## Unreleased
 
-## 0.1.2
+## 0.1.2 - 2021-04-09
 
 ### Added
 
@@ -23,14 +23,14 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
   is still thrown, but now includes a better message.
 - `EmbeddedLink.isValid` now returns `true` if `rel` is a string.
 
-## 0.1.1
+## 0.1.1 - 2021-04-02
 
 ### Added
 
 - Component classes documented with [JSDoc](https://jsdoc.app)
 - Type declarations for more IDE-friendly development
 
-## 0.1.0
+## 0.1.0 - 2021-03-26
 
 ### Added
 
