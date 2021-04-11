@@ -10,6 +10,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint src --ext .js",
+    "lint:fix": "npm run lint -- --fix",
     "test": "jest --env=jsdom && jest --env=node",
     "test:jsdom": "jest --env=jsdom",
     "test:node": "jest --env=node",

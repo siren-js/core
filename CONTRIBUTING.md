@@ -72,6 +72,8 @@ $ npm run format
 
 # lint with ESLint
 $ npm run lint
+# automatically fix lint issues where possible
+$ npm run lint:fix
 
 # test with Jest
 # run tests in Node
