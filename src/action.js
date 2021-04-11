@@ -26,12 +26,21 @@ export * from './field';
  * Represents available behavior exposed by an `Entity`.
  */
 export class Action {
+  /** @type {string} */
   #name;
+  /** @type {string} */
   #href;
+  /** @type {readonly string[] | undefined} */
   #class;
+  /** @type {readonly Field[] | undefined} */
   #fields;
+  /** @type {Map<string, Field>} */
+  #fieldsByName = new Map();
+  /** @type {string | undefined} */
   #method;
+  /** @type {string | undefined} */
   #title;
+  /** @type {string | undefined} */
   #type;
 
   /**
@@ -69,7 +78,6 @@ export class Action {
   /**
    * A name identifying the action to be performed. Must be unique within an
    * `Entity`'s `actions`.
-   * @type {string}
    */
   get name() {
     return this.#name;
@@ -78,7 +86,6 @@ export class Action {
   /**
    * The URI of the action. Setting to a `URL` will result in the `URL`'s string
    * representation.
-   * @type {string}
    */
   get href() {
     return this.#href;
@@ -93,7 +100,6 @@ export class Action {
    * current representation. Possible values are implementation-dependent and
    * should be documented. Setting the value to a `string` will result in a
    * singleton array.
-   * @type {readonly string[] | undefined}
    */
   get class() {
     return this.#class;
@@ -105,7 +111,6 @@ export class Action {
 
   /**
    * Input controls of the `Action`
-   * @type {readonly Field[] | undefined}
    */
   get fields() {
     return this.#fields;
@@ -118,12 +123,15 @@ export class Action {
       Field.isValid,
       Field.of
     );
+    this.#fieldsByName.clear();
+    this.#fields?.forEach((field) =>
+      this.#fieldsByName.set(field.name, field)
+    );
   }
 
   /**
    * The protocol method used when submitting the `Action`. When missing, the
    * default is assumed to be `'GET'`.
-   * @type {string | undefined}
    */
   get method() {
     return this.#method;
@@ -135,7 +143,6 @@ export class Action {
 
   /**
    * Descriptive text about the `Action`
-   * @type {string | undefined}
    */
   get title() {
     return this.#title;
@@ -152,7 +159,6 @@ export class Action {
    * [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
    * will be ignored. When missing, the default is assumed to be
    * `'application/x-www-form-urlencoded'`.
-   * @type {string | undefined}
    */
   get type() {
     return this.#type;
@@ -160,6 +166,15 @@ export class Action {
 
   set type(value) {
     this.#type = coerce.toOptionalMediaTypeString(value, this.type);
+  }
+
+  /**
+   * Returns the field in this `Action` with the given `name`, or `undefined`
+   * if no field exists with that `name`.
+   * @param {string} name Name of the field to lookup
+   */
+  getFieldByName(name) {
+    return this.#fieldsByName.get(name);
   }
 
   /**

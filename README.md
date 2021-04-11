@@ -18,6 +18,7 @@ parsing Siren representations.
 - [Usage](#usage)
   - [Generating Siren](#generating-siren)
   - [Parsing Siren](#parsing-siren)
+  - [Component Lookup](#component-lookup)
   - [Extensions](#extensions)
 - [Contributing](#contributing)
 
@@ -36,8 +37,7 @@ will.
 
 In order to get to a production-ready release (v1+), we need users to try out
 the library, find bugs, and give honest, constructive feedback on how we can
-improve! If you'd like to report a bug or provide feedback, feel free to
-[create an issue](https://github.com/siren-js/core/issues/new).
+improve! See the [Contributing](#contributing) section below.
 
 ## Usage
 
@@ -156,7 +156,7 @@ const addItemAction = new Siren.Action('add-item', itemsUrl, {
   fields: [
     { name: 'orderNumber', type: 'hidden', value: `${order.orderNumber}` },
     { name: 'productCode', type: 'text' },
-    { name: 'quantity', type: 'number' }
+    quantityField
   ]
 });
 ```
@@ -204,6 +204,23 @@ result to the `Entity` constructor.
 ```js
 new Siren.Entity(JSON.parse(siren));
 //=> same as entity
+```
+
+### Component Lookup
+
+The `Entity` class provides a way to easily lookup an `Action` with a given
+name.
+
+```js
+entity.getActionByName('add-item');
+//=> same as addItemAction
+```
+
+Similarly, you can look up a `Field` in an `Action`.
+
+```js
+action.getFieldByName('quantity');
+//=> same as quantityField
 ```
 
 ### Extensions

@@ -36,11 +36,19 @@ export * from './link';
  * Represents a URI-addressable resource
  */
 export class Entity {
+  /** @type {readonly Action[] | undefined} */
   #actions;
+  /** @type {Map<string, Action>} */
+  #actionsByName = new Map();
+  /** @type {readonly string[] | undefined} */
   #class;
+  /** @type {readonly SubEntity[] | undefined} */
   #entities;
+  /** @type {readonly Link[] | undefined} */
   #links;
+  /** @type {Record<string, unknown> | undefined} */
   #properties;
+  /** @type {string | undefined} */
   #title;
 
   /**
@@ -70,7 +78,6 @@ export class Entity {
 
   /**
    * Available behavior exposed by the `Entity`
-   * @type {readonly string[] | undefined}
    */
   get actions() {
     return this.#actions;
@@ -83,6 +90,10 @@ export class Entity {
       Action.isValid,
       Action.of
     );
+    this.#actionsByName.clear();
+    this.#actions?.forEach((action) =>
+      this.#actionsByName.set(action.name, action)
+    );
   }
 
   /**
@@ -90,7 +101,6 @@ export class Entity {
    * current representation. Possible values are implementation-dependent and
    * should be documented. Setting the value to a `string` will result in a
    * singleton array.
-   * @type {readonly string[] | undefined}
    */
   get class() {
     return this.#class;
@@ -102,7 +112,6 @@ export class Entity {
 
   /**
    * Related entities represented as embedded links or representations
-   * @type {readonly SubEntity[] | undefined}
    */
   get entities() {
     return this.#entities;
@@ -119,7 +128,6 @@ export class Entity {
 
   /**
    * Navigation links that communicate ways to navigate outside the entity graph
-   * @type {readonly Link[] | undefined}
    */
   get links() {
     return this.#links;
@@ -131,7 +139,6 @@ export class Entity {
 
   /**
    * Key-value pairs describing the state of the `Entity`
-   * @type {Record<string, unknown> | undefined}
    */
   get properties() {
     return this.#properties;
@@ -147,7 +154,6 @@ export class Entity {
 
   /**
    * Descriptive text about the `Entity`
-   * @type {string | undefined}
    */
   get title() {
     return this.#title;
@@ -155,6 +161,15 @@ export class Entity {
 
   set title(value) {
     this.#title = coerce.toOptionalString(value, this.title);
+  }
+
+  /**
+   * Returns the action in this `Entity` with the given `name`, or `undefined`
+   * if no action exists with that `name`.
+   * @param {string} name Name of the action to lookup
+   */
+  getActionByName(name) {
+    return this.#actionsByName.get(name);
   }
 
   /**
@@ -197,6 +212,7 @@ function coerceSubComponents(value, defaultValue, validator, factory) {
  * Represents a sub-entity as an embedded representation
  */
 export class EmbeddedEntity extends Entity {
+  /** @type {readonly string[]} */
   #rel;
 
   /**
@@ -222,7 +238,6 @@ export class EmbeddedEntity extends Entity {
    * parent `Entity`, per [RFC 8288](https://tools.ietf.org/html/rfc8288).
    * Setting to a `string` will result in a singleton array. Empty arrays are
    * ignored.
-   * @type {readonly string[]}
    */
   get rel() {
     return this.#rel;

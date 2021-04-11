@@ -12,9 +12,15 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## 0.2.0
 
+### Added
+
+- `Entity.prototype.getActionByName()` to lookup actions by name
+- `Action.prototype.getFieldByName()` to lookup fields by name
+
 ### Fixed
 
 - Serializing `EmbeddedEntity` now includes `rel`
+- Generated type for `Entity.prototype.actions`
 
 ## 0.1.2 - 2021-04-09
 
@@ -27,7 +33,7 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 - Corrected validation of `rel` in `EmbeddedLink`'s constructor; a `TypeError`
   is still thrown, but now includes a better message.
-- `EmbeddedLink.isValid` now returns `true` if `rel` is a string.
+- `EmbeddedLink.isValid()` now returns `true` if `rel` is a string.
 
 ## 0.1.1 - 2021-04-02
 
