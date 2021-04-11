@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## Unreleased
 
+## 0.2.0
+
+### Fixed
+
+- Serializing `EmbeddedEntity` now includes `rel`
+
 ## 0.1.2 - 2021-04-09
 
 ### Added

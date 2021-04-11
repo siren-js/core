@@ -233,6 +233,14 @@ export class EmbeddedEntity extends Entity {
   }
 
   /**
+   * Customizes JSON serialization (via `JSON.stringify()`) to include
+   * properties defined as getters
+   */
+  toJSON() {
+    return { rel: this.rel, ...super.toJSON() };
+  }
+
+  /**
    * Determines whether `value` is a parsable Siren embedded representation
    * (i.e., can be passed to `EmbeddedEntity.of`)
    * @param {unknown} value
