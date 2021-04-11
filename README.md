@@ -16,9 +16,9 @@ parsing Siren representations.
 - [Installation](#installation)
 - [Development Release](#development-release)
 - [Usage](#usage)
+  - [Component Lookup](#component-lookup)
   - [Generating Siren](#generating-siren)
   - [Parsing Siren](#parsing-siren)
-  - [Component Lookup](#component-lookup)
   - [Extensions](#extensions)
 - [Contributing](#contributing)
 
@@ -188,6 +188,23 @@ new Siren.Entity({
 //=> same as entity
 ```
 
+### Component Lookup
+
+The `Entity` class provides a way to easily lookup an `Action` with a given
+name.
+
+```js
+entity.getActionByName('add-item');
+//=> same as addItemAction
+```
+
+Similarly, you can look up a `Field` in an `Action`.
+
+```js
+action.getFieldByName('quantity');
+//=> same as quantityField
+```
+
 ### Generating Siren
 
 To generate a Siren representation, use `JSON.stringify()`.
@@ -204,23 +221,6 @@ result to the `Entity` constructor.
 ```js
 new Siren.Entity(JSON.parse(siren));
 //=> same as entity
-```
-
-### Component Lookup
-
-The `Entity` class provides a way to easily lookup an `Action` with a given
-name.
-
-```js
-entity.getActionByName('add-item');
-//=> same as addItemAction
-```
-
-Similarly, you can look up a `Field` in an `Action`.
-
-```js
-action.getFieldByName('quantity');
-//=> same as quantityField
 ```
 
 ### Extensions
