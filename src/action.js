@@ -124,9 +124,7 @@ export class Action {
       Field.of
     );
     this.#fieldsByName.clear();
-    this.#fields?.forEach((field) =>
-      this.#fieldsByName.set(field.name, field)
-    );
+    this.#fields?.forEach((field) => this.#fieldsByName.set(field.name, field));
   }
 
   /**
