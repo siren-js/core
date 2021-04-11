@@ -20,9 +20,13 @@ import { isNonNullObject, isNullish, isString } from './util/type-guard';
  * depends on its `type` and its corresponding `Action`'s `type`.
  */
 export class Field {
+  /** @type {string} */
   #name;
+  /** @type {readonly string[] | undefined} */
   #class;
+  /** @type {string | undefined} */
   #title;
+  /** @type {string | undefined} */
   #type;
   #value;
 
@@ -52,7 +56,6 @@ export class Field {
 
   /**
    * A name describing the control. Must be unique within an `Action`.
-   * @type {string}
    */
   get name() {
     return this.#name;
@@ -63,7 +66,6 @@ export class Field {
    * representation. Possible values are implementation-dependent and should be
    * documented. Setting the value to a `string` will result in a singleton
    * array.
-   * @type {readonly string[] | undefined}
    */
   get class() {
     return this.#class;
@@ -75,7 +77,6 @@ export class Field {
 
   /**
    * Textual annotation of a field. Clients may use this as a label.
-   * @type {string | undefined}
    */
   get title() {
     return this.#title;
@@ -89,7 +90,6 @@ export class Field {
    * Input type of the field. May include any of the
    * [input types from HTML](https://html.spec.whatwg.org/multipage/input.html#attr-input-type).
    * When missing, the default is assumed to be `text`.
-   * @type {string | undefined}
    */
   get type() {
     return this.#type;
@@ -101,7 +101,6 @@ export class Field {
 
   /**
    * The value assigned to the `Field`.
-   * @type {any}
    */
   get value() {
     return this.#value;

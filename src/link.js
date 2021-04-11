@@ -21,10 +21,15 @@ import { isArray, isNonNullObject, isString, isUri } from './util/type-guard';
  * Represents a navigational transition.
  */
 export class Link {
+  /** @type {readonly string[]} */
   #rel;
+  /** @type {string} */
   #href;
+  /** @type {readonly string[] | undefined} */
   #class;
+  /** @type {string | undefined} */
   #title;
+  /** @type {string | undefined} */
   #type;
 
   /**
@@ -62,7 +67,6 @@ export class Link {
    * A list of strings describing the relationship of the `Link` to its
    * `Entity`, per [RFC 8288](https://tools.ietf.org/html/rfc8288). Setting the
    * value to a `string` will result in a singleton array.
-   * @type {readonly string[]}
    */
   get rel() {
     return this.#rel;
@@ -75,7 +79,6 @@ export class Link {
   /**
    * The URI of the linked resource. Setting the value to a `URL` will result in
    * the `URL`'s string representation.
-   * @type {string}
    */
   get href() {
     return this.#href;
@@ -90,7 +93,6 @@ export class Link {
    * representation. Possible values are implementation-dependent and should be
    * documented. Setting the value to a `string` will result in a singleton
    * array.
-   * @type {readonly string[] | undefined}
    */
   get class() {
     return this.#class;
@@ -102,7 +104,6 @@ export class Link {
 
   /**
    * Text describing the nature of a link
-   * @type {string | undefined}
    */
   get title() {
     return this.#title;
@@ -119,7 +120,6 @@ export class Link {
    * value that does not match the ABNF `type-name "/" subtype-name` (see
    * [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
    * will be ignored.
-   * @type {string | undefined}
    */
   get type() {
     return this.#type;
