@@ -2,10 +2,6 @@ import { Link } from './link';
 import * as coerce from './util/coerce';
 
 /**
- * @typedef {import('./link').LinkOptions} EmbeddedLinkOptions
- */
-
-/**
  * Represent a sub-entity as a link
  */
 export class EmbeddedLink extends Link {
@@ -73,3 +69,7 @@ export class EmbeddedLink extends Link {
     return new EmbeddedLink(rel, href, rest);
   }
 }
+
+/**
+ * @typedef {import('./link').LinkOptions} EmbeddedLinkOptions
+ */

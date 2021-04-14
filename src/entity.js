@@ -16,23 +16,6 @@ export * from './embedded-link';
 export * from './link';
 
 /**
- * @typedef {object} EntityOptions Optional `Entity` members and extensions
- * @property {readonly Action[]} [actions] Available behavior exposed by the
- *    `Entity`
- * @property {string | readonly string[]} [class] A list of strings describing
- *    the nature of the `Entity` based on the current representation. Possible
- *    values are implementation-dependent and should be documented. Setting the
- *    value to a `string` will result in a singleton array.
- * @property {readonly SubEntity[]} [entities] Related entities represented as
- *    embedded links or representations
- * @property {readonly Link[]} [links] Navigation links that communicate ways to
- *    navigate outside the entity graph
- * @property {Record<string, unknown>} [properties] Key-value pairs describing
- *    the state of the `Entity`
- * @property {string} [title] Descriptive text about the `Entity`
- */
-
-/**
  * Represents a URI-addressable resource
  */
 export class Entity {
@@ -309,3 +292,97 @@ export class SubEntity {
       : EmbeddedEntity.of(value);
   }
 }
+
+/**
+ * @typedef EntityOptions Optional `Entity` members and extensions
+ * @property {readonly ActionOption[]} [actions] Available behavior exposed by
+ *    the `Entity`
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Entity` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {readonly SubEntityOption[]} [entities] Related entities
+ *    represented as embedded links or representations
+ * @property {readonly LinkOption[]} [links] Navigation links that communicate
+ *    ways to navigate outside the entity graph
+ * @property {Record<string, unknown>} [properties] Key-value pairs describing
+ *    the state of the `Entity`
+ * @property {string} [title] Descriptive text about the `Entity`
+ *
+ * @typedef ActionOption
+ * @property {string} name
+ * @property {string} href
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Action` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {readonly FieldOption[]} [fields] Input controls of the `Action`
+ * @property {string} [method] The protocol method used when submitting the
+ *    `Action`
+ * @property {string} [title] Descriptive text about the `Action`
+ * @property {string} [type] The encoding type indicating how `fields` are
+ *    serialized when submitting the `Action`. Setting to
+ *    a value that does not match the ABNF `type-name "/" subtype-name` (see
+ *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
+ *    will be ignored.
+ *
+ * @typedef {EmbeddedLinkOption | EmbeddedEntityOption} SubEntityOption
+ *
+ * @typedef EmbeddedLinkOption
+ * @property {string | readonly string[]} rel A list of strings describing the
+ *    relationship of the sub-entity to its parent `Entity`, per
+ *    [RFC 8288](https://tools.ietf.org/html/rfc8288). Setting to a `string`
+ *    will result in a singleton array. An empty array will result in the entire
+ *    object being ignored.
+ * @property {string} href The URI of the linked resource. Setting the value to
+ *    a `URL` will result in the `URL`'s string representation.
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Link` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {string} [title] Text describing the nature of the `Link`
+ * @property {string} [type] A hint indicating what the media type of the result
+ *    of dereferencing the `Link` should be, per
+ *    [RFC 8288](https://tools.ietf.org/html/rfc8288#section-3.4.1). Setting to
+ *    a value that does not match the ABNF `type-name "/" subtype-name` (see
+ *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
+ *    will be ignored.
+ *
+ * @typedef EmbeddedEntityOption
+ * @property {string | readonly string[]} rel A list of strings describing the
+ *    relationship of the sub-entity to its parent `Entity`, per
+ *    [RFC 8288](https://tools.ietf.org/html/rfc8288). Setting to a `string`
+ *    will result in a singleton array.
+ * @property {readonly ActionOption[]} [actions] Available behavior exposed by
+ *    the `Entity`
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Entity` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {readonly SubEntityOption[]} [entities] Related entities
+ *    represented as embedded links or representations
+ * @property {readonly LinkOption[]} [links] Navigation links that communicate
+ *    ways to navigate outside the entity graph
+ * @property {Record<string, unknown>} [properties] Key-value pairs describing
+ *    the state of the `Entity`
+ * @property {string} [title] Descriptive text about the `Entity`
+ *
+ * @typedef LinkOption
+ * @property {string | readonly string[]} rel A list of strings describing the
+ *    relationship of the `Link` to its `Entity`, per
+ *    [RFC 8288](https://tools.ietf.org/html/rfc8288). Setting the value to a
+ *    `string` will result in a singleton array.
+ * @property {string} href The URI of the linked resource. Setting the value to
+ *    a `URL` will result in the `URL`'s string representation.
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Link` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {string} [title] Text describing the nature of the `Link`
+ * @property {string} [type] A hint indicating what the media type of the result
+ *    of dereferencing the `Link` should be, per
+ *    [RFC 8288](https://tools.ietf.org/html/rfc8288#section-3.4.1). Setting to
+ *    a value that does not match the ABNF `type-name "/" subtype-name` (see
+ *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
+ *    will be ignored.
+ */

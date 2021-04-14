@@ -6,23 +6,6 @@ import { isNonNullObject, isString, isUri } from './util/type-guard';
 export * from './field';
 
 /**
- * @typedef {object} ActionOptions Optional `Action` members and extensions
- * @property {string | readonly string[]} [class] A list of strings describing
- *    the nature of the `Action` based on the current representation. Possible
- *    values are implementation-dependent and should be documented. Setting the
- *    value to a `string` will result in a singleton array.
- * @property {readonly Field[]} [fields] Input controls of the `Action`
- * @property {string} [method] The protocol method used when submitting the
- *    `Action`
- * @property {string} [title] Descriptive text about the `Action`
- * @property {string} [type] The encoding type indicating how `fields` are
- *    serialized when submitting the `Action`. Setting to
- *    a value that does not match the ABNF `type-name "/" subtype-name` (see
- *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
- *    will be ignored.
- */
-
-/**
  * Represents available behavior exposed by an `Entity`.
  */
 export class Action {
@@ -229,3 +212,33 @@ export class Action {
     return new Action(name, href, rest);
   }
 }
+
+/**
+ * @typedef ActionOptions Optional `Action` members and extensions
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Action` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {readonly FieldOption[]} [fields] Input controls of the `Action`
+ * @property {string} [method] The protocol method used when submitting the
+ *    `Action`
+ * @property {string} [title] Descriptive text about the `Action`
+ * @property {string} [type] The encoding type indicating how `fields` are
+ *    serialized when submitting the `Action`. Setting to
+ *    a value that does not match the ABNF `type-name "/" subtype-name` (see
+ *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
+ *    will be ignored.
+ *
+ * @typedef FieldOption
+ * @property {string} name A name describing the control. Must be unique within
+ *    an `Action`.
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Field` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {string} [title] Textual annotation of the `Field`. Clients may use
+ *    this as a label.
+ * @property {string} [type] Input type of the field. May include any of the
+ *    [input types from HTML](https://html.spec.whatwg.org/multipage/input.html#the-input-element).
+ * @property {any} [value] The value assigned to the `Field`.
+ */

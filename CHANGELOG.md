@@ -21,6 +21,9 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 - Serializing `EmbeddedEntity` now includes `rel`
 - Generated type for `Entity.prototype.actions`
+- Type declarations for option objects ([#4])
+
+[#4]: https://github.com/siren-js/core/issues/4
 
 ## 0.1.2 - 2021-04-09
 
