@@ -3,6 +3,7 @@ import { EmbeddedLink } from './embedded-link';
 import { Link } from './link';
 import * as coerce from './util/coerce';
 import extendWith from './util/extend-with';
+import { lookUpByClass, lookUpByRel } from './util/lookup';
 import {
   isArray,
   isNonNullObject,
@@ -21,8 +22,6 @@ export * from './link';
 export class Entity {
   /** @type {readonly Action[] | undefined} */
   #actions;
-  /** @type {Map<string, Action>} */
-  #actionsByName = new Map();
   /** @type {readonly string[] | undefined} */
   #class;
   /** @type {readonly SubEntity[] | undefined} */
@@ -33,6 +32,18 @@ export class Entity {
   #properties;
   /** @type {string | undefined} */
   #title;
+  /** @type {Map<string, Action>} */
+  #actionsByName = new Map();
+  /** @type {Map<string, Action[]>} */
+  #actionsByClass = new Map();
+  /** @type {Map<string, SubEntity[]>} */
+  #entitiesByRel = new Map();
+  /** @type {Map<string, SubEntity[]>} */
+  #entitiesByClass = new Map();
+  /** @type {Map<string, Link[]>} */
+  #linksByRel = new Map();
+  /** @type {Map<string, Link[]>} */
+  #linksByClass = new Map();
 
   /**
    * @param {EntityOptions} options Optional members (`actions`, `class`,
@@ -71,11 +82,9 @@ export class Entity {
       value,
       this.actions,
       Action.isValid,
-      Action.of
-    );
-    this.#actionsByName.clear();
-    this.#actions?.forEach((action) =>
-      this.#actionsByName.set(action.name, action)
+      Action.of,
+      this.#actionsByName,
+      this.#actionsByClass
     );
   }
 
@@ -105,7 +114,9 @@ export class Entity {
       value,
       this.entities,
       SubEntity.isValid,
-      SubEntity.of
+      SubEntity.of,
+      this.#entitiesByRel,
+      this.#entitiesByClass
     );
   }
 
@@ -117,7 +128,14 @@ export class Entity {
   }
 
   set links(value) {
-    this.#links = coerceSubComponents(value, this.links, Link.isValid, Link.of);
+    this.#links = coerceSubComponents(
+      value,
+      this.links,
+      Link.isValid,
+      Link.of,
+      this.#linksByRel,
+      this.#linksByClass
+    );
   }
 
   /**
@@ -156,6 +174,51 @@ export class Entity {
   }
 
   /**
+   * Returns the actions in this `Entity` with the given `classes`.
+   * @param {...string} classes One or more classes
+   * @returns {Action[]}
+   */
+  getActionsByClass(...classes) {
+    return lookUpByClass(this.#actionsByClass, classes);
+  }
+
+  /**
+   * Returns the sub-entities in this `Entity` with the given `classes`.
+   * @param {...string} classes One or more classes
+   * @returns {SubEntity[]}
+   */
+  getEntitiesByClass(...classes) {
+    return lookUpByClass(this.#entitiesByClass, classes);
+  }
+
+  /**
+   * Returns the sub-entities in this `Entity` with the given `rels`.
+   * @param {...string} rels One or more link relation types
+   * @returns {SubEntity[]}
+   */
+  getEntitiesByRel(...rels) {
+    return lookUpByRel(this.#entitiesByRel, rels);
+  }
+
+  /**
+   * Returns the links in this `Entity` with the given `classes`.
+   * @param {...string} classes One or more classes
+   * @returns {Link[]}
+   */
+  getLinksByClass(...classes) {
+    return lookUpByClass(this.#linksByClass, classes);
+  }
+
+  /**
+   * Returns the links in this `Entity` with the given `rels`.
+   * @param {...string} rels One or more link relations
+   * @returns {Link[]}
+   */
+  getLinksByRel(...rels) {
+    return lookUpByRel(this.#linksByRel, rels);
+  }
+
+  /**
    * Customizes JSON serialization (via `JSON.stringify()`) to include
    * properties defined as getters
    */
@@ -181,10 +244,50 @@ export class Entity {
   }
 }
 
-function coerceSubComponents(value, defaultValue, validator, factory) {
-  if (isArray(value)) {
-    return Object.freeze(value.filter(validator).map(factory));
-  } else if (isNullish(value)) {
+/**
+ * @template {{ rel: string[]; class?: string[] }} T
+ * @param {readonly unknown[]} values
+ * @param {readonly T[]} defaultValue
+ * @param {(value: unknown) => value is Record<string, unknown>} isValid
+ * @param {(value: Record<string, unknown>) => T} parse
+ * @param {Map<string, T[]} relIndex
+ * @param {Map<string, T[]>} classIndex
+ * @returns {readonly T[] | undefined}
+ */
+function coerceSubComponents(
+  values,
+  defaultValue,
+  isValid,
+  parse,
+  relIndex,
+  classIndex
+) {
+  if (isArray(values)) {
+    relIndex.clear();
+    classIndex.clear();
+    const components = [];
+    for (const value of values) {
+      if (isValid(value)) {
+        const component = parse(value);
+        components.push(component);
+        component.rel.forEach((rel) => {
+          if (!relIndex.has(rel)) {
+            relIndex.set(rel, []);
+          }
+          relIndex.get(rel).push(component);
+        });
+        component.class?.forEach((className) => {
+          if (!classIndex.has(className)) {
+            classIndex.set(className, []);
+          }
+          classIndex.get(className).push(component);
+        });
+      }
+    }
+    return Object.freeze(components);
+  } else if (isNullish(values)) {
+    relIndex.clear();
+    classIndex.clear();
     return undefined;
   } else {
     return defaultValue;

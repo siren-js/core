@@ -339,6 +339,47 @@ describe('Action', () => {
     });
   });
 
+  describe('getFieldsByClass', () => {
+    const action = new Action('foo', '/foo', {
+      fields: [
+        { name: 'foo', class: ['foo', 'bar'] },
+        { name: 'bar', class: ['foo', 'baz'] },
+        { name: 'baz', class: ['qux', 'baz'] },
+        { name: 'qux', class: ['grault', 'garply'] }
+      ]
+    });
+
+    it('should throw when given no args', () => {
+      expect(() => action.getFieldsByClass()).toThrow();
+    });
+
+    it('should return fields with class', () => {
+      expect(action.getFieldsByClass('foo')).toHaveLength(2);
+      expect(action.getFieldsByClass('bar')).toHaveLength(1);
+      expect(action.getFieldsByClass('baz')).toHaveLength(2);
+    });
+
+    it('should return fields with all the given classes', () => {
+      expect(action.getFieldsByClass('foo', 'baz')).toHaveLength(1);
+      expect(action.getFieldsByClass('baz', 'foo')).toHaveLength(1);
+    });
+
+    it('should return empty when no sub-entities with rel(s) exist', () => {
+      expect(action.getFieldsByClass('author')).toHaveLength(0);
+      expect(action.getFieldsByClass('foo', 'qux')).toHaveLength(0);
+    });
+
+    it('should return empty when action is removed', () => {
+      const action = new Action('foo', '/foo', {
+        fields: [{ name: 'foo', class: ['foo'] }]
+      });
+      expect(action.getFieldsByClass('foo')).toHaveLength(1);
+
+      action.fields = undefined;
+      expect(action.getFieldsByClass('foo')).toHaveLength(0);
+    });
+  });
+
   describe('isValid', () => {
     it('should return true if object is parsable', () => {
       const actual = Action.isValid({ name, href });

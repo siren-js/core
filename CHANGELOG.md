@@ -14,8 +14,15 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ### Added
 
-- `Entity.prototype.getActionByName()` to lookup actions by name
-- `Action.prototype.getFieldByName()` to lookup fields by name
+- Methods for looking up components:
+  - `Action.prototype.getFieldByName()`
+  - `Action.prototype.getFieldsByClass()`
+  - `Entity.prototype.getActionByName()`
+  - `Entity.prototype.getActionsByClass()`
+  - `Entity.prototype.getEntitiesByClass()`
+  - `Entity.prototype.getEntitiesByRel()`
+  - `Entity.prototype.getLinksByClass()`
+  - `Entity.prototype.getLinksByRel()`
 
 ### Fixed
 

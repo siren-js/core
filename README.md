@@ -190,20 +190,40 @@ new Siren.Entity({
 
 ### Component Lookup
 
-The `Entity` class provides a way to easily lookup an `Action` with a given
-name.
+The `Entity` and `Action` classes each provide a method for looking up their
+actions and fields by `name`.
 
 ```js
 entity.getActionByName('add-item');
 //=> same as addItemAction
-```
 
-Similarly, you can look up a `Field` in an `Action`.
-
-```js
-action.getFieldByName('quantity');
+addItemAction.getFieldByName('quantity');
 //=> same as quantityField
 ```
+
+The `Entity` class also has methods for looking up sub-entities and links by
+`rel` and `class`, as well as actions by `class`.
+
+```js
+entity.getLinksByRel('self');
+//=> same as selfLink
+
+entity.getEntitiesByRel(itemsRel);
+//=> same as itemsLink
+entity.getEntitiesByClass('items');
+//=> same as itemsLink
+
+// you can pass multiple classes/rels (order doesn't matter)
+entity.getEntitiesByClass('customer', 'info');
+//=> same as customerEntity
+
+// components' property must contain all values
+entity.getEntitiesByClass('items', 'info');
+//=> []
+```
+
+The `Action` class has a method for looking up fields by `class` that works
+similarly.
 
 ### Generating Siren
 

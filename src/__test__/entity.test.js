@@ -399,6 +399,207 @@ describe('Entity', () => {
     });
   });
 
+  describe('getActionsByClass', () => {
+    const entity = new Entity({
+      actions: [
+        { name: 'foo', href: '/foo/1', class: ['foo', 'bar'] },
+        { name: 'bar', href: '/foo/2', class: ['foo', 'baz'] },
+        { name: 'baz', href: '/foo/3', class: ['qux', 'baz'] },
+        { name: 'qux', href: '/foo/4', class: ['grault', 'garply'] }
+      ]
+    });
+
+    it('should throw when given no args', () => {
+      expect(() => entity.getActionsByClass()).toThrow();
+    });
+
+    it('should return actions with class', () => {
+      expect(entity.getActionsByClass('foo')).toHaveLength(2);
+      expect(entity.getActionsByClass('bar')).toHaveLength(1);
+      expect(entity.getActionsByClass('baz')).toHaveLength(2);
+    });
+
+    it('should return actions with all the given classes', () => {
+      expect(entity.getActionsByClass('foo', 'baz')).toHaveLength(1);
+    });
+
+    it('should return empty when no actions with class(es) exist', () => {
+      expect(entity.getActionsByClass('author')).toHaveLength(0);
+      expect(entity.getActionsByClass('foo', 'qux')).toHaveLength(0);
+    });
+
+    it('should return empty when action is removed', () => {
+      const entity = new Entity({
+        actions: [{ name: 'foo', href: '/foo/1', class: ['foo'] }]
+      });
+      expect(entity.getActionsByClass('foo')).toHaveLength(1);
+
+      entity.actions = undefined;
+      expect(entity.getActionsByClass('foo')).toHaveLength(0);
+    });
+  });
+
+  describe('getEntitiesByClass', () => {
+    const entity = new Entity({
+      entities: [
+        { rel: ['item'], href: '/foo/1', class: ['foo', 'bar'] },
+        { rel: ['item'], href: '/foo/2', class: ['foo', 'baz'] },
+        { rel: ['item'], href: '/foo/3', class: ['qux', 'baz'] },
+        { rel: ['item'], href: '/foo/4', class: ['grault', 'garply'] }
+      ]
+    });
+
+    it('should throw when given no args', () => {
+      expect(() => entity.getEntitiesByClass()).toThrow();
+    });
+
+    it('should return sub-entities with class', () => {
+      expect(entity.getEntitiesByClass('foo')).toHaveLength(2);
+      expect(entity.getEntitiesByClass('bar')).toHaveLength(1);
+      expect(entity.getEntitiesByClass('baz')).toHaveLength(2);
+    });
+
+    it('should return sub-entities with all the given classes', () => {
+      expect(entity.getEntitiesByClass('foo', 'baz')).toHaveLength(1);
+    });
+
+    it('should return empty when no sub-entities with class(es) exist', () => {
+      expect(entity.getEntitiesByClass('author')).toHaveLength(0);
+      expect(entity.getEntitiesByClass('foo', 'qux')).toHaveLength(0);
+    });
+
+    it('should return empty when sub-entity is removed', () => {
+      const entity = new Entity({
+        entities: [{ rel: ['item'], href: '/foo/1', class: ['foo'] }]
+      });
+      expect(entity.getEntitiesByClass('foo')).toHaveLength(1);
+
+      entity.entities = undefined;
+      expect(entity.getEntitiesByClass('foo')).toHaveLength(0);
+    });
+  });
+
+  describe('getEntitiesByRel', () => {
+    const entity = new Entity({
+      entities: [
+        { rel: ['collection'], href: '/foos' },
+        { rel: ['collection', 'up'], href: '/bars' },
+        { rel: ['about'], href: '/about' }
+      ]
+    });
+
+    it('should throw when given no args', () => {
+      expect(() => entity.getEntitiesByRel()).toThrow();
+    });
+
+    it('should return sub-entities with rel', () => {
+      expect(entity.getEntitiesByRel('collection')).toHaveLength(2);
+      expect(entity.getEntitiesByRel('up')).toHaveLength(1);
+      expect(entity.getEntitiesByRel('about')).toHaveLength(1);
+    });
+
+    it('should return sub-entities with all the given rels', () => {
+      expect(entity.getEntitiesByRel('collection', 'up')).toHaveLength(1);
+      expect(entity.getEntitiesByRel('up', 'collection')).toHaveLength(1);
+    });
+
+    it('should return empty when no sub-entities with rel(s) exist', () => {
+      expect(entity.getEntitiesByRel('author')).toHaveLength(0);
+      expect(entity.getEntitiesByRel('collection', 'index')).toHaveLength(0);
+    });
+
+    it('should return empty when sub-entity is removed', () => {
+      const entity = new Entity({
+        entities: [{ rel: ['item'], href: '/foo' }]
+      });
+      expect(entity.getEntitiesByRel('item')).toHaveLength(1);
+
+      entity.entities = undefined;
+      expect(entity.getEntitiesByRel('item')).toHaveLength(0);
+    });
+  });
+
+  describe('getLinksByClass', () => {
+    const entity = new Entity({
+      links: [
+        { rel: ['self'], href: '/foo', class: ['foo', 'bar'] },
+        { rel: ['collection'], href: '/', class: ['foo', 'baz'] },
+        { rel: ['about'], href: '/about', class: ['qux', 'baz'] },
+        { rel: ['author'], href: '/author', class: ['grault', 'garply'] }
+      ]
+    });
+
+    it('should throw when given no args', () => {
+      expect(() => entity.getLinksByClass()).toThrow();
+    });
+
+    it('should return links with class', () => {
+      expect(entity.getLinksByClass('foo')).toHaveLength(2);
+      expect(entity.getLinksByClass('bar')).toHaveLength(1);
+      expect(entity.getLinksByClass('baz')).toHaveLength(2);
+    });
+
+    it('should return links with all the given classes', () => {
+      expect(entity.getLinksByClass('foo', 'baz')).toHaveLength(1);
+      expect(entity.getLinksByClass('baz', 'foo')).toHaveLength(1);
+    });
+
+    it('should return empty when no links with class(es) exist', () => {
+      expect(entity.getLinksByClass('author')).toHaveLength(0);
+      expect(entity.getLinksByClass('foo', 'qux')).toHaveLength(0);
+    });
+
+    it('should return empty when link is removed', () => {
+      const entity = new Entity({
+        links: [{ rel: ['self'], href: '/foo', class: ['foo'] }]
+      });
+      expect(entity.getLinksByClass('foo')).toHaveLength(1);
+
+      entity.links = undefined;
+      expect(entity.getLinksByClass('foo')).toHaveLength(0);
+    });
+  });
+
+  describe('getLinksByRel', () => {
+    const entity = new Entity({
+      links: [
+        { rel: ['collection'], href: '/foos' },
+        { rel: ['collection', 'up'], href: '/bars' },
+        { rel: ['about'], href: '/about' }
+      ]
+    });
+
+    it('should throw when given no args', () => {
+      expect(() => entity.getLinksByRel()).toThrow();
+    });
+
+    it('should return links with rel', () => {
+      expect(entity.getLinksByRel('collection')).toHaveLength(2);
+      expect(entity.getLinksByRel('up')).toHaveLength(1);
+      expect(entity.getLinksByRel('about')).toHaveLength(1);
+    });
+
+    it('should return links with all the given rels', () => {
+      expect(entity.getLinksByRel('collection', 'up')).toHaveLength(1);
+      expect(entity.getLinksByRel('up', 'collection')).toHaveLength(1);
+    });
+
+    it('should return empty when no links with rel(s) exist', () => {
+      expect(entity.getLinksByRel('author')).toHaveLength(0);
+      expect(entity.getLinksByRel('collection', 'index')).toHaveLength(0);
+    });
+
+    it('should return empty when link is removed', () => {
+      const entity = new Entity({
+        links: [{ rel: ['self'], href: '/foo' }]
+      });
+      expect(entity.getLinksByRel('self')).toHaveLength(1);
+
+      entity.links = undefined;
+      expect(entity.getLinksByRel('self')).toHaveLength(0);
+    });
+  });
+
   it('should allow extensions', () => {
     const entity = new Entity({ foo: 'bar' });
 

@@ -1,6 +1,7 @@
 import { Field } from './field';
 import * as coerce from './util/coerce';
 import extendWith from './util/extend-with';
+import { lookUpByClass } from './util/lookup';
 import { isNonNullObject, isString, isUri } from './util/type-guard';
 
 export * from './field';
@@ -17,14 +18,16 @@ export class Action {
   #class;
   /** @type {readonly Field[] | undefined} */
   #fields;
-  /** @type {Map<string, Field>} */
-  #fieldsByName = new Map();
   /** @type {string | undefined} */
   #method;
   /** @type {string | undefined} */
   #title;
   /** @type {string | undefined} */
   #type;
+  /** @type {Map<string, Field>} */
+  #fieldsByName = new Map();
+  /** @type {Map<string, Field[]>} */
+  #fieldsByClass = new Map();
 
   /**
    * @param {string} name A name identifying the action to be performed. Must be
@@ -104,10 +107,10 @@ export class Action {
       value,
       this.fields,
       Field.isValid,
-      Field.of
+      Field.of,
+      this.#fieldsByName,
+      this.#fieldsByClass
     );
-    this.#fieldsByName.clear();
-    this.#fields?.forEach((field) => this.#fieldsByName.set(field.name, field));
   }
 
   /**
@@ -156,6 +159,15 @@ export class Action {
    */
   getFieldByName(name) {
     return this.#fieldsByName.get(name);
+  }
+
+  /**
+   * Returns the fields in this `Action` with the given `classes`.
+   * @param {...string} classes One or more classes
+   * @returns {Field[]}
+   */
+  getFieldsByClass(...classes) {
+    return lookUpByClass(this.#fieldsByClass, classes);
   }
 
   /**
