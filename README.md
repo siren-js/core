@@ -206,16 +206,16 @@ The `Entity` class also has methods for looking up sub-entities and links by
 
 ```js
 entity.getLinksByRel('self');
-//=> same as selfLink
+//=> same as [selfLink]
 
 entity.getEntitiesByRel(itemsRel);
-//=> same as itemsLink
+//=> same as [itemsLink]
 entity.getEntitiesByClass('items');
-//=> same as itemsLink
+//=> same as [itemsLink]
 
 // you can pass multiple classes/rels (order doesn't matter)
 entity.getEntitiesByClass('customer', 'info');
-//=> same as customerEntity
+//=> same as [customerEntity]
 
 // components' property must contain all values
 entity.getEntitiesByClass('items', 'info');
