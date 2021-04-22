@@ -10,6 +10,28 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## Unreleased
 
+## 0.2.0
+
+### Added
+
+- Methods for looking up components:
+  - `Action.prototype.getFieldByName()`
+  - `Action.prototype.getFieldsByClass()`
+  - `Entity.prototype.getActionByName()`
+  - `Entity.prototype.getActionsByClass()`
+  - `Entity.prototype.getEntitiesByClass()`
+  - `Entity.prototype.getEntitiesByRel()`
+  - `Entity.prototype.getLinksByClass()`
+  - `Entity.prototype.getLinksByRel()`
+
+### Fixed
+
+- Serializing `EmbeddedEntity` now includes `rel`
+- Generated type for `Entity.prototype.actions`
+- Type declarations for option objects ([#4])
+
+[#4]: https://github.com/siren-js/core/issues/4
+
 ## 0.1.2 - 2021-04-09
 
 ### Added
@@ -21,7 +43,7 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 - Corrected validation of `rel` in `EmbeddedLink`'s constructor; a `TypeError`
   is still thrown, but now includes a better message.
-- `EmbeddedLink.isValid` now returns `true` if `rel` is a string.
+- `EmbeddedLink.isValid()` now returns `true` if `rel` is a string.
 
 ## 0.1.1 - 2021-04-02
 

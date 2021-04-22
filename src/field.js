@@ -3,26 +3,17 @@ import extendWith from './util/extend-with';
 import { isNonNullObject, isNullish, isString } from './util/type-guard';
 
 /**
- * @typedef {object} FieldOptions Optional `Field` members and extensions
- * @property {string | readonly string[]} [class] A list of strings describing
- *    the nature of the `Field` based on the current representation. Possible
- *    values are implementation-dependent and should be documented. Setting the
- *    value to a `string` will result in a singleton array.
- * @property {string} [title] Textual annotation of the `Field`. Clients may use
- *    this as a label.
- * @property {string} [type] Input type of the field. May include any of the
- *    [input types from HTML](https://html.spec.whatwg.org/multipage/input.html#the-input-element).
- * @property {any} [value] The value assigned to the `Field`.
- */
-
-/**
  * Represents an input control inside an `Action`. Serialization of a `Field`
  * depends on its `type` and its corresponding `Action`'s `type`.
  */
 export class Field {
+  /** @type {string} */
   #name;
+  /** @type {readonly string[] | undefined} */
   #class;
+  /** @type {string | undefined} */
   #title;
+  /** @type {string | undefined} */
   #type;
   #value;
 
@@ -52,7 +43,6 @@ export class Field {
 
   /**
    * A name describing the control. Must be unique within an `Action`.
-   * @type {string}
    */
   get name() {
     return this.#name;
@@ -63,7 +53,6 @@ export class Field {
    * representation. Possible values are implementation-dependent and should be
    * documented. Setting the value to a `string` will result in a singleton
    * array.
-   * @type {readonly string[] | undefined}
    */
   get class() {
     return this.#class;
@@ -75,7 +64,6 @@ export class Field {
 
   /**
    * Textual annotation of a field. Clients may use this as a label.
-   * @type {string | undefined}
    */
   get title() {
     return this.#title;
@@ -89,7 +77,6 @@ export class Field {
    * Input type of the field. May include any of the
    * [input types from HTML](https://html.spec.whatwg.org/multipage/input.html#attr-input-type).
    * When missing, the default is assumed to be `text`.
-   * @type {string | undefined}
    */
   get type() {
     return this.#type;
@@ -101,7 +88,6 @@ export class Field {
 
   /**
    * The value assigned to the `Field`.
-   * @type {any}
    */
   get value() {
     return this.#value;
@@ -146,3 +132,16 @@ export class Field {
     return new Field(name, rest);
   }
 }
+
+/**
+ * @typedef {object} FieldOptions Optional `Field` members and extensions
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Field` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {string} [title] Textual annotation of the `Field`. Clients may use
+ *    this as a label.
+ * @property {string} [type] Input type of the field. May include any of the
+ *    [input types from HTML](https://html.spec.whatwg.org/multipage/input.html#the-input-element).
+ * @property {any} [value] The value assigned to the `Field`.
+ */

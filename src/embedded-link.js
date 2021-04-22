@@ -2,10 +2,6 @@ import { Link } from './link';
 import * as coerce from './util/coerce';
 
 /**
- * @typedef {import('./link').LinkOptions} EmbeddedLinkOptions
- */
-
-/**
  * Represent a sub-entity as a link
  */
 export class EmbeddedLink extends Link {
@@ -34,7 +30,6 @@ export class EmbeddedLink extends Link {
    * parent `Entity`, per [RFC 8288](https://tools.ietf.org/html/rfc8288).
    * Setting to a `string` will result in a singleton array. Empty arrays are
    * ignored.
-   * @type {readonly string[]}
    */
   get rel() {
     return super.rel;
@@ -74,3 +69,7 @@ export class EmbeddedLink extends Link {
     return new EmbeddedLink(rel, href, rest);
   }
 }
+
+/**
+ * @typedef {import('./link').LinkOptions} EmbeddedLinkOptions
+ */

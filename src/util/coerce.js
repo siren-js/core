@@ -51,23 +51,45 @@ export function toUriReference(value, defaultValue) {
   }
 }
 
-export function toUniqueSubComponents(value, defaultValue, validator, factory) {
-  if (isArray(value)) {
-    const [components] = value
-      .filter(validator)
-      .map(factory)
-      .reduce(
-        ([components, names], component) => {
-          if (!names.has(component.name)) {
-            components.push(component);
-            names.add(component.name);
-          }
-          return [components, names];
-        },
-        [[], new Set()]
-      );
-    return Object.freeze(components);
-  } else if (isNullish(value)) {
+/**
+ * @template {{ name: string; class?: string[] }} T
+ * @param {readonly unknown[]} values
+ * @param {readonly T[]} defaultValue
+ * @param {(value: unknown) => value is Record<string, unknown>} isValid
+ * @param {(value: Record<string, unknown>) => T} parse
+ * @param {Map<string, T>} nameIndex
+ * @param {Map<string, T[]} classIndex
+ * @returns {readonly T[] | undefined}
+ */
+export function toUniqueSubComponents(
+  values,
+  defaultValue,
+  isValid,
+  parse,
+  nameIndex,
+  classIndex
+) {
+  if (isArray(values)) {
+    nameIndex.clear();
+    classIndex.clear();
+    for (const value of values) {
+      if (isValid(value)) {
+        const component = parse(value);
+        if (!nameIndex.has(component.name)) {
+          nameIndex.set(component.name, component);
+          component.class?.forEach((className) => {
+            if (!classIndex.has(className)) {
+              classIndex.set(className, []);
+            }
+            classIndex.get(className).push(component);
+          });
+        }
+      }
+    }
+    return Object.freeze([...nameIndex.values()]);
+  } else if (isNullish(values)) {
+    nameIndex.clear();
+    classIndex.clear();
     return undefined;
   } else {
     return defaultValue;

@@ -41,6 +41,9 @@ exports[`Entity serialization 1`] = `
       ]
     },
     {
+      \\"rel\\": [
+        \\"http://x.io/rels/customer\\"
+      ],
       \\"class\\": [
         \\"info\\",
         \\"customer\\"

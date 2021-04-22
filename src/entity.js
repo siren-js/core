@@ -3,6 +3,7 @@ import { EmbeddedLink } from './embedded-link';
 import { Link } from './link';
 import * as coerce from './util/coerce';
 import extendWith from './util/extend-with';
+import { lookUpByClass, lookUpByRel } from './util/lookup';
 import {
   isArray,
   isNonNullObject,
@@ -16,32 +17,33 @@ export * from './embedded-link';
 export * from './link';
 
 /**
- * @typedef {object} EntityOptions Optional `Entity` members and extensions
- * @property {readonly Action[]} [actions] Available behavior exposed by the
- *    `Entity`
- * @property {string | readonly string[]} [class] A list of strings describing
- *    the nature of the `Entity` based on the current representation. Possible
- *    values are implementation-dependent and should be documented. Setting the
- *    value to a `string` will result in a singleton array.
- * @property {readonly SubEntity[]} [entities] Related entities represented as
- *    embedded links or representations
- * @property {readonly Link[]} [links] Navigation links that communicate ways to
- *    navigate outside the entity graph
- * @property {Record<string, unknown>} [properties] Key-value pairs describing
- *    the state of the `Entity`
- * @property {string} [title] Descriptive text about the `Entity`
- */
-
-/**
  * Represents a URI-addressable resource
  */
 export class Entity {
+  /** @type {readonly Action[] | undefined} */
   #actions;
+  /** @type {readonly string[] | undefined} */
   #class;
+  /** @type {readonly SubEntity[] | undefined} */
   #entities;
+  /** @type {readonly Link[] | undefined} */
   #links;
+  /** @type {Record<string, unknown> | undefined} */
   #properties;
+  /** @type {string | undefined} */
   #title;
+  /** @type {Map<string, Action>} */
+  #actionsByName = new Map();
+  /** @type {Map<string, Action[]>} */
+  #actionsByClass = new Map();
+  /** @type {Map<string, SubEntity[]>} */
+  #entitiesByRel = new Map();
+  /** @type {Map<string, SubEntity[]>} */
+  #entitiesByClass = new Map();
+  /** @type {Map<string, Link[]>} */
+  #linksByRel = new Map();
+  /** @type {Map<string, Link[]>} */
+  #linksByClass = new Map();
 
   /**
    * @param {EntityOptions} options Optional members (`actions`, `class`,
@@ -70,7 +72,6 @@ export class Entity {
 
   /**
    * Available behavior exposed by the `Entity`
-   * @type {readonly string[] | undefined}
    */
   get actions() {
     return this.#actions;
@@ -81,7 +82,9 @@ export class Entity {
       value,
       this.actions,
       Action.isValid,
-      Action.of
+      Action.of,
+      this.#actionsByName,
+      this.#actionsByClass
     );
   }
 
@@ -90,7 +93,6 @@ export class Entity {
    * current representation. Possible values are implementation-dependent and
    * should be documented. Setting the value to a `string` will result in a
    * singleton array.
-   * @type {readonly string[] | undefined}
    */
   get class() {
     return this.#class;
@@ -102,7 +104,6 @@ export class Entity {
 
   /**
    * Related entities represented as embedded links or representations
-   * @type {readonly SubEntity[] | undefined}
    */
   get entities() {
     return this.#entities;
@@ -113,25 +114,32 @@ export class Entity {
       value,
       this.entities,
       SubEntity.isValid,
-      SubEntity.of
+      SubEntity.of,
+      this.#entitiesByRel,
+      this.#entitiesByClass
     );
   }
 
   /**
    * Navigation links that communicate ways to navigate outside the entity graph
-   * @type {readonly Link[] | undefined}
    */
   get links() {
     return this.#links;
   }
 
   set links(value) {
-    this.#links = coerceSubComponents(value, this.links, Link.isValid, Link.of);
+    this.#links = coerceSubComponents(
+      value,
+      this.links,
+      Link.isValid,
+      Link.of,
+      this.#linksByRel,
+      this.#linksByClass
+    );
   }
 
   /**
    * Key-value pairs describing the state of the `Entity`
-   * @type {Record<string, unknown> | undefined}
    */
   get properties() {
     return this.#properties;
@@ -147,7 +155,6 @@ export class Entity {
 
   /**
    * Descriptive text about the `Entity`
-   * @type {string | undefined}
    */
   get title() {
     return this.#title;
@@ -155,6 +162,60 @@ export class Entity {
 
   set title(value) {
     this.#title = coerce.toOptionalString(value, this.title);
+  }
+
+  /**
+   * Returns the action in this `Entity` with the given `name`, or `undefined`
+   * if no action exists with that `name`.
+   * @param {string} name Name of the action to lookup
+   */
+  getActionByName(name) {
+    return this.#actionsByName.get(name);
+  }
+
+  /**
+   * Returns the actions in this `Entity` with the given `classes`.
+   * @param {...string} classes One or more classes
+   * @returns {Action[]}
+   */
+  getActionsByClass(...classes) {
+    return lookUpByClass(this.#actionsByClass, classes);
+  }
+
+  /**
+   * Returns the sub-entities in this `Entity` with the given `classes`.
+   * @param {...string} classes One or more classes
+   * @returns {SubEntity[]}
+   */
+  getEntitiesByClass(...classes) {
+    return lookUpByClass(this.#entitiesByClass, classes);
+  }
+
+  /**
+   * Returns the sub-entities in this `Entity` with the given `rels`.
+   * @param {...string} rels One or more link relation types
+   * @returns {SubEntity[]}
+   */
+  getEntitiesByRel(...rels) {
+    return lookUpByRel(this.#entitiesByRel, rels);
+  }
+
+  /**
+   * Returns the links in this `Entity` with the given `classes`.
+   * @param {...string} classes One or more classes
+   * @returns {Link[]}
+   */
+  getLinksByClass(...classes) {
+    return lookUpByClass(this.#linksByClass, classes);
+  }
+
+  /**
+   * Returns the links in this `Entity` with the given `rels`.
+   * @param {...string} rels One or more link relations
+   * @returns {Link[]}
+   */
+  getLinksByRel(...rels) {
+    return lookUpByRel(this.#linksByRel, rels);
   }
 
   /**
@@ -183,10 +244,50 @@ export class Entity {
   }
 }
 
-function coerceSubComponents(value, defaultValue, validator, factory) {
-  if (isArray(value)) {
-    return Object.freeze(value.filter(validator).map(factory));
-  } else if (isNullish(value)) {
+/**
+ * @template {{ rel: string[]; class?: string[] }} T
+ * @param {readonly unknown[]} values
+ * @param {readonly T[]} defaultValue
+ * @param {(value: unknown) => value is Record<string, unknown>} isValid
+ * @param {(value: Record<string, unknown>) => T} parse
+ * @param {Map<string, T[]} relIndex
+ * @param {Map<string, T[]>} classIndex
+ * @returns {readonly T[] | undefined}
+ */
+function coerceSubComponents(
+  values,
+  defaultValue,
+  isValid,
+  parse,
+  relIndex,
+  classIndex
+) {
+  if (isArray(values)) {
+    relIndex.clear();
+    classIndex.clear();
+    const components = [];
+    for (const value of values) {
+      if (isValid(value)) {
+        const component = parse(value);
+        components.push(component);
+        component.rel.forEach((rel) => {
+          if (!relIndex.has(rel)) {
+            relIndex.set(rel, []);
+          }
+          relIndex.get(rel).push(component);
+        });
+        component.class?.forEach((className) => {
+          if (!classIndex.has(className)) {
+            classIndex.set(className, []);
+          }
+          classIndex.get(className).push(component);
+        });
+      }
+    }
+    return Object.freeze(components);
+  } else if (isNullish(values)) {
+    relIndex.clear();
+    classIndex.clear();
     return undefined;
   } else {
     return defaultValue;
@@ -197,6 +298,7 @@ function coerceSubComponents(value, defaultValue, validator, factory) {
  * Represents a sub-entity as an embedded representation
  */
 export class EmbeddedEntity extends Entity {
+  /** @type {readonly string[]} */
   #rel;
 
   /**
@@ -222,7 +324,6 @@ export class EmbeddedEntity extends Entity {
    * parent `Entity`, per [RFC 8288](https://tools.ietf.org/html/rfc8288).
    * Setting to a `string` will result in a singleton array. Empty arrays are
    * ignored.
-   * @type {readonly string[]}
    */
   get rel() {
     return this.#rel;
@@ -230,6 +331,14 @@ export class EmbeddedEntity extends Entity {
 
   set rel(value) {
     this.#rel = coerce.toStringArray(value, this.rel);
+  }
+
+  /**
+   * Customizes JSON serialization (via `JSON.stringify()`) to include
+   * properties defined as getters
+   */
+  toJSON() {
+    return { rel: this.rel, ...super.toJSON() };
   }
 
   /**
@@ -286,3 +395,97 @@ export class SubEntity {
       : EmbeddedEntity.of(value);
   }
 }
+
+/**
+ * @typedef EntityOptions Optional `Entity` members and extensions
+ * @property {readonly ActionOption[]} [actions] Available behavior exposed by
+ *    the `Entity`
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Entity` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {readonly SubEntityOption[]} [entities] Related entities
+ *    represented as embedded links or representations
+ * @property {readonly LinkOption[]} [links] Navigation links that communicate
+ *    ways to navigate outside the entity graph
+ * @property {Record<string, unknown>} [properties] Key-value pairs describing
+ *    the state of the `Entity`
+ * @property {string} [title] Descriptive text about the `Entity`
+ *
+ * @typedef ActionOption
+ * @property {string} name
+ * @property {string} href
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Action` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {readonly FieldOption[]} [fields] Input controls of the `Action`
+ * @property {string} [method] The protocol method used when submitting the
+ *    `Action`
+ * @property {string} [title] Descriptive text about the `Action`
+ * @property {string} [type] The encoding type indicating how `fields` are
+ *    serialized when submitting the `Action`. Setting to
+ *    a value that does not match the ABNF `type-name "/" subtype-name` (see
+ *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
+ *    will be ignored.
+ *
+ * @typedef {EmbeddedLinkOption | EmbeddedEntityOption} SubEntityOption
+ *
+ * @typedef EmbeddedLinkOption
+ * @property {string | readonly string[]} rel A list of strings describing the
+ *    relationship of the sub-entity to its parent `Entity`, per
+ *    [RFC 8288](https://tools.ietf.org/html/rfc8288). Setting to a `string`
+ *    will result in a singleton array. An empty array will result in the entire
+ *    object being ignored.
+ * @property {string} href The URI of the linked resource. Setting the value to
+ *    a `URL` will result in the `URL`'s string representation.
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Link` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {string} [title] Text describing the nature of the `Link`
+ * @property {string} [type] A hint indicating what the media type of the result
+ *    of dereferencing the `Link` should be, per
+ *    [RFC 8288](https://tools.ietf.org/html/rfc8288#section-3.4.1). Setting to
+ *    a value that does not match the ABNF `type-name "/" subtype-name` (see
+ *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
+ *    will be ignored.
+ *
+ * @typedef EmbeddedEntityOption
+ * @property {string | readonly string[]} rel A list of strings describing the
+ *    relationship of the sub-entity to its parent `Entity`, per
+ *    [RFC 8288](https://tools.ietf.org/html/rfc8288). Setting to a `string`
+ *    will result in a singleton array.
+ * @property {readonly ActionOption[]} [actions] Available behavior exposed by
+ *    the `Entity`
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Entity` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {readonly SubEntityOption[]} [entities] Related entities
+ *    represented as embedded links or representations
+ * @property {readonly LinkOption[]} [links] Navigation links that communicate
+ *    ways to navigate outside the entity graph
+ * @property {Record<string, unknown>} [properties] Key-value pairs describing
+ *    the state of the `Entity`
+ * @property {string} [title] Descriptive text about the `Entity`
+ *
+ * @typedef LinkOption
+ * @property {string | readonly string[]} rel A list of strings describing the
+ *    relationship of the `Link` to its `Entity`, per
+ *    [RFC 8288](https://tools.ietf.org/html/rfc8288). Setting the value to a
+ *    `string` will result in a singleton array.
+ * @property {string} href The URI of the linked resource. Setting the value to
+ *    a `URL` will result in the `URL`'s string representation.
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Link` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {string} [title] Text describing the nature of the `Link`
+ * @property {string} [type] A hint indicating what the media type of the result
+ *    of dereferencing the `Link` should be, per
+ *    [RFC 8288](https://tools.ietf.org/html/rfc8288#section-3.4.1). Setting to
+ *    a value that does not match the ABNF `type-name "/" subtype-name` (see
+ *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
+ *    will be ignored.
+ */

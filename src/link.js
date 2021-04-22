@@ -3,28 +3,18 @@ import extendWith from './util/extend-with';
 import { isArray, isNonNullObject, isString, isUri } from './util/type-guard';
 
 /**
- * @typedef {object} LinkOptions Optional `Link` members and extensions
- * @property {string | readonly string[]} [class] A list of strings describing
- *    the nature of the `Link` based on the current representation. Possible
- *    values are implementation-dependent and should be documented. Setting the
- *    value to a `string` will result in a singleton array.
- * @property {string} [title] Text describing the nature of the `Link`
- * @property {string} [type] A hint indicating what the media type of the result
- *    of dereferencing the `Link` should be, per
- *    [RFC 8288](https://tools.ietf.org/html/rfc8288#section-3.4.1). Setting to
- *    a value that does not match the ABNF `type-name "/" subtype-name` (see
- *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
- *    will be ignored.
- */
-
-/**
  * Represents a navigational transition.
  */
 export class Link {
+  /** @type {readonly string[]} */
   #rel;
+  /** @type {string} */
   #href;
+  /** @type {readonly string[] | undefined} */
   #class;
+  /** @type {string | undefined} */
   #title;
+  /** @type {string | undefined} */
   #type;
 
   /**
@@ -62,7 +52,6 @@ export class Link {
    * A list of strings describing the relationship of the `Link` to its
    * `Entity`, per [RFC 8288](https://tools.ietf.org/html/rfc8288). Setting the
    * value to a `string` will result in a singleton array.
-   * @type {readonly string[]}
    */
   get rel() {
     return this.#rel;
@@ -75,7 +64,6 @@ export class Link {
   /**
    * The URI of the linked resource. Setting the value to a `URL` will result in
    * the `URL`'s string representation.
-   * @type {string}
    */
   get href() {
     return this.#href;
@@ -90,7 +78,6 @@ export class Link {
    * representation. Possible values are implementation-dependent and should be
    * documented. Setting the value to a `string` will result in a singleton
    * array.
-   * @type {readonly string[] | undefined}
    */
   get class() {
     return this.#class;
@@ -102,7 +89,6 @@ export class Link {
 
   /**
    * Text describing the nature of a link
-   * @type {string | undefined}
    */
   get title() {
     return this.#title;
@@ -119,7 +105,6 @@ export class Link {
    * value that does not match the ABNF `type-name "/" subtype-name` (see
    * [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
    * will be ignored.
-   * @type {string | undefined}
    */
   get type() {
     return this.#type;
@@ -167,3 +152,18 @@ export class Link {
     return new Link(rel, href, rest);
   }
 }
+
+/**
+ * @typedef LinkOptions Optional `Link` members and extensions
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Link` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {string} [title] Text describing the nature of the `Link`
+ * @property {string} [type] A hint indicating what the media type of the result
+ *    of dereferencing the `Link` should be, per
+ *    [RFC 8288](https://tools.ietf.org/html/rfc8288#section-3.4.1). Setting to
+ *    a value that does not match the ABNF `type-name "/" subtype-name` (see
+ *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
+ *    will be ignored.
+ */

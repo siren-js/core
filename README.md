@@ -16,6 +16,7 @@ parsing Siren representations.
 - [Installation](#installation)
 - [Development Release](#development-release)
 - [Usage](#usage)
+  - [Component Lookup](#component-lookup)
   - [Generating Siren](#generating-siren)
   - [Parsing Siren](#parsing-siren)
   - [Extensions](#extensions)
@@ -36,8 +37,7 @@ will.
 
 In order to get to a production-ready release (v1+), we need users to try out
 the library, find bugs, and give honest, constructive feedback on how we can
-improve! If you'd like to report a bug or provide feedback, feel free to
-[create an issue](https://github.com/siren-js/core/issues/new).
+improve! See the [Contributing](#contributing) section below.
 
 ## Usage
 
@@ -156,7 +156,7 @@ const addItemAction = new Siren.Action('add-item', itemsUrl, {
   fields: [
     { name: 'orderNumber', type: 'hidden', value: `${order.orderNumber}` },
     { name: 'productCode', type: 'text' },
-    { name: 'quantity', type: 'number' }
+    quantityField
   ]
 });
 ```
@@ -187,6 +187,43 @@ new Siren.Entity({
 });
 //=> same as entity
 ```
+
+### Component Lookup
+
+The `Entity` and `Action` classes each provide a method for looking up their
+actions and fields by `name`.
+
+```js
+entity.getActionByName('add-item');
+//=> same as addItemAction
+
+addItemAction.getFieldByName('quantity');
+//=> same as quantityField
+```
+
+The `Entity` class also has methods for looking up sub-entities and links by
+`rel` and `class`, as well as actions by `class`.
+
+```js
+entity.getLinksByRel('self');
+//=> same as [selfLink]
+
+entity.getEntitiesByRel(itemsRel);
+//=> same as [itemsLink]
+entity.getEntitiesByClass('items');
+//=> same as [itemsLink]
+
+// you can pass multiple classes/rels (order doesn't matter)
+entity.getEntitiesByClass('customer', 'info');
+//=> same as [customerEntity]
+
+// components' property must contain all values
+entity.getEntitiesByClass('items', 'info');
+//=> []
+```
+
+The `Action` class has a method for looking up fields by `class` that works
+similarly.
 
 ### Generating Siren
 

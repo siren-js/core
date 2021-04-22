@@ -1,38 +1,33 @@
 import { Field } from './field';
 import * as coerce from './util/coerce';
 import extendWith from './util/extend-with';
+import { lookUpByClass } from './util/lookup';
 import { isNonNullObject, isString, isUri } from './util/type-guard';
 
 export * from './field';
 
 /**
- * @typedef {object} ActionOptions Optional `Action` members and extensions
- * @property {string | readonly string[]} [class] A list of strings describing
- *    the nature of the `Action` based on the current representation. Possible
- *    values are implementation-dependent and should be documented. Setting the
- *    value to a `string` will result in a singleton array.
- * @property {readonly Field[]} [fields] Input controls of the `Action`
- * @property {string} [method] The protocol method used when submitting the
- *    `Action`
- * @property {string} [title] Descriptive text about the `Action`
- * @property {string} [type] The encoding type indicating how `fields` are
- *    serialized when submitting the `Action`. Setting to
- *    a value that does not match the ABNF `type-name "/" subtype-name` (see
- *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
- *    will be ignored.
- */
-
-/**
  * Represents available behavior exposed by an `Entity`.
  */
 export class Action {
+  /** @type {string} */
   #name;
+  /** @type {string} */
   #href;
+  /** @type {readonly string[] | undefined} */
   #class;
+  /** @type {readonly Field[] | undefined} */
   #fields;
+  /** @type {string | undefined} */
   #method;
+  /** @type {string | undefined} */
   #title;
+  /** @type {string | undefined} */
   #type;
+  /** @type {Map<string, Field>} */
+  #fieldsByName = new Map();
+  /** @type {Map<string, Field[]>} */
+  #fieldsByClass = new Map();
 
   /**
    * @param {string} name A name identifying the action to be performed. Must be
@@ -69,7 +64,6 @@ export class Action {
   /**
    * A name identifying the action to be performed. Must be unique within an
    * `Entity`'s `actions`.
-   * @type {string}
    */
   get name() {
     return this.#name;
@@ -78,7 +72,6 @@ export class Action {
   /**
    * The URI of the action. Setting to a `URL` will result in the `URL`'s string
    * representation.
-   * @type {string}
    */
   get href() {
     return this.#href;
@@ -93,7 +86,6 @@ export class Action {
    * current representation. Possible values are implementation-dependent and
    * should be documented. Setting the value to a `string` will result in a
    * singleton array.
-   * @type {readonly string[] | undefined}
    */
   get class() {
     return this.#class;
@@ -105,7 +97,6 @@ export class Action {
 
   /**
    * Input controls of the `Action`
-   * @type {readonly Field[] | undefined}
    */
   get fields() {
     return this.#fields;
@@ -116,14 +107,15 @@ export class Action {
       value,
       this.fields,
       Field.isValid,
-      Field.of
+      Field.of,
+      this.#fieldsByName,
+      this.#fieldsByClass
     );
   }
 
   /**
    * The protocol method used when submitting the `Action`. When missing, the
    * default is assumed to be `'GET'`.
-   * @type {string | undefined}
    */
   get method() {
     return this.#method;
@@ -135,7 +127,6 @@ export class Action {
 
   /**
    * Descriptive text about the `Action`
-   * @type {string | undefined}
    */
   get title() {
     return this.#title;
@@ -152,7 +143,6 @@ export class Action {
    * [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
    * will be ignored. When missing, the default is assumed to be
    * `'application/x-www-form-urlencoded'`.
-   * @type {string | undefined}
    */
   get type() {
     return this.#type;
@@ -160,6 +150,24 @@ export class Action {
 
   set type(value) {
     this.#type = coerce.toOptionalMediaTypeString(value, this.type);
+  }
+
+  /**
+   * Returns the field in this `Action` with the given `name`, or `undefined`
+   * if no field exists with that `name`.
+   * @param {string} name Name of the field to lookup
+   */
+  getFieldByName(name) {
+    return this.#fieldsByName.get(name);
+  }
+
+  /**
+   * Returns the fields in this `Action` with the given `classes`.
+   * @param {...string} classes One or more classes
+   * @returns {Field[]}
+   */
+  getFieldsByClass(...classes) {
+    return lookUpByClass(this.#fieldsByClass, classes);
   }
 
   /**
@@ -216,3 +224,33 @@ export class Action {
     return new Action(name, href, rest);
   }
 }
+
+/**
+ * @typedef ActionOptions Optional `Action` members and extensions
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Action` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {readonly FieldOption[]} [fields] Input controls of the `Action`
+ * @property {string} [method] The protocol method used when submitting the
+ *    `Action`
+ * @property {string} [title] Descriptive text about the `Action`
+ * @property {string} [type] The encoding type indicating how `fields` are
+ *    serialized when submitting the `Action`. Setting to
+ *    a value that does not match the ABNF `type-name "/" subtype-name` (see
+ *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
+ *    will be ignored.
+ *
+ * @typedef FieldOption
+ * @property {string} name A name describing the control. Must be unique within
+ *    an `Action`.
+ * @property {string | readonly string[]} [class] A list of strings describing
+ *    the nature of the `Field` based on the current representation. Possible
+ *    values are implementation-dependent and should be documented. Setting the
+ *    value to a `string` will result in a singleton array.
+ * @property {string} [title] Textual annotation of the `Field`. Clients may use
+ *    this as a label.
+ * @property {string} [type] Input type of the field. May include any of the
+ *    [input types from HTML](https://html.spec.whatwg.org/multipage/input.html#the-input-element).
+ * @property {any} [value] The value assigned to the `Field`.
+ */
