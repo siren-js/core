@@ -1,35 +1,39 @@
 import * as coerce from './util/coerce';
-import extendWith from './util/extend-with';
-import { isArray, isNonNullObject, isString, isUri } from './util/type-guard';
+import { Extendable, extendWith } from './util/extend-with';
+import {
+  isArray,
+  isRecord,
+  isString,
+  isUri,
+  UnknownRecord
+} from './util/type-guard';
 
 /**
  * Represents a navigational transition.
  */
-export class Link {
-  /** @type {readonly string[]} */
-  #rel;
-  /** @type {string} */
-  #href;
-  /** @type {readonly string[] | undefined} */
-  #class;
-  /** @type {string | undefined} */
-  #title;
-  /** @type {string | undefined} */
-  #type;
+export class Link implements Extendable {
+  #rel: readonly string[] = [];
+  #href = '';
+  #class?: readonly string[];
+  #title?: string;
+  #type?: string;
+  [extension: string]: unknown;
 
   /**
-   * @param {string | readonly string[]} rel A list of strings describing the
-   *    relationship of the `Link` to its `Entity`, per
-   *    [RFC 8288](https://tools.ietf.org/html/rfc8288). Passing a `string` will
-   *    result in a singleton array.
-   * @param {string | URL} href The URI of the linked resource. Passing a `URL`
-   *    will result in the `URL`'s string representation.
-   * @param {LinkOptions} options Optional members (`class`, `title`, `type`)
-   *    and extensions
+   * @param rel A list of strings describing the relationship of the `Link` to
+   *    its `Entity`, per [RFC 8288](https://tools.ietf.org/html/rfc8288).
+   *    Passing a `string` will result in a singleton array.
+   * @param href The URI of the linked resource. Passing a `URL` will result in
+   *    the `URL`'s string representation.
+   * @param options Optional members (`class`, `title`, `type`) and extensions
    * @throws {TypeError} If `rel` is not a `string` or `string[]` or `href` is
    *    not a valid URI
    */
-  constructor(rel, href, options = {}) {
+  constructor(
+    rel: string | readonly string[],
+    href: string | URL,
+    options: LinkOptions = {}
+  ) {
     if (!isString(rel) && !isArray(rel)) {
       throw new TypeError('Link.rel must be an array of strings');
     }
@@ -37,11 +41,11 @@ export class Link {
       throw new TypeError('Link.href must be a URI');
     }
 
-    const { class: linkClass, title, type, ...extensions } = options ?? {};
+    const { class: classNames, title, type, ...extensions } = options ?? {};
 
-    this.rel = rel;
+    this.rel = <readonly string[]>rel;
     this.href = href;
-    this.class = linkClass;
+    this.class = <readonly string[]>classNames;
     this.title = title;
     this.type = type;
 
@@ -119,20 +123,18 @@ export class Link {
    * properties defined as getters
    */
   toJSON() {
-    const { rel, href, class: linkClass, title, type, ...extensions } = this;
-    return { rel, href, class: linkClass, title, type, ...extensions };
+    const { rel, href, class: classNames, title, type, ...extensions } = this;
+    return { rel, href, class: classNames, title, type, ...extensions };
   }
 
   /**
    * Determines whether `value` is a parsable Siren link (i.e., can be passed
    * to `Link.of`)
-   * @param {unknown} value
-   * @returns {boolean}
    */
-  static isValid(value) {
+  static isValid(value: unknown): value is UnknownRecord {
     return (
       value instanceof Link ||
-      (isNonNullObject(value) &&
+      (isRecord(value) &&
         (isArray(value.rel) || isString(value.rel)) &&
         isUri(value.href))
     );
@@ -141,29 +143,38 @@ export class Link {
   /**
    * Constructs a `Link` instance from any object. Use `Link.isValid` beforehand
    * to avoid unexpected behavior.
-   * @param {Record<string, unknown>} value
-   * @returns {Link}
    */
-  static of(value) {
+  static of(value: UnknownRecord): Link {
     if (value instanceof Link) {
       return value;
     }
     const { rel, href, ...rest } = value;
-    return new Link(rel, href, rest);
+    return new Link(<readonly string[]>rel, <string>href, rest);
   }
 }
 
 /**
- * @typedef LinkOptions Optional `Link` members and extensions
- * @property {string | readonly string[]} [class] A list of strings describing
- *    the nature of the `Link` based on the current representation. Possible
- *    values are implementation-dependent and should be documented. Setting the
- *    value to a `string` will result in a singleton array.
- * @property {string} [title] Text describing the nature of the `Link`
- * @property {string} [type] A hint indicating what the media type of the result
- *    of dereferencing the `Link` should be, per
- *    [RFC 8288](https://tools.ietf.org/html/rfc8288#section-3.4.1). Setting to
- *    a value that does not match the ABNF `type-name "/" subtype-name` (see
- *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
- *    will be ignored.
+ * Optional `Link` members and extensions
  */
+export interface LinkOptions extends Extendable {
+  /**
+   * A list of strings describing the nature of the `Link` based on the current
+   * representation. Possible values are implementation-dependent and should be
+   * documented. Setting the value to a `string` will result in a singleton
+   * array.
+   */
+  class?: string | readonly string[];
+  /**
+   * Text describing the nature of the `Link`
+   */
+  title?: string;
+  /**
+   * A hint indicating what the media type of the result of dereferencing the
+   * `Link` should be, per
+   * [RFC 8288](https://tools.ietf.org/html/rfc8288#section-3.4.1). Setting to a
+   * value that does not match the ABNF `type-name "/" subtype-name` (see
+   * [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
+   * will be ignored.
+   */
+  type?: string;
+}

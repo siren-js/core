@@ -1,26 +1,30 @@
-import { Link } from './link';
+import { Link, LinkOptions } from './link';
 import * as coerce from './util/coerce';
+import { UnknownRecord } from './util/type-guard';
 
 /**
  * Represent a sub-entity as a link
  */
 export class EmbeddedLink extends Link {
   /**
-   * @param {string | readonly string[]} rel A list of strings describing the
-   *    relationship of the sub-entity to its parent `Entity`, per
+   * @param rel A list of strings describing the relationship of the sub-entity
+   *    to its parent `Entity`, per
    *    [RFC 8288](https://tools.ietf.org/html/rfc8288). Passing a `string` will
    *    result in a singleton array.
-   * @param {string | URL} href The URI of the linked resource. Passing a `URL`
-   *    will result in the `URL`'s string representation.
-   * @param {EmbeddedLinkOptions} options Optional members (`class`, `title`,
-   *    `type`) and extensions
-   * @throws {TypeError} If `rel` is not a `string` or `string[]` or `href` is
-   *    not a valid URI
+   * @param href The URI of the linked resource. Passing a `URL` will result in
+   *    the `URL`'s string representation.
+   * @param options Optional members (`class`, `title`, `type`) and extensions
+   * @throws {TypeError} If `rel` is not a `string` or non-empty `string[]` or
+   *    `href` is not a valid URI
    */
-  constructor(rel, href, options = {}) {
+  constructor(
+    rel: string | readonly string[],
+    href: string | URL,
+    options: EmbeddedLinkOptions = {}
+  ) {
     super(rel, href, options);
 
-    if (this.rel === undefined) {
+    if (this.rel.length === 0) {
       throw new TypeError('EmbeddedLink.rel must be non-empty');
     }
   }
@@ -45,10 +49,8 @@ export class EmbeddedLink extends Link {
   /**
    * Determines whether `value` is a parsable Siren embedded link (i.e., can be
    * passed to `EmbeddedLink.of`)
-   * @param {unknown} value
-   * @returns {boolean}
    */
-  static isValid(value) {
+  static isValid(value: unknown): value is UnknownRecord {
     return (
       value instanceof EmbeddedLink ||
       (Link.isValid(value) && coerce.toStringArray(value.rel, []).length > 0)
@@ -58,18 +60,17 @@ export class EmbeddedLink extends Link {
   /**
    * Constructs a `EmbeddedLink` instance from any object. Use
    * `EmbeddedLink.isValid` beforehand to avoid unexpected behavior.
-   * @param {Record<string, unknown>} value
-   * @returns {EmbeddedLink}
    */
-  static of(value) {
+  static of(value: UnknownRecord): EmbeddedLink {
     if (value instanceof EmbeddedLink) {
       return value;
     }
     const { rel, href, ...rest } = value;
-    return new EmbeddedLink(rel, href, rest);
+    return new EmbeddedLink(<readonly string[]>rel, <string>href, rest);
   }
 }
 
 /**
- * @typedef {import('./link').LinkOptions} EmbeddedLinkOptions
+ * Optional `EmbeddedLink` members and extensions
  */
+export type EmbeddedLinkOptions = LinkOptions;

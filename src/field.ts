@@ -1,42 +1,43 @@
 import * as coerce from './util/coerce';
-import extendWith from './util/extend-with';
-import { isNonNullObject, isNullish, isString } from './util/type-guard';
+import { Extendable, extendWith } from './util/extend-with';
+import {
+  isNullish,
+  isRecord,
+  isString,
+  UnknownRecord
+} from './util/type-guard';
 
 /**
  * Represents an input control inside an `Action`. Serialization of a `Field`
  * depends on its `type` and its corresponding `Action`'s `type`.
  */
-export class Field {
-  /** @type {string} */
-  #name;
-  /** @type {readonly string[] | undefined} */
-  #class;
-  /** @type {string | undefined} */
-  #title;
-  /** @type {string | undefined} */
-  #type;
-  #value;
+export class Field<T = unknown> implements Extendable {
+  #name = '';
+  #class?: readonly string[];
+  #title?: string;
+  #type?: string;
+  #value?: T;
+  [extension: string]: unknown;
 
   /**
-   * @param {string} name A name describing the control. Must be unique within
-   *    an `Action`.
-   * @param {FieldOptions} options Optional members (`class`, `title`, `type`,
-   *    `value`) and extensions
+   * @param name A name describing the control. Must be unique within an
+   *    `Action`.
+   * @param options Optional members (`class`, `title`, etc.) and extensions
    * @throws {TypeError} If `name` is not a `string`
    */
-  constructor(name, options = {}) {
+  constructor(name: string, options: FieldOptions = {}) {
     if (!isString(name)) {
       throw new TypeError('Field.name must be a string');
     }
 
-    const { class: fieldClass, title, type, value, ...extensions } =
+    const { class: classNames, title, type, value, ...extensions } =
       options ?? {};
 
     this.#name = name;
-    this.class = fieldClass;
+    this.class = <readonly string[]>classNames;
     this.title = title;
     this.type = type;
-    this.value = value;
+    this.value = <T>value;
 
     extendWith(this, extensions);
   }
@@ -102,46 +103,53 @@ export class Field {
    * properties defined as getters
    */
   toJSON() {
-    const { name, class: fieldClass, title, type, value, ...extensions } = this;
-    return { name, class: fieldClass, title, type, value, ...extensions };
+    const { name, class: classNames, title, type, value, ...extensions } = this;
+    return { name, class: classNames, title, type, value, ...extensions };
   }
 
   /**
    * Determines whether `value` is a parsable Siren field (i.e., can be passed
    * to `Field.of`)
-   * @param {unknown} value
-   * @returns {boolean}
    */
-  static isValid(value) {
-    return (
-      value instanceof Field || (isNonNullObject(value) && isString(value.name))
-    );
+  static isValid(value: unknown): value is UnknownRecord {
+    return value instanceof Field || (isRecord(value) && isString(value.name));
   }
 
   /**
    * Constructs a `Field` instance from any object. Use `Field.isValid`
    * beforehand to avoid unexpected behavior.
-   * @param {Record<string, unknown>} value
-   * @returns {Field}
    */
-  static of(value) {
+  static of(value: UnknownRecord): Field {
     if (value instanceof Field) {
       return value;
     }
     const { name, ...rest } = value;
-    return new Field(name, rest);
+    return new Field(<string>name, rest);
   }
 }
 
 /**
- * @typedef {object} FieldOptions Optional `Field` members and extensions
- * @property {string | readonly string[]} [class] A list of strings describing
- *    the nature of the `Field` based on the current representation. Possible
- *    values are implementation-dependent and should be documented. Setting the
- *    value to a `string` will result in a singleton array.
- * @property {string} [title] Textual annotation of the `Field`. Clients may use
- *    this as a label.
- * @property {string} [type] Input type of the field. May include any of the
- *    [input types from HTML](https://html.spec.whatwg.org/multipage/input.html#the-input-element).
- * @property {any} [value] The value assigned to the `Field`.
+ * Optional `Field` members and extensions
  */
+export interface FieldOptions<T = unknown> extends Extendable {
+  /**
+   * A list of strings describing the nature of the `Field` based on the current
+   * representation. Possible values are implementation-dependent and should be
+   * documented. Setting the value to a `string` will result in a singleton
+   * array.
+   */
+  class?: string | readonly string[];
+  /**
+   * Textual annotation of the `Field`. Clients may use this as a label.
+   */
+  title?: string;
+  /**
+   * Input type of the field. May include any of the
+   * [input types from HTML](https://html.spec.whatwg.org/multipage/input.html#the-input-element).
+   */
+  type?: string;
+  /**
+   * The value assigned to the `Field`.
+   */
+  value?: T;
+}

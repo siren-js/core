@@ -10,7 +10,26 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## Unreleased
 
-## 0.2.0
+## 0.3.0
+
+### Added
+
+- Examples for using extensions
+- Documentation for TypeScript limitations
+
+### Changed
+
+- Code is now written in TypeScript to more easily manage type declarations. The
+  API has not changed, but the code now transpiles to ES2015, which may cause
+  compatibility issues.
+
+### Fixed
+
+- Extension support in TypeScript ([#6])
+
+[#6]: https://github.com/siren-js/core/issues/6
+
+## 0.2.0 - 2021-04-22
 
 ### Added
 

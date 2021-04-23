@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Action, EmbeddedLink, EmbeddedEntity, Entity, Link } from '../entity';
+import { construct } from './utils';
 
 describe('Entity', () => {
   describe('constructor', () => {
     it('should accept no arguments', () => {
-      expect(() => new Entity()).not.toThrow(TypeError);
+      expect(() => construct(Entity)).not.toThrow(TypeError);
     });
 
     it('should handle null options gracefully', () => {
-      expect(() => new Entity(null)).not.toThrow();
+      expect(() => construct(Entity, null)).not.toThrow();
     });
   });
 
@@ -16,11 +18,9 @@ describe('Entity', () => {
     const href = 'http://example.com';
 
     it('should accept empty array', () => {
-      const actions = [];
+      const entity = new Entity({ actions: [] });
 
-      const entity = new Entity({ actions });
-
-      expect(entity.actions).toEqual(actions);
+      expect(entity.actions).toEqual([]);
       expect(Object.isFrozen(entity.actions)).toBe(true);
     });
 
@@ -37,11 +37,11 @@ describe('Entity', () => {
       const entity = new Entity({ actions });
 
       expect(entity.actions).toHaveLength(actions.length);
-      expect(entity.actions[0]).toBe(actions[0]);
-      expect(entity.actions[1]).toBeInstanceOf(Action);
-      expect(entity.actions[1].name).toEqual(actions[1].name);
-      expect(entity.actions[1].href).toEqual(actions[1].href);
-      expect(entity.actions[1].title).toEqual(actions[1].title);
+      expect(entity.actions?.[0]).toBe(actions[0]);
+      expect(entity.actions?.[1]).toBeInstanceOf(Action);
+      expect(entity.actions?.[1].name).toEqual(actions[1].name);
+      expect(entity.actions?.[1].href).toEqual(actions[1].href);
+      expect(entity.actions?.[1].title).toEqual(actions[1].title);
       expect(Object.isFrozen(entity.actions)).toBe(true);
     });
 
@@ -54,11 +54,11 @@ describe('Entity', () => {
       });
 
       expect(entity.actions).toHaveLength(1);
-      expect(entity.actions[0].method).toBeUndefined();
+      expect(entity.actions?.[0].method).toBeUndefined();
     });
 
     it('should allow undefined and coerce null', () => {
-      [undefined, null].forEach((value) => {
+      [undefined, null].forEach((value: any) => {
         let entity = new Entity({ actions: value });
         expect(entity.actions).toBeUndefined();
 
@@ -70,7 +70,7 @@ describe('Entity', () => {
 
     it('should filter invalid actions', () => {
       const entity = new Entity({
-        actions: [{}, { name }, { href }]
+        actions: <any[]>[{}, { name }, { href }]
       });
 
       expect(entity.actions).toHaveLength(0);
@@ -78,7 +78,7 @@ describe('Entity', () => {
 
     it('should ignore non-array value', () => {
       const actions = [new Action(name, href)];
-      [true, 42, {}].forEach((value) => {
+      [true, 42, {}].forEach((value: any) => {
         let entity = new Entity({ actions: value });
         expect(entity.actions).toBeUndefined();
 
@@ -92,7 +92,7 @@ describe('Entity', () => {
   describe('class', () => {
     it('should accept any array of strings', () => {
       [['order'], ['customer', 'info'], []].forEach((value) => {
-        let entity = new Entity({ class: value });
+        const entity = new Entity({ class: value });
         expect(entity.class).toEqual(value);
       });
     });
@@ -105,7 +105,7 @@ describe('Entity', () => {
     });
 
     it('should allow undefined and coerce null', () => {
-      [undefined, null].forEach((value) => {
+      [undefined, null].forEach((value: any) => {
         const entity = new Entity({ class: value });
         expect(entity.class).toBeUndefined();
       });
@@ -113,14 +113,14 @@ describe('Entity', () => {
 
     it('should remove non-strings from array', () => {
       const entity = new Entity({
-        class: [true, 42, 'person', null, undefined]
+        class: <any[]>[true, 42, 'person', null, undefined]
       });
 
       expect(entity.class).toEqual(['person']);
     });
 
     it('should ignore invalid value', () => {
-      [true, 42, {}].forEach((value) => {
+      [true, 42, {}].forEach((value: any) => {
         const entity = new Entity({ class: value });
         expect(entity.class).toBeUndefined();
       });
@@ -135,9 +135,7 @@ describe('Entity', () => {
 
   describe('entities', () => {
     it('should accept empty array', () => {
-      const entities = [];
-
-      const entity = new Entity({ entities });
+      const entity = new Entity({ entities: [] });
 
       expect(entity.entities).toEqual([]);
       expect(Object.isFrozen(entity.entities)).toBe(true);
@@ -168,21 +166,21 @@ describe('Entity', () => {
       const entity = new Entity({ entities });
 
       expect(entity.entities).toHaveLength(entities.length);
-      expect(entity.entities[0]).toBe(entities[0]);
-      expect(entity.entities[1]).toBeInstanceOf(EmbeddedLink);
-      expect(entity.entities[1].rel).toEqual(entities[1].rel);
-      expect(entity.entities[1].href).toEqual(entities[1].href);
-      expect(entity.entities[1].title).toEqual(entities[1].title);
-      expect(entity.entities[2]).toBe(entities[2]);
-      expect(entity.entities[3]).toBeInstanceOf(EmbeddedEntity);
-      expect(entity.entities[3].rel).toEqual(entities[3].rel);
-      expect(entity.entities[3].href).toEqual(entities[3].href);
-      expect(entity.entities[3].title).toEqual(entities[3].title);
+      expect(entity.entities?.[0]).toBe(entities[0]);
+      expect(entity.entities?.[1]).toBeInstanceOf(EmbeddedLink);
+      expect(entity.entities?.[1].rel).toEqual(entities[1].rel);
+      expect(entity.entities?.[1].href).toEqual(entities[1].href);
+      expect(entity.entities?.[1].title).toEqual(entities[1].title);
+      expect(entity.entities?.[2]).toBe(entities[2]);
+      expect(entity.entities?.[3]).toBeInstanceOf(EmbeddedEntity);
+      expect(entity.entities?.[3].rel).toEqual(entities[3].rel);
+      expect(entity.entities?.[3].href).toEqual(entities[3].href);
+      expect(entity.entities?.[3].title).toEqual(entities[3].title);
       expect(Object.isFrozen(entity.entities)).toBe(true);
     });
 
     it('should allow undefined and coerce null', () => {
-      [undefined, null].forEach((value) => {
+      [undefined, null].forEach((value: any) => {
         let entity = new Entity({ entities: value });
         expect(entity.entities).toBeUndefined();
 
@@ -194,7 +192,7 @@ describe('Entity', () => {
 
     it('should filter invalid sub-entities', () => {
       const entity = new Entity({
-        entities: [{}, { href }, { links: [{ rel: ['self'], href }] }]
+        entities: <any[]>[{}, { href }, { links: [{ rel: ['self'], href }] }]
       });
 
       expect(entity.entities).toEqual([]);
@@ -207,7 +205,7 @@ describe('Entity', () => {
           links: [{ rel: ['self'], href }]
         })
       ];
-      [true, 42, {}].forEach((value) => {
+      [true, 42, {}].forEach((value: any) => {
         let entity = new Entity({ entities: value });
         expect(entity.entities).toBeUndefined();
 
@@ -223,9 +221,7 @@ describe('Entity', () => {
     const href = 'http://example.com';
 
     it('should accept empty array', () => {
-      const links = [];
-
-      const entity = new Entity({ links });
+      const entity = new Entity({ links: [] });
 
       expect(entity.links).toEqual([]);
       expect(Object.isFrozen(entity.links)).toBe(true);
@@ -240,16 +236,16 @@ describe('Entity', () => {
       const entity = new Entity({ links });
 
       expect(entity.links).toHaveLength(links.length);
-      expect(entity.links[0]).toBe(links[0]);
-      expect(entity.links[1]).toBeInstanceOf(Link);
-      expect(entity.links[1].rel).toEqual(links[1].rel);
-      expect(entity.links[1].href).toEqual(links[1].href);
-      expect(entity.links[1].title).toEqual(links[1].title);
+      expect(entity.links?.[0]).toBe(links[0]);
+      expect(entity.links?.[1]).toBeInstanceOf(Link);
+      expect(entity.links?.[1].rel).toEqual(links[1].rel);
+      expect(entity.links?.[1].href).toEqual(links[1].href);
+      expect(entity.links?.[1].title).toEqual(links[1].title);
       expect(Object.isFrozen(entity.links)).toBe(true);
     });
 
     it('should allow undefined and coerce null', () => {
-      [undefined, null].forEach((value) => {
+      [undefined, null].forEach((value: any) => {
         let entity = new Entity({ links: value });
         expect(entity.links).toBeUndefined();
 
@@ -261,7 +257,7 @@ describe('Entity', () => {
 
     it('should filter invalid links', () => {
       const entity = new Entity({
-        links: [{}, { rel }, { href }]
+        links: <any[]>[{}, { rel }, { href }]
       });
 
       expect(entity.links).toHaveLength(0);
@@ -269,7 +265,7 @@ describe('Entity', () => {
 
     it('should ignore non-array value', () => {
       const links = [new Link(rel, href)];
-      [true, 42, {}].forEach((value) => {
+      [true, 42, {}].forEach((value: any) => {
         let entity = new Entity({ links: value });
         expect(entity.links).toBeUndefined();
 
@@ -294,18 +290,18 @@ describe('Entity', () => {
     });
 
     it('should ignore non-records', () => {
-      [true, 42, 'foo', [true, 42, 'foo']].forEach((value) => {
+      [true, 42, 'foo', [true, 42, 'foo']].forEach((value: any) => {
         const entity = new Entity({ properties: value });
         expect(entity.properties).toBeUndefined();
       });
     });
 
     it('should allow undefined and coerce null', () => {
-      [undefined, null].forEach((value) => {
+      [undefined, null].forEach((value: any) => {
         let entity = new Entity({ properties: value });
         expect(entity.properties).toBeUndefined();
 
-        entity = new Entity({ properties: [] });
+        entity = new Entity({ properties: {} });
         entity.properties = value;
         expect(entity.properties).toBeUndefined();
       });
@@ -327,7 +323,7 @@ describe('Entity', () => {
     });
 
     it('should ignore non-string value', () => {
-      [true, 42, [], {}].forEach((value) => {
+      [true, 42, [], {}].forEach((value: any) => {
         let entity = new Entity({ title: value });
         expect(entity.title).toBeUndefined();
 
@@ -338,7 +334,7 @@ describe('Entity', () => {
     });
 
     it('should allow undefined and coerce null to undefined', () => {
-      [undefined, null].forEach((value) => {
+      [undefined, null].forEach((value: any) => {
         let entity = new Entity({ title: value });
         expect(entity.title).toBeUndefined();
 
@@ -358,8 +354,8 @@ describe('Entity', () => {
       const action = entity.getActionByName('foo');
 
       expect(action).toBeInstanceOf(Action);
-      expect(action.name).toBe('foo');
-      expect(action.href).toBe('/foo');
+      expect(action?.name).toBe('foo');
+      expect(action?.href).toBe('/foo');
     });
 
     it('should return undefined if action does not exist', () => {
@@ -384,7 +380,7 @@ describe('Entity', () => {
       const entity = new Entity();
       expect(entity.getActionByName('foo')).toBeUndefined();
 
-      entity.actions = [{ name: 'foo', href: '/foo' }];
+      entity.actions = <any[]>[{ name: 'foo', href: '/foo' }];
       expect(entity.getActionByName('foo')).toBeDefined();
     });
 
@@ -684,13 +680,13 @@ describe('EmbeddedEntity', () => {
 
       const embeddedEntity = new EmbeddedEntity(rel);
 
-      embeddedEntity.rel = 'up';
+      embeddedEntity.rel = <any>'up';
 
       expect(embeddedEntity.rel).toEqual(['up']);
     });
 
     it('should remove non-strings from array', () => {
-      const embeddedEntity = new EmbeddedEntity([
+      const embeddedEntity = new EmbeddedEntity(<any[]>[
         true,
         42,
         'item',
@@ -702,7 +698,7 @@ describe('EmbeddedEntity', () => {
     });
 
     it('should throw TypeError when constructor arg is invalid', () => {
-      [undefined, null, true, 42, {}].forEach((value) => {
+      [undefined, null, true, 42, {}].forEach((value: any) => {
         expect(() => new EmbeddedEntity(value)).toThrow(TypeError);
       });
     });
@@ -710,7 +706,7 @@ describe('EmbeddedEntity', () => {
     it('should ignore invalid value in setter', () => {
       const embeddedEntity = new EmbeddedEntity(rel);
 
-      [undefined, null, true, 42, {}].forEach((value) => {
+      [undefined, null, true, 42, {}].forEach((value: any) => {
         embeddedEntity.rel = value;
         expect(embeddedEntity.rel).toEqual(rel);
       });

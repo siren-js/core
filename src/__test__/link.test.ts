@@ -1,15 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Link } from '../link';
+import { construct } from './utils';
 
 const rel = ['self'];
 const href = 'http://example.com';
 
 describe('Link constructor', () => {
   it('should throw TypeError when given no arguments', () => {
-    expect(() => new Link()).toThrow(TypeError);
+    expect(() => construct(Link)).toThrow(TypeError);
   });
 
   it('should handle null options gracefully', () => {
-    expect(() => new Link(rel, href, null)).not.toThrow();
+    expect(() => construct(Link, rel, href, null)).not.toThrow();
   });
 });
 
@@ -29,13 +31,13 @@ describe('Link.rel', () => {
 
     const link = new Link(rel, href);
 
-    link.rel = 'up';
+    link.rel = <any>'up';
 
     expect(link.rel).toEqual(['up']);
   });
 
   it('should remove non-strings from array', () => {
-    const rels = [true, 42, 'self', null, undefined];
+    const rels: any[] = [true, 42, 'self', null, undefined];
     const link1 = new Link(['collection'], href);
 
     const link2 = new Link(rels, href);
@@ -46,7 +48,7 @@ describe('Link.rel', () => {
   });
 
   it('should throw TypeError when constructor arg is invalid', () => {
-    [undefined, null, true, 42, {}].forEach((value) => {
+    [undefined, null, true, 42, {}].forEach((value: any) => {
       expect(() => new Link(value, href)).toThrow(TypeError);
     });
   });
@@ -54,7 +56,7 @@ describe('Link.rel', () => {
   it('should ignore invalid value in setter', () => {
     const link = new Link(rel, href);
 
-    [undefined, null, true, 42, {}].forEach((value) => {
+    [undefined, null, true, 42, {}].forEach((value: any) => {
       link.rel = value;
       expect(link.rel).toEqual(rel);
     });
@@ -78,7 +80,7 @@ describe('Link.href', () => {
     expect(link.href.startsWith(href)).toBe(true);
   });
 
-  const invalidHrefs = [undefined, null, true, 42, 'http://\uFFFF.com'];
+  const invalidHrefs: any[] = [undefined, null, true, 42, 'http://\uFFFF.com'];
 
   it('should throw TypeError when constructor arg is invalid URI', () => {
     invalidHrefs.forEach((value) => {
@@ -99,7 +101,7 @@ describe('Link.href', () => {
 describe('Link.class', () => {
   it('should accept any array of strings', () => {
     [['order'], ['customer', 'info'], []].forEach((value) => {
-      let link = new Link(rel, href, { class: value });
+      const link = new Link(rel, href, { class: value });
       expect(link.class).toEqual(value);
     });
   });
@@ -112,7 +114,7 @@ describe('Link.class', () => {
   });
 
   it('should allow undefined and coerce null', () => {
-    [undefined, null].forEach((value) => {
+    [undefined, null].forEach((value: any) => {
       const link = new Link(rel, href, { class: value });
       expect(link.class).toBeUndefined();
     });
@@ -120,14 +122,14 @@ describe('Link.class', () => {
 
   it('should remove non-strings from array', () => {
     const link = new Link(rel, href, {
-      class: [true, 42, 'person', null, undefined]
+      class: <any[]>[true, 42, 'person', null, undefined]
     });
 
     expect(link.class).toEqual(['person']);
   });
 
   it('should ignore invalid value', () => {
-    [true, 42, {}].forEach((value) => {
+    [true, 42, {}].forEach((value: any) => {
       const link = new Link(rel, href, { class: value });
       expect(link.class).toBeUndefined();
     });
@@ -149,7 +151,7 @@ describe('Link.title', () => {
   });
 
   it('should ignore non-string value', () => {
-    [true, 42, [], {}].forEach((value) => {
+    [true, 42, [], {}].forEach((value: any) => {
       let link = new Link(rel, href, { title: value });
       expect(link.title).toBeUndefined();
 
@@ -160,7 +162,7 @@ describe('Link.title', () => {
   });
 
   it('should allow undefined and coerce null to undefined', () => {
-    [undefined, null].forEach((value) => {
+    [undefined, null].forEach((value: any) => {
       let link = new Link(rel, href, { title: value });
       expect(link.title).toBeUndefined();
 
@@ -186,7 +188,7 @@ describe('Link.type', () => {
   });
 
   it('should ignore invalid media type string', () => {
-    [true, 42, 'foo', [], {}].forEach((value) => {
+    [true, 42, 'foo', [], {}].forEach((value: any) => {
       let link = new Link(rel, href, { type: value });
       expect(link.type).toBeUndefined();
 
@@ -197,7 +199,7 @@ describe('Link.type', () => {
   });
 
   it('should allow undefined and coerce null to undefined', () => {
-    [undefined, null].forEach((value) => {
+    [undefined, null].forEach((value: any) => {
       let link = new Link(rel, href, { type: value });
       expect(link.type).toBeUndefined();
 

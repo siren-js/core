@@ -85,23 +85,16 @@ $ npm test
 # run tests as you make changes
 $ npm run test:node -- --watch
 
-# generate types with TypeScript
-$ npm run gen:types
-
-# compile with Babel (and generate types)
+# compile TypeScript
 $ npm run compile
 
-# build (lint, test, compile) the project
+# build (compile, lint, test) the project
 $ npm run build
 ```
 
-Type declarations are [generated from JSDoc][ts-jsdoc], so be sure to include
-JSDoc in your changes, especially for code called outside the library.
-
-[ts-jsdoc]: https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
-
 This project uses [SemVer](https://semver.org/). When making code changes, be
 sure to increment the version accordingly with the
-[`npm version` command][npm-version].
+[`npm version` command][npm-version]. We recommend using the
+`--no-git-tag-version` option to avoid potential issues.
 
 [npm-version]: https://docs.npmjs.com/cli/v7/commands/npm-version
