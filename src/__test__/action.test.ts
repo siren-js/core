@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Action, Field } from '../action';
+import { construct } from './utils';
 
 describe('Action', () => {
   const name = 'add-item';
@@ -6,11 +8,11 @@ describe('Action', () => {
 
   describe('constructor', () => {
     it('should throw TypeError when given no arguments', () => {
-      expect(() => new Action()).toThrow(TypeError);
+      expect(() => construct(Action)).toThrow(TypeError);
     });
 
     it('should handle null options gracefully', () => {
-      expect(() => new Action(name, href, null)).not.toThrow();
+      expect(() => construct(Action, name, href, null)).not.toThrow();
     });
   });
 
@@ -24,7 +26,7 @@ describe('Action', () => {
 
     it('should throw error given non-string in constructor', () => {
       [undefined, null, true, 42, [true, 42, 'foo'], { foo: 'bar' }].forEach(
-        (value) => {
+        (value: any) => {
           expect(() => new Action(value, href)).toThrow(TypeError);
         }
       );
@@ -32,7 +34,7 @@ describe('Action', () => {
 
     it('should be read-only', () => {
       const action = new Action(name, href);
-      expect(() => (action.name = 'foo')).toThrow(TypeError);
+      expect(() => ((<any>action.name) = 'foo')).toThrow(TypeError);
     });
   });
 
@@ -53,7 +55,13 @@ describe('Action', () => {
       expect(action.href.startsWith(href)).toBe(true);
     });
 
-    const invalidHrefs = [undefined, null, true, 42, 'http://\uFFFF.com'];
+    const invalidHrefs: any[] = [
+      undefined,
+      null,
+      true,
+      42,
+      'http://\uFFFF.com'
+    ];
 
     it('should throw TypeError when constructor arg is invalid URI', () => {
       invalidHrefs.forEach((value) => {
@@ -74,7 +82,7 @@ describe('Action', () => {
   describe('class', () => {
     it('should accept any array of strings', () => {
       [['integer'], ['positive', 'integer'], []].forEach((value) => {
-        let action = new Action(name, href, { class: value });
+        const action = new Action(name, href, { class: value });
         expect(action.class).toEqual(value);
       });
     });
@@ -87,7 +95,7 @@ describe('Action', () => {
     });
 
     it('should allow undefined and coerce null', () => {
-      [undefined, null].forEach((value) => {
+      [undefined, null].forEach((value: any) => {
         const action = new Action(name, href, { class: value });
         expect(action.class).toBeUndefined();
       });
@@ -95,14 +103,14 @@ describe('Action', () => {
 
     it('should remove non-strings from array', () => {
       const action = new Action(name, href, {
-        class: [true, 42, 'integer', null, undefined]
+        class: <any[]>[true, 42, 'integer', null, undefined]
       });
 
       expect(action.class).toEqual(['integer']);
     });
 
     it('should ignore invalid value', () => {
-      [true, 42, {}].forEach((value) => {
+      [true, 42, {}].forEach((value: any) => {
         const action = new Action(name, href, { class: value });
         expect(action.class).toBeUndefined();
       });
@@ -111,9 +119,7 @@ describe('Action', () => {
 
   describe('fields', () => {
     it('should accept empty array', () => {
-      const fields = [];
-
-      const action = new Action(name, href, { fields });
+      const action = new Action(name, href, { fields: [] });
 
       expect(action.fields).toEqual([]);
       expect(Object.isFrozen(action.fields)).toBe(true);
@@ -128,10 +134,10 @@ describe('Action', () => {
       const action = new Action(name, href, { fields });
 
       expect(action.fields).toHaveLength(fields.length);
-      expect(action.fields[0]).toBe(fields[0]);
-      expect(action.fields[1]).toBeInstanceOf(Field);
-      expect(action.fields[1].name).toEqual(fields[1].name);
-      expect(action.fields[1].title).toEqual(fields[1].title);
+      expect(action.fields?.[0]).toBe(fields[0]);
+      expect(action.fields?.[1]).toBeInstanceOf(Field);
+      expect(action.fields?.[1].name).toEqual(fields[1].name);
+      expect(action.fields?.[1].title).toEqual(fields[1].title);
       expect(Object.isFrozen(action.fields)).toBe(true);
     });
 
@@ -144,11 +150,11 @@ describe('Action', () => {
       });
 
       expect(action.fields).toHaveLength(1);
-      expect(action.fields[0].type).toBeUndefined();
+      expect(action.fields?.[0].type).toBeUndefined();
     });
 
     it('should allow undefined and coerce null', () => {
-      [undefined, null].forEach((value) => {
+      [undefined, null].forEach((value: any) => {
         let entity = new Action(name, href, { fields: value });
         expect(entity.fields).toBeUndefined();
 
@@ -160,7 +166,7 @@ describe('Action', () => {
 
     it('should filter invalid fields', () => {
       const action = new Action(name, href, {
-        fields: [{}, { title: 'Quantity' }]
+        fields: <any[]>[{}, { title: 'Quantity' }]
       });
 
       expect(action.fields).toHaveLength(0);
@@ -168,7 +174,7 @@ describe('Action', () => {
 
     it('should ignore non-array value', () => {
       const fields = [new Field('quantity')];
-      [true, 42, {}].forEach((value) => {
+      [true, 42, {}].forEach((value: any) => {
         let action = new Action(name, href, { fields: value });
         expect(action.fields).toBeUndefined();
 
@@ -194,7 +200,7 @@ describe('Action', () => {
     });
 
     it('should ignore non-string value', () => {
-      [true, 42, [], {}].forEach((value) => {
+      [true, 42, [], {}].forEach((value: any) => {
         let action = new Action(name, href, { method: value });
         expect(action.method).toBeUndefined();
 
@@ -205,7 +211,7 @@ describe('Action', () => {
     });
 
     it('should allow undefined and coerce null to undefined', () => {
-      [undefined, null].forEach((value) => {
+      [undefined, null].forEach((value: any) => {
         let action = new Action(name, href, { method: value });
         expect(action.method).toBeUndefined();
 
@@ -231,7 +237,7 @@ describe('Action', () => {
     });
 
     it('should ignore non-string value', () => {
-      [true, 42, [], {}].forEach((value) => {
+      [true, 42, [], {}].forEach((value: any) => {
         let action = new Action(name, href, { title: value });
         expect(action.title).toBeUndefined();
 
@@ -242,7 +248,7 @@ describe('Action', () => {
     });
 
     it('should allow undefined and coerce null to undefined', () => {
-      [undefined, null].forEach((value) => {
+      [undefined, null].forEach((value: any) => {
         let action = new Action(name, href, { title: value });
         expect(action.title).toBeUndefined();
 
@@ -268,7 +274,7 @@ describe('Action', () => {
     });
 
     it('should ignore invalid media type string', () => {
-      [true, 42, 'foo', [], {}].forEach((value) => {
+      [true, 42, 'foo', [], {}].forEach((value: any) => {
         let action = new Action(name, href, { type: value });
         expect(action.type).toBeUndefined();
 
@@ -279,7 +285,7 @@ describe('Action', () => {
     });
 
     it('should allow undefined and coerce null to undefined', () => {
-      [undefined, null].forEach((value) => {
+      [undefined, null].forEach((value: any) => {
         let action = new Action(name, href, { type: value });
         expect(action.type).toBeUndefined();
 
@@ -299,7 +305,7 @@ describe('Action', () => {
       const field = action.getFieldByName('foo');
 
       expect(field).toBeInstanceOf(Field);
-      expect(field.name).toBe('foo');
+      expect(field?.name).toBe('foo');
     });
 
     it('should return undefined if field does not exist', () => {
@@ -324,7 +330,7 @@ describe('Action', () => {
       const action = new Action(name, href);
       expect(action.getFieldByName('foo')).toBeUndefined();
 
-      action.fields = [{ name: 'foo' }];
+      action.fields = <any[]>[{ name: 'foo' }];
       expect(action.getFieldByName('foo')).toBeDefined();
     });
 

@@ -20,6 +20,7 @@ parsing Siren representations.
   - [Generating Siren](#generating-siren)
   - [Parsing Siren](#parsing-siren)
   - [Extensions](#extensions)
+  - [TypeScript](#typescript)
 - [Contributing](#contributing)
 
 ## Installation
@@ -253,12 +254,57 @@ Need [validation constraints][hc] on your fields? You got it!
 [rfc8288-3.4.1]: https://tools.ietf.org/html/rfc8288#section-3.4.1
 
 ```js
-new Siren.Link(['profile'], 'http://api.example.com/profile', {
+const link = new Siren.Link(['profile'], 'http://api.example.com/profile', {
   hreflang: 'en-US'
 });
+link.hreflang;
+//=> 'en-US'
 
-new Siren.Field('quantity', { min: 1, max: 10 });
+const field = new Siren.Field('quantity', { min: 1, max: 10 });
+
+const value = 15;
+if (value < field.min || value > field.max) {
+  // this block will execute...
+}
 ```
+
+### TypeScript
+
+Type declarations are included in the `@siren-js/core` package; however,
+TypeScript users may experience several limitations not present for JavaScript
+users.
+
+For example, class properties that are nested components can be passed as plain
+objects in the constructor, but not when modifying the property directly.
+
+```ts
+// this is OK
+addItemAction.fields = [quantityField];
+
+// this causes an error in TypeScript!!!
+addItemAction.fields = [{ name: 'quantity' }];
+```
+
+Similarly, `Link`'s and `EmbeddedLink`'s `href` property can be given a `URL`,
+which is coerced to a `string` using the `toString()` method. Again, this is
+available when instantiating a class, but not when modifying the property.
+
+```ts
+const url = new URL(orderUrl);
+
+// this is OK
+const link = new Siren.Link(['self'], url);
+link.href;
+//=> same as orderUrl
+
+// this causes an error in TypeScript!!!
+link.href = url;
+```
+
+These limitations are caused by a requirement for getters and setters to have
+the same type (see [TypeScript issue #2521][ts-2521]).
+
+[ts-2521]: https://github.com/microsoft/TypeScript/issues/2521
 
 ## Contributing
 

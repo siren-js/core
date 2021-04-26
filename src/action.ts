@@ -1,45 +1,36 @@
 import { Field } from './field';
 import * as coerce from './util/coerce';
-import extendWith from './util/extend-with';
+import { Extendable, extendWith } from './util/extend-with';
 import { lookUpByClass } from './util/lookup';
-import { isNonNullObject, isString, isUri } from './util/type-guard';
+import { isRecord, isString, isUri, UnknownRecord } from './util/type-guard';
 
 export * from './field';
 
 /**
  * Represents available behavior exposed by an `Entity`.
  */
-export class Action {
-  /** @type {string} */
-  #name;
-  /** @type {string} */
-  #href;
-  /** @type {readonly string[] | undefined} */
-  #class;
-  /** @type {readonly Field[] | undefined} */
-  #fields;
-  /** @type {string | undefined} */
-  #method;
-  /** @type {string | undefined} */
-  #title;
-  /** @type {string | undefined} */
-  #type;
-  /** @type {Map<string, Field>} */
-  #fieldsByName = new Map();
-  /** @type {Map<string, Field[]>} */
-  #fieldsByClass = new Map();
+export class Action implements Extendable {
+  #name = '';
+  #href = '';
+  #class?: readonly string[];
+  #fields?: readonly Field[];
+  #method?: string;
+  #title?: string;
+  #type?: string;
+  #fieldsByName = new Map<string, Field>();
+  #fieldsByClass = new Map<string, Field[]>();
+  [extension: string]: unknown;
 
   /**
-   * @param {string} name A name identifying the action to be performed. Must be
-   *    unique within an `Entity`'s `actions`.
-   * @param {string | URL} href The URI of the action. Passing a `URL` will
-   *    result in the `URL`'s string representation.
-   * @param {ActionOptions} options Optional members (`class`, `fields`,
-   *    `method`, `title`, `type`) and extensions
+   * @param name A name identifying the action to be performed. Must be unique
+   *    within an `Entity`'s `actions`.
+   * @param href The URI of the action. Passing a `URL` will result in the
+   *    `URL`'s string representation.
+   * @param options Optional members (`class`, `fields`, etc.) and extensions
    * @throws {TypeError} If `name` is not a `string` or `href` is not a valid
    *    URI
    */
-  constructor(name, href, options = {}) {
+  constructor(name: string, href: string | URL, options: ActionOptions = {}) {
     if (!isString(name)) {
       throw new TypeError('Action.name must be a string');
     }
@@ -47,13 +38,13 @@ export class Action {
       throw new TypeError('Action.href must be a URI');
     }
 
-    const { class: actionClass, fields, method, title, type, ...extensions } =
+    const { class: classNames, fields, method, title, type, ...extensions } =
       options ?? {};
 
     this.#name = name;
     this.href = href;
-    this.class = actionClass;
-    this.fields = fields;
+    this.class = <string[]>classNames;
+    this.fields = <Field[]>fields;
     this.method = method;
     this.title = title;
     this.type = type;
@@ -155,18 +146,17 @@ export class Action {
   /**
    * Returns the field in this `Action` with the given `name`, or `undefined`
    * if no field exists with that `name`.
-   * @param {string} name Name of the field to lookup
+   * @param name Name of the field to lookup
    */
-  getFieldByName(name) {
+  getFieldByName(name: string): Field | undefined {
     return this.#fieldsByName.get(name);
   }
 
   /**
    * Returns the fields in this `Action` with the given `classes`.
-   * @param {...string} classes One or more classes
-   * @returns {Field[]}
+   * @param classes One or more classes
    */
-  getFieldsByClass(...classes) {
+  getFieldsByClass(...classes: string[]): Field[] {
     return lookUpByClass(this.#fieldsByClass, classes);
   }
 
@@ -178,7 +168,7 @@ export class Action {
     const {
       name,
       href,
-      class: actionClass,
+      class: classNames,
       fields,
       method,
       title,
@@ -188,7 +178,7 @@ export class Action {
     return {
       name,
       href,
-      class: actionClass,
+      class: classNames,
       fields,
       method,
       title,
@@ -200,57 +190,83 @@ export class Action {
   /**
    * Determines whether `value` is a parsable Siren action (i.e., can be passed
    * to `Action.of`)
-   * @param {unknown} value
-   * @returns {boolean}
    */
-  static isValid(value) {
+  static isValid(value: unknown): value is UnknownRecord {
     return (
       value instanceof Action ||
-      (isNonNullObject(value) && isString(value.name) && isUri(value.href))
+      (isRecord(value) && isString(value.name) && isUri(value.href))
     );
   }
 
   /**
    * Constructs a `Action` instance from any object. Use `Action.isValid`
    * beforehand to avoid unexpected behavior.
-   * @param {Record<string, unknown>} value
-   * @returns {Action}
    */
-  static of(value) {
+  static of(value: UnknownRecord): Action {
     if (value instanceof Action) {
       return value;
     }
     const { name, href, ...rest } = value;
-    return new Action(name, href, rest);
+    return new Action(<string>name, <string>href, rest);
   }
 }
 
 /**
- * @typedef ActionOptions Optional `Action` members and extensions
- * @property {string | readonly string[]} [class] A list of strings describing
- *    the nature of the `Action` based on the current representation. Possible
- *    values are implementation-dependent and should be documented. Setting the
- *    value to a `string` will result in a singleton array.
- * @property {readonly FieldOption[]} [fields] Input controls of the `Action`
- * @property {string} [method] The protocol method used when submitting the
- *    `Action`
- * @property {string} [title] Descriptive text about the `Action`
- * @property {string} [type] The encoding type indicating how `fields` are
- *    serialized when submitting the `Action`. Setting to
- *    a value that does not match the ABNF `type-name "/" subtype-name` (see
- *    [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
- *    will be ignored.
- *
- * @typedef FieldOption
- * @property {string} name A name describing the control. Must be unique within
- *    an `Action`.
- * @property {string | readonly string[]} [class] A list of strings describing
- *    the nature of the `Field` based on the current representation. Possible
- *    values are implementation-dependent and should be documented. Setting the
- *    value to a `string` will result in a singleton array.
- * @property {string} [title] Textual annotation of the `Field`. Clients may use
- *    this as a label.
- * @property {string} [type] Input type of the field. May include any of the
- *    [input types from HTML](https://html.spec.whatwg.org/multipage/input.html#the-input-element).
- * @property {any} [value] The value assigned to the `Field`.
+ * Optional `Action` members and extensions
  */
+export interface ActionOptions extends Extendable {
+  /**
+   * A list of strings describing the nature of the `Action` based on the
+   * current representation. Possible values are implementation-dependent and
+   * should be documented. Setting the value to a `string` will result in a
+   * singleton array.
+   */
+  class?: string | readonly string[];
+  /**
+   * Input controls of the `Action`
+   */
+  fields?: readonly FieldOption[];
+  /**
+   * The protocol method used when submitting the `Action`
+   */
+  method?: string;
+  /**
+   * Descriptive text about the `Action`
+   */
+  title?: string;
+  /**
+   * The encoding type indicating how `fields` are serialized when submitting
+   * the `Action`. Setting to a value that does not match the ABNF
+   * `type-name "/" subtype-name` (see
+   * [Section 4.2 of RFC 6838](https://tools.ietf.org/html/rfc6838#section-4.2))
+   * will be ignored.
+   */
+  type?: string;
+}
+
+export interface FieldOption<T = unknown> extends Extendable {
+  /**
+   * A name describing the control. Must be unique within an `Action`.
+   */
+  name: string;
+  /**
+   * A list of strings describing the nature of the `Field` based on the current
+   * representation. Possible values are implementation-dependent and should be
+   * documented. Setting the value to a `string` will result in a singleton
+   * array.
+   */
+  class?: string | readonly string[];
+  /**
+   * Textual annotation of the `Field`. Clients may use this as a label.
+   */
+  title?: string;
+  /**
+   * Input type of the field. May include any of the
+   * [input types from HTML](https://html.spec.whatwg.org/multipage/input.html#the-input-element).
+   */
+  type?: string;
+  /**
+   * The value assigned to the `Field`.
+   */
+  value?: T;
+}

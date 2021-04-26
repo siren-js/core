@@ -1,23 +1,23 @@
 {
   "name": "@siren-js/core",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Core Siren.js functionality",
   "files": [
     "/dist"
   ],
   "main": "dist/index.js",
   "scripts": {
+    "build": "npm run compile && npm run lint && npm run format:check && npm test",
+    "compile": "tsc --project tsconfig.build.json",
+    "compile:watch": "npm run compile -- --watch",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "eslint src --ext .js",
+    "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix",
+    "prepublishOnly": "npm run build",
     "test": "jest --env=jsdom && jest --env=node",
     "test:jsdom": "jest --env=jsdom",
-    "test:node": "jest --env=node",
-    "gen:types": "tsc",
-    "compile": "babel src --out-dir dist --ignore src/**/__test__ && npm run gen:types",
-    "build": "npm run format:check && npm run lint && npm test && npm run compile",
-    "prepublishOnly": "npm run build"
+    "test:node": "jest --env=node"
   },
   "repository": {
     "type": "git",
@@ -38,22 +38,20 @@
   },
   "homepage": "https://github.com/siren-js/core#readme",
   "devDependencies": {
-    "@babel/cli": "^7.13.10",
-    "@babel/core": "^7.13.10",
-    "@babel/eslint-parser": "^7.13.8",
-    "@babel/plugin-proposal-class-properties": "^7.13.0",
-    "@babel/preset-env": "^7.13.9",
     "@types/jest": "^26.0.20",
-    "babel-jest": "^26.6.3",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
     "eslint": "^7.21.0",
     "eslint-config-prettier": "^8.1.0",
     "jest": "^26.6.3",
     "prettier": "2.2.1",
+    "ts-jest": "^26.5.5",
     "typescript": "^4.2.3"
   },
   "jest": {
     "collectCoverage": true,
-    "coverageDirectory": "coverage"
+    "coverageDirectory": "coverage",
+    "preset": "ts-jest"
   },
   "prettier": {
     "singleQuote": true,

@@ -1,11 +1,12 @@
 {
   "include": ["src/**/*"],
-  "exclude": ["src/**/__test__"],
   "compilerOptions": {
-    "allowJs": true,
     "declaration": true,
-    "emitDeclarationOnly": true,
-    "strictNullChecks": true,
-    "outDir": "dist"
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2015"
   }
 }

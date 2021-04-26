@@ -1,14 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Field } from '../field';
+import { construct } from './utils';
 
 const name = 'quantity';
 
 describe('Field constructor', () => {
   it('should throw TypeError when given no arguments', () => {
-    expect(() => new Field()).toThrow(TypeError);
+    expect(() => construct(Field)).toThrow(TypeError);
   });
 
   it('should handle null options gracefully', () => {
-    expect(() => new Field(name, null)).not.toThrow();
+    expect(() => construct(Field, name, null)).not.toThrow();
   });
 });
 
@@ -22,7 +24,7 @@ describe('Field.name', () => {
 
   it('should throw error given non-string in constructor', () => {
     [undefined, null, true, 42, [true, 42, 'foo'], { foo: 'bar' }].forEach(
-      (value) => {
+      (value: any) => {
         expect(() => new Field(value)).toThrow(TypeError);
       }
     );
@@ -30,14 +32,14 @@ describe('Field.name', () => {
 
   it('should be read-only', () => {
     const field = new Field(name);
-    expect(() => (field.name = 'foo')).toThrow(TypeError);
+    expect(() => ((<any>field.name) = 'foo')).toThrow(TypeError);
   });
 });
 
 describe('Field.class', () => {
   it('should accept any array of strings', () => {
     [['integer'], ['positive', 'integer'], []].forEach((value) => {
-      let field = new Field(name, { class: value });
+      const field = new Field(name, { class: value });
       expect(field.class).toEqual(value);
     });
   });
@@ -50,7 +52,7 @@ describe('Field.class', () => {
   });
 
   it('should allow undefined and coerce null', () => {
-    [undefined, null].forEach((value) => {
+    [undefined, null].forEach((value: any) => {
       const field = new Field(name, { class: value });
       expect(field.class).toBeUndefined();
     });
@@ -58,14 +60,14 @@ describe('Field.class', () => {
 
   it('should remove non-strings from array', () => {
     const field = new Field(name, {
-      class: [true, 42, 'integer', null, undefined]
+      class: <any[]>[true, 42, 'integer', null, undefined]
     });
 
     expect(field.class).toEqual(['integer']);
   });
 
   it('should ignore invalid value', () => {
-    [true, 42, {}].forEach((value) => {
+    [true, 42, {}].forEach((value: any) => {
       const field = new Field(name, { class: value });
       expect(field.class).toBeUndefined();
     });
@@ -87,7 +89,7 @@ describe('Field.title', () => {
   });
 
   it('should ignore non-string value', () => {
-    [true, 42, [], {}].forEach((value) => {
+    [true, 42, [], {}].forEach((value: any) => {
       let field = new Field(name, { title: value });
       expect(field.title).toBeUndefined();
 
@@ -98,7 +100,7 @@ describe('Field.title', () => {
   });
 
   it('should allow undefined and coerce null to undefined', () => {
-    [undefined, null].forEach((value) => {
+    [undefined, null].forEach((value: any) => {
       let field = new Field(name, { title: value });
       expect(field.title).toBeUndefined();
 
@@ -124,7 +126,7 @@ describe('Field.type', () => {
   });
 
   it('should ignore non-string value', () => {
-    [true, 42, [], {}].forEach((value) => {
+    [true, 42, [], {}].forEach((value: any) => {
       let field = new Field(name, { type: value });
       expect(field.type).toBeUndefined();
 
@@ -135,7 +137,7 @@ describe('Field.type', () => {
   });
 
   it('should allow undefined and coerce null to undefined', () => {
-    [undefined, null].forEach((value) => {
+    [undefined, null].forEach((value: any) => {
       let field = new Field(name, { type: value });
       expect(field.type).toBeUndefined();
 
