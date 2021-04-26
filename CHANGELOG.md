@@ -10,7 +10,13 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## Unreleased
 
-## 0.3.0
+## 0.3.1
+
+### Changed
+
+- Tranpiling to CommonJS modules
+
+## 0.3.0 - 2021-04-26
 
 ### Added
 
