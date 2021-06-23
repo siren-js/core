@@ -10,6 +10,16 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## Unreleased
 
+## 0.3.2
+
+### Fixed
+
+- [#10] - Link relation types are now compared in a case-insensitive fashion,
+  per [RFC 8288][rfc8288].
+
+[#10]: https://github.com/siren-js/core/issues/10
+[rfc8288]: https://datatracker.ietf.org/doc/html/rfc8288#section-3.3
+
 ## 0.3.1 - 2021-04-26
 
 ### Changed

@@ -479,7 +479,7 @@ describe('Entity', () => {
     const entity = new Entity({
       entities: [
         { rel: ['collection'], href: '/foos' },
-        { rel: ['collection', 'up'], href: '/bars' },
+        { rel: ['Collection', 'up'], href: '/bars' },
         { rel: ['about'], href: '/about' }
       ]
     });
@@ -490,8 +490,16 @@ describe('Entity', () => {
 
     it('should return sub-entities with rel', () => {
       expect(entity.getEntitiesByRel('collection')).toHaveLength(2);
+      expect(entity.getEntitiesByRel('Collection')).toHaveLength(2);
+      expect(entity.getEntitiesByRel('COLLECTION')).toHaveLength(2);
+      expect(entity.getEntitiesByRel('cOlLeCtIoN')).toHaveLength(2);
       expect(entity.getEntitiesByRel('up')).toHaveLength(1);
+      expect(entity.getEntitiesByRel('Up')).toHaveLength(1);
+      expect(entity.getEntitiesByRel('UP')).toHaveLength(1);
       expect(entity.getEntitiesByRel('about')).toHaveLength(1);
+      expect(entity.getEntitiesByRel('About')).toHaveLength(1);
+      expect(entity.getEntitiesByRel('AbOuT')).toHaveLength(1);
+      expect(entity.getEntitiesByRel('ABOUT')).toHaveLength(1);
     });
 
     it('should return sub-entities with all the given rels', () => {
@@ -560,7 +568,7 @@ describe('Entity', () => {
     const entity = new Entity({
       links: [
         { rel: ['collection'], href: '/foos' },
-        { rel: ['collection', 'up'], href: '/bars' },
+        { rel: ['Collection', 'up'], href: '/bars' },
         { rel: ['about'], href: '/about' }
       ]
     });
@@ -571,8 +579,16 @@ describe('Entity', () => {
 
     it('should return links with rel', () => {
       expect(entity.getLinksByRel('collection')).toHaveLength(2);
+      expect(entity.getLinksByRel('Collection')).toHaveLength(2);
+      expect(entity.getLinksByRel('COLLECTION')).toHaveLength(2);
+      expect(entity.getLinksByRel('cOlLeCtIoN')).toHaveLength(2);
       expect(entity.getLinksByRel('up')).toHaveLength(1);
+      expect(entity.getLinksByRel('Up')).toHaveLength(1);
+      expect(entity.getLinksByRel('UP')).toHaveLength(1);
       expect(entity.getLinksByRel('about')).toHaveLength(1);
+      expect(entity.getLinksByRel('About')).toHaveLength(1);
+      expect(entity.getLinksByRel('AbOuT')).toHaveLength(1);
+      expect(entity.getLinksByRel('ABOUT')).toHaveLength(1);
     });
 
     it('should return links with all the given rels', () => {
