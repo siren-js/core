@@ -12,11 +12,17 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## 0.3.2
 
+### Changed
+
+- Explicitly mentioning cross-platform support in README
+
 ### Fixed
 
+- [#9] - Mentioning minimum TypeScript version in README
 - [#10] - Link relation types are now compared in a case-insensitive fashion,
   per [RFC 8288][rfc8288].
 
+[#9]: https://github.com/siren-js/core/issues/9
 [#10]: https://github.com/siren-js/core/issues/10
 [rfc8288]: https://datatracker.ietf.org/doc/html/rfc8288#section-3.3
 
