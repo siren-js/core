@@ -24,7 +24,7 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ### Changed
 
-- Tranpiling to CommonJS modules
+- Transpiling to CommonJS modules
 
 ## 0.3.0 - 2021-04-26
 
@@ -41,7 +41,7 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ### Fixed
 
-- Extension support in TypeScript ([#6])
+- [#6] - Extensions are now supported in TypeScript
 
 [#6]: https://github.com/siren-js/core/issues/6
 
@@ -63,7 +63,7 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 - Serializing `EmbeddedEntity` now includes `rel`
 - Generated type for `Entity.prototype.actions`
-- Type declarations for option objects ([#4])
+- [#4] - Type declarations for option objects
 
 [#4]: https://github.com/siren-js/core/issues/4
 
