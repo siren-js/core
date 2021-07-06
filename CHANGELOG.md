@@ -10,11 +10,27 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ## Unreleased
 
+## 0.3.2
+
+### Changed
+
+- Explicitly mentioning cross-platform support in README
+
+### Fixed
+
+- [#9] - Mentioning minimum TypeScript version in README
+- [#10] - Link relation types are now compared in a case-insensitive fashion,
+  per [RFC 8288][rfc8288].
+
+[#9]: https://github.com/siren-js/core/issues/9
+[#10]: https://github.com/siren-js/core/issues/10
+[rfc8288]: https://datatracker.ietf.org/doc/html/rfc8288#section-3.3
+
 ## 0.3.1 - 2021-04-26
 
 ### Changed
 
-- Tranpiling to CommonJS modules
+- Transpiling to CommonJS modules
 
 ## 0.3.0 - 2021-04-26
 
@@ -31,7 +47,7 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 ### Fixed
 
-- Extension support in TypeScript ([#6])
+- [#6] - Extensions are now supported in TypeScript
 
 [#6]: https://github.com/siren-js/core/issues/6
 
@@ -53,7 +69,7 @@ The format is based on [Keep a Changelog][kac], and this project adheres to
 
 - Serializing `EmbeddedEntity` now includes `rel`
 - Generated type for `Entity.prototype.actions`
-- Type declarations for option objects ([#4])
+- [#4] - Type declarations for option objects
 
 [#4]: https://github.com/siren-js/core/issues/4
 

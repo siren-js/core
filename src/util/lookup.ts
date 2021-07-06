@@ -21,7 +21,7 @@ export function lookUpByRel<T extends Relatable>(
   index: Map<string, T[]>,
   rels: string[]
 ): T[] {
-  return lookUpByProperty(index, rels, 'rel');
+  return lookUpByProperty(index, rels, 'rel', true);
 }
 
 export interface Relatable {
@@ -30,26 +30,30 @@ export interface Relatable {
 
 /**
  * @param index Components indexed by the given property
- * @param search List of search terms
+ * @param search List of search keys
  * @param property Component property to search by
+ * @param ignoreCase Whether to perform a case-insensitive comparison of keys
  */
 function lookUpByProperty<T>(
   index: Map<string, T[]>,
   search: string[],
-  property: keyof T
+  property: keyof T,
+  ignoreCase = false
 ): T[] {
-  if (search.length === 0) {
+  const keyMapper = (str: string) => (ignoreCase ? str.toLowerCase() : str);
+  const keys = search.map(keyMapper);
+  if (keys.length === 0) {
     throw new Error(`must provide one or more ${property} values`);
-  } else if (search.length === 1) {
-    return index.get(search[0]) ?? [];
+  } else if (keys.length === 1) {
+    return index.get(keys[0]) ?? [];
   }
   const componentsByProperty = new Set<T>();
-  for (const key of search) {
-    const components = index.get(key) ?? [];
+  for (const key of keys) {
+    const components = index.get(keyMapper(key)) ?? [];
     for (const component of components) {
       const value = <unknown>component[property];
-      const propertyValues = new Set<string>(<string[]>value);
-      if (search.every((key) => propertyValues.has(key))) {
+      const propertyValues = new Set<string>((<string[]>value).map(keyMapper));
+      if (keys.every((key) => propertyValues.has(key))) {
         componentsByProperty.add(component);
       }
     }

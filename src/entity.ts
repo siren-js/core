@@ -251,18 +251,10 @@ function coerceSubComponents<T extends Classifiable & Relatable>(
         const component = parse(value);
         components.push(component);
         component.rel.forEach((rel) => {
-          if (!relIndex.has(rel)) {
-            relIndex.set(rel, []);
-          }
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          relIndex.get(rel)!.push(component);
+          append(relIndex, rel.toLowerCase(), component);
         });
         component.class?.forEach((className) => {
-          if (!classIndex.has(className)) {
-            classIndex.set(className, []);
-          }
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          classIndex.get(className)!.push(component);
+          append(classIndex, className, component);
         });
       }
     }
@@ -274,6 +266,12 @@ function coerceSubComponents<T extends Classifiable & Relatable>(
   } else {
     return defaultValue;
   }
+}
+
+function append<T>(map: Map<string, T[]>, key: string, value: T) {
+  const values = map.get(key) ?? [];
+  values.push(value);
+  map.set(key, values);
 }
 
 /**

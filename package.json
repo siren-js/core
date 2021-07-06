@@ -1,6 +1,6 @@
 {
   "name": "@siren-js/core",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Core Siren.js functionality",
   "files": [
     "/dist"
@@ -31,7 +31,7 @@
     "RESTful",
     "Siren"
   ],
-  "author": "Dillon Redding",
+  "author": "Siren.js",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/siren-js/core/issues"
@@ -54,6 +54,7 @@
     "preset": "ts-jest"
   },
   "prettier": {
+    "endOfLine": "crlf",
     "singleQuote": true,
     "trailingComma": "none"
   }

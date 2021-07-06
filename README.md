@@ -6,10 +6,10 @@
 [![License](https://img.shields.io/github/license/siren-js/core)](LICENSE)
 [![Contributing](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-This is the core library for Siren.js that provides classes for creating objects
-representing components (entities, actions, etc.) of the [Siren][siren]
-hypermedia format. The primary intent of this library is for generating or
-parsing Siren representations.
+A cross-platform library that provides classes for creating objects representing
+components (entities, actions, etc.) of the [Siren] hypermedia format.
+The primary intent of this library is for generating or parsing Siren
+representations.
 
 [siren]: https://github.com/kevinswiber/siren
 
@@ -270,9 +270,9 @@ if (value < field.min || value > field.max) {
 
 ### TypeScript
 
-Type declarations are included in the `@siren-js/core` package; however,
-TypeScript users may experience several limitations not present for JavaScript
-users.
+Type declarations are included in the `@siren-js/core` package and require at
+least version 3.8.2 of TypeScript. However, TypeScript users may experience
+several limitations not present for JavaScript users.
 
 For example, class properties that are nested components can be passed as plain
 objects in the constructor, but not when modifying the property directly.
