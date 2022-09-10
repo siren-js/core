@@ -16,9 +16,7 @@ jobs:
         with:
           node-version: 16.x
           registry-url: https://registry.npmjs.org/
-      - run: npm version ${{github.event.release.tag_name}}
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - run: npm version ${{github.event.release.tag_name}} --no-git-tag-version
       - run: npm ci
       - run: npm publish --access public
         env:
