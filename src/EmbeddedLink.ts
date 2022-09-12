@@ -1,6 +1,7 @@
-import { ArrayMinSize, IsMimeType, IsOptional, IsString, IsUrl } from 'class-validator';
+import { ArrayMinSize, IsMimeType, IsOptional, IsString } from 'class-validator';
 
 import { transformAndValidate } from './utils';
+import { IsUri } from './utils/IsUri';
 
 /**
  * Represent a sub-entity as a link
@@ -17,7 +18,7 @@ export class EmbeddedLink {
   /**
    * URI of the linked resource.
    */
-  @IsUrl()
+  @IsUri()
   href!: string;
 
   /**

@@ -1,6 +1,7 @@
-import { IsMimeType, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsMimeType, IsOptional, IsString } from 'class-validator';
 
 import { transformAndValidate } from './utils';
+import { IsUri } from './utils/IsUri';
 
 export class Link {
   /**
@@ -14,7 +15,7 @@ export class Link {
   /**
    * URI of the linked resource.
    */
-  @IsUrl()
+  @IsUri()
   href!: string;
 
   /**

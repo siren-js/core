@@ -1,8 +1,9 @@
 import { Type } from 'class-transformer';
-import { ArrayUnique, IsMimeType, IsOptional, IsString, IsUrl, ValidateNested } from 'class-validator';
+import { ArrayUnique, IsMimeType, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { Field } from './Field';
 import { Extendable, transformAndValidate } from './utils';
+import { IsUri } from './utils/IsUri';
 
 export type ActionLike = Pick<Action, 'class' | 'fields' | 'href' | 'method' | 'name' | 'title' | 'type'> & Extendable;
 
@@ -30,7 +31,7 @@ export class Action {
   /**
    * URI of the action
    */
-  @IsUrl()
+  @IsUri()
   href!: string;
 
   /**
